@@ -1,0 +1,25 @@
+# Dependencies
+markdown:            redcarpet
+highlighter:         pygments
+
+# Permalinks
+permalink:           pretty
+relative_permalinks: true
+
+# Setup
+exclude:             [README.md, LICENSE.md]
+title:               'GitHub Comments'
+tagline:             'for your GitHub Pages'
+description:         'Fully integrated comments for your GitHub Pages.'
+url:                 http://wireddown.github.io/ghpages-ghcomments
+baseurl:             /
+
+# About/contact
+author:
+  name:              Joe Friedrichsen
+  uri:               http://downtothewire.io
+
+# Custom data
+established:         2015
+license:             CC BY 4.0
+license_url:         http://creativecommons.org/licenses/by/4.0/legalcode
