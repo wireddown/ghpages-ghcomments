@@ -1,0 +1,125 @@
+<div class="gpgc-all-comments" id="all-comments"></div>
+
+<div class="gpgc-actions">
+  <span class="gpgc-action" id="load-comments-button"></span>
+  <span class="gpgc-action" id="leave-comment-link"></span>
+</div>
+
+<script>
+  var ShortMonthForIndex = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
+  var IssueUrl = "";
+  var CommentsArray = [];
+
+  function findAndCollectComments(userName, repositoryName, issueTitle) {
+    var safeQuery = encodeURI(issueTitle);
+    var seachQueryUrl = "https://api.github.com/search/issues?q=" + safeQuery + "+repo:" + userName + "/" + repositoryName + "+type:issue+in:title";
+    getGitHubApiRequestWithCompletion(seachQueryUrl, onSearchComplete);
+  }
+
+  function onSearchComplete(searchRequest) {
+    var searchResults = JSON.parse(searchRequest.responseText);
+    if (searchResults.total_count === 1) {
+      IssueUrl = searchResults.items[0].html_url;
+      getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, onCommentsUpdated);
+    }
+    else {
+      updateCommentActions(CommentsArray);
+    }
+  }
+
+  function onCommentsUpdated(commentRequest)
+  {
+    CommentsArray = CommentsArray.concat(JSON.parse(commentRequest.responseText));
+    var commentsPages = commentRequest.getResponseHeader("Link");
+    if (commentsPages) {
+      var commentsLinks = commentsPages.split(",");
+      for (var i = 0; i < commentsLinks.length; i++) {
+        if (commentsLinks[i].search('rel="next"') > 0) {
+          var linkStart = commentsLinks[i].search("<");
+          var linkStop = commentsLinks[i].search(">");
+          var nextLink = commentsLinks[i].substring(linkStart + 1, linkStop);
+          getGitHubApiRequestWithCompletion(nextLink, onCommentsUpdated);
+          return;
+        }
+      }
+      updateCommentActions(CommentsArray);
+    }
+    else {
+      updateCommentActions(CommentsArray);
+    }
+  }
+
+  function updateCommentActions(allComments)
+  {
+    var allCommentsHtml = "";
+    var loadCommentsHtml = "";
+    var leaveCommentUrl = "";
+
+    if ({{ site.data.gpgc.use_show_action}}) {
+      var commentOrComments = allComments.length == 1 ? "Comment" : "Comments";
+      loadCommentsHtml = '<button class="gpgc-show" onclick="presentAllComments(CommentsArray)">Show ' + allComments.length + ' ' + commentOrComments + '</button>';
+    }
+    else {
+      allCommentsHtml = formatAllComments(CommentsArray);
+    }
+
+    if (allComments.length === 0) {
+      allCommentsHtml = '<p class="gpgc-no-comments">No comments</p>';
+      loadCommentsHtml = "";
+      leaveCommentUrl = IssueUrl;
+    }
+    else {
+      leaveCommentUrl = allComments[allComments.length - 1].html_url;
+    }
+
+    var leaveCommentsHtml = '<a class="gpgc-leave" href="' + leaveCommentUrl + '">Leave a comment</a>';
+    updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml);
+  }
+
+  function presentAllComments(allComments) {
+    allCommentsHtml = formatAllComments(allComments);
+    updateCommentDivs(allCommentsHtml, "", null);
+  }
+
+  function formatAllComments(allComments) {
+    var allCommentsHtml = '';
+    for (var i = 0; i < allComments.length; i++) {
+      var user = allComments[i].user;
+      allCommentsHtml += formatComment(user.avatar_url, user.html_url, user.login, allComments[i].body_html, allComments[i].updated_at);
+    }
+
+    return allCommentsHtml;
+  }
+
+  function formatComment(userAvatarUrl, userHtmlUrl, userLogin, commentBodyHtml, commentTimeStamp) {
+    var commentDate = new Date(commentTimeStamp);
+    var shortMonth = ShortMonthForIndex[commentDate.getMonth()];
+    var commentHtml = '<div class="gpgc-comment">';
+    commentHtml += '<a href="' + userHtmlUrl + '"><img class="gpgc-avatar" src="' + userAvatarUrl + '" height="42" />' + userLogin + '</a> ';
+    commentHtml += '<small>on ' + commentDate.getDate() + ' ' + shortMonth + ' ' + commentDate.getFullYear() + '</small>';
+    commentHtml += '<div class="gpgc-comment-contents">' + commentBodyHtml + '</div>';
+    commentHtml += '</div>';
+    return commentHtml;
+  }
+
+  function getGitHubApiRequestWithCompletion(url, completion)
+  {
+    var gitHubRequest = new XMLHttpRequest();
+    gitHubRequest.open("GET", url, true);
+    gitHubRequest.setRequestHeader("Accept", "application/vnd.github.v3.html+json");
+    gitHubRequest.onreadystatechange = function() {
+      if (gitHubRequest.readyState != 4 || gitHubRequest.status != 200) return;
+      completion(gitHubRequest);
+    };
+    gitHubRequest.send();
+  }
+
+  function updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml)
+  {
+    if (allCommentsHtml != null) document.getElementById("all-comments").innerHTML = allCommentsHtml;
+    if (loadCommentsHtml != null) document.getElementById("load-comments-button").innerHTML = loadCommentsHtml;
+    if (leaveCommentsHtml != null) document.getElementById("leave-comment-link").innerHTML = leaveCommentsHtml;
+  }
+
+  findAndCollectComments("{{ site.data.gpgc.repo_owner }}", "{{ site.data.gpgc.repo_name }}", "{{ include.post_title }}");
+</script>
