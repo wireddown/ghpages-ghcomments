@@ -10,7 +10,7 @@ The blog posts on this site show how [**ghpages-ghcomments**](https://github.com
 * One comment
 * No comments
 
-[Browse](https://github.com/wireddown/ghpages-ghcomments/issues) the GitHub storage for their comments.
+[Browse](https://github.com/wireddown/ghpages-ghcomments/issues?q=is%3Aopen+is%3Aissue+label%3A%22Example+GitHub+Pages+Comments%22) the GitHub storage for their comments.
 
 ---
 
