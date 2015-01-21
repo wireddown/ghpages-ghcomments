@@ -22,11 +22,11 @@ Set up is quick, and everything has been automated to hook into your git workflo
 
 # Examples
 
-[These blog posts](http://wireddown.github.io/ghpages-ghcomments) show how **ghpages-ghcomments** works.
+The blog posts on this site show how [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release) works.
 
-* Comments with markdown
-* Several comments
-* One comment
-* No comments
+* [Comments with markdown](http://downtothewire.io/ghpages-ghcomments/2015/01/18/the-phrenic-shrine-reveals-itself)
+* [Several comments](http://downtothewire.io/ghpages-ghcomments/2015/01/12/not-a-sunrise-but-a-galaxyrise)
+* [One comment](http://wireddown.github.io/ghpages-ghcomments/2015/01/09/creative-business-to-business-churn)
+* [No comments](http://downtothewire.io/ghpages-ghcomments//2015/01/08/mumblecore-flexitarian-thundercats)
 
-[Browse](https://github.com/wireddown/ghpages-ghcomments/issues) the GitHub storage for their comments.
+[Browse](https://github.com/wireddown/ghpages-ghcomments/issues?q=is%3Aopen+is%3Aissue+label%3A%22Example+GitHub+Pages+Comments%22) the GitHub storage for their comments.
