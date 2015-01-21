@@ -34,8 +34,8 @@
 }
 
 .gpgc-show {
-  border: solid 1px #ac4142; /* THEME: use `a` color */
-  color: #ac4142; /* THEME: use `a` color */
+  border: solid 1px #90a959; /* THEME: use `a` color */
+  color: #90a959; /* THEME: use `a` color */
   background-color: #fff;
   cursor: pointer;
 }
@@ -46,7 +46,7 @@
 
 .gpgc-leave {
   color: #fff !important; /* override existing `a` color to invert the 'button' look and feel */
-  background-color: #ac4142; /* THEME: use `a` color */
+  background-color: #90a959; /* THEME: use `a` color */
 }
 
 .gpgc-no-comments {
