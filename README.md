@@ -30,3 +30,9 @@ The blog posts on this site show how [**ghpages-ghcomments**](https://github.com
 * [No comments](http://downtothewire.io/ghpages-ghcomments//2015/01/08/mumblecore-flexitarian-thundercats)
 
 [Browse](https://github.com/wireddown/ghpages-ghcomments/issues?q=is%3Aopen+is%3Aissue+label%3A%22Example+GitHub+Pages+Comments%22) the GitHub storage for their comments.
+
+# Setup
+
+Setup is fast -- [this commit](https://github.com/wireddown/ghpages-ghcomments/commit/fbaee48cd7a8be33b76e26813d4fe81733146aac?diff=unified) shows just how easy it is.
+
+Follow these [instructions](http://downtothewire.io/ghpages-ghcomments//setup/).
