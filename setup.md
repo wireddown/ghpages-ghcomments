@@ -30,7 +30,7 @@ Setup is fast -- [this commit](https://github.com/wireddown/ghpages-ghcomments/c
 > Add an include tag at the bottom (or wherever you want comments to appear):
 >
 > ```
-> {% include gpgc_comments.html post_title=post.title %}
+> {% include gpgc_comments.html post_title=page.title %}
 > ```
 
 -
