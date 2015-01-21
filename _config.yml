@@ -18,6 +18,7 @@ baseurl:             http://wireddown.github.io/ghpages-ghcomments/
 author:
   name:              Joe Friedrichsen
   uri:               http://downtothewire.io
+  handle:            https://twitter.com/wireddown
 
 # Custom data
 established:         2015
