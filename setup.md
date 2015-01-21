@@ -3,6 +3,8 @@ layout: page
 title: Setup
 ---
 
+Setup is fast -- [this commit](https://github.com/wireddown/ghpages-ghcomments/commit/fbaee48cd7a8be33b76e26813d4fe81733146aac?diff=unified) shows just how easy it is.
+
 {% raw %}
 
 #### 1. [**Download** the ZIP archive](https://github.com/wireddown/ghpages-ghcomments/archive/release.zip) and unpack it.
