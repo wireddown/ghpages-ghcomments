@@ -22,7 +22,7 @@ Set up is quick, and everything has been automated to hook into your git workflo
 
 # Examples
 
-[These blog posts](wireddown.github.io/ghpages-ghcomments) show how **ghpages-ghcomments** works.
+[These blog posts](http://wireddown.github.io/ghpages-ghcomments) show how **ghpages-ghcomments** works.
 
 * Comments with markdown
 * Several comments
