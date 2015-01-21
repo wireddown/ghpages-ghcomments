@@ -65,6 +65,8 @@ git commit -m "Add ghpages-ghcomments"
 git push
 ```
 
+#### 7. New posts now have GitHub comments! See [Usage]({{ site.baseurl }}usage) for a refresher.
+
 {% endraw %}
 
 ---
