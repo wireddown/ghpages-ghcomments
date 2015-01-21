@@ -4,7 +4,7 @@ With **ghpages-ghcomments**, your Jekyll site can use GitHub to provide reader c
 
 Set up is quick, and everything has been automated to hook into your git workflow.
 
-[Read more](wireddown.github.io/ghpages-ghcomments/usage)
+[Read more](http://wireddown.github.io/ghpages-ghcomments/usage)
 
 # Advantages
 
