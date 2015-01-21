@@ -12,13 +12,13 @@ If you have a [Jekyll site](https://help.github.com/articles/using-jekyll-with-p
  1. Write your post.
  1. Push it live:
 
-> ```
-> $ git add YEAR-MONTH-DAY-post-title.md
-> $ git commit -m "Publish 'Post Title'"
-> $ git push
-> Created issue "Collaboratively Administrate Empowered Markets" for "wireddown/ghpages-ghcomments"
-> ...
-> ```
+```
+$ git add YEAR-MONTH-DAY-post-title.md
+$ git commit -m "Publish 'Post Title'"
+$ git push
+Created issue "Collaboratively Administrate Empowered Markets" for "wireddown/ghpages-ghcomments"
+...
+```
 
 ---
 
