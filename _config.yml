@@ -12,7 +12,7 @@ title:               'GitHub Comments'
 tagline:             'for your GitHub Pages'
 description:         'Fully integrated comments for your GitHub Pages.'
 url:                 http://wireddown.github.io/ghpages-ghcomments
-baseurl:             /
+baseurl:             http://wireddown.github.io/ghpages-ghcomments
 
 # About/contact
 author:
