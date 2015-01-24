@@ -35,6 +35,8 @@ Setup is fast -- these commits show just how easy it is:
 > label_color: 666666
 > ```
 
+-
+
 > **_includes/head.html**
 > 
 > [Add a link](https://github.com/wireddown/wireddown.github.io/commit/74a35798e15fc25ff097a0480ebbb997c0fbabc6?diff=split) to the `ghpages-ghcomments.css` to the \<head\> element:
@@ -52,8 +54,6 @@ Setup is fast -- these commits show just how easy it is:
 > ```
 > {% include gpgc_comments.html post_title=page.title %}
 > ```
-
--
 
 #### <a name="step-4"></a>4. **Move** `_tools/gpgcCreateCommentIssue.sh` to your *$PATH*.
 
