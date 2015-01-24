@@ -13,7 +13,7 @@ If you have a [Jekyll site](https://help.github.com/articles/using-jekyll-with-p
  1. Push it live:
 
 ```
-$ git add YEAR-MONTH-DAY-post-title.md
+$ git add YYYY-MM-DD-post-title.md
 $ git commit -m "Publish 'Post Title'"
 $ git push
 Created issue "Post Title" for "wireddown/ghpages-ghcomments"
