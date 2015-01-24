@@ -33,6 +33,6 @@ The blog posts on this site show how [**ghpages-ghcomments**](https://github.com
 
 # Setup
 
-Setup is fast -- [this commit](https://github.com/wireddown/ghpages-ghcomments/commit/fbaee48cd7a8be33b76e26813d4fe81733146aac?diff=unified) shows just how easy it is.
+Setup is fast -- [these commits](https://github.com/wireddown/wireddown.github.io/compare/4c204b0a3fe7530423833731e201d60f225405bf...53d52bce0b4f590129e5cca8dde87910a93dcb95?diff=split) show just how easy it is.
 
-Follow these [instructions](http://downtothewire.io/ghpages-ghcomments//setup/).
+Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
