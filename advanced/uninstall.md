@@ -15,3 +15,11 @@ For each repository with ghpages-ghcomments:
  1. Remove the lines you added from:
   * **_includes/head.html**
   * **_layouts/post.html**
+
+---
+
+## Other advanced topics:
+
+* [Verbose Usage](../verbose-usage)
+* [Manual](../manual)
+* Uninstall

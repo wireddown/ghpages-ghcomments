@@ -285,3 +285,11 @@ Class list:
   * `<img>` element that presents a user's avatar
 * **.gpgc-comment-contents**
   * `<div>` element that holds the GitHub comment contents
+
+---
+
+## Other advanced topics:
+
+* [Verbose Usage](../verbose-usage)
+* Manual
+* [Uninstall](../uninstall)
