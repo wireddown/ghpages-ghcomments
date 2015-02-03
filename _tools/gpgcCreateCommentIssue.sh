@@ -17,17 +17,21 @@ function InstallPreCommit()
 {
   local preCommitScript="${GitRepoRoot}/.git/hooks/pre-commit"
   local installTag="hook from wireddown/ghpages-ghcomments"
-  if $(grep -q "${installTag}" "${preCommitScript}" 2>/dev/null); then
-    exit 0;
-  fi
+  local beginInstallTag="### BEGIN ${installTag}"
+  local endInstallTag="### END ${installTag}"
 
   if ! test -f "${preCommitScript}"; then
     echo "#!/bin/bash" > "${preCommitScript}"
+  else
+    if $(grep -q "${installTag}" "${preCommitScript}" 2>/dev/null); then
+      local everythingExceptThisHook="$(cat "${preCommitScript}" | sed "\!${beginInstallTag}!,\!${endInstallTag}!d")"
+      echo "${everythingExceptThisHook}" > "${preCommitScript}"
+    fi
   fi
 
   cat >> "${preCommitScript}" <<-pre-commit-hook
 
-	### BEGIN ${installTag}
+	${beginInstallTag}
 
 	gpgcCreateCommentIssue="\$(which gpgcCreateCommentIssue.sh)"
 
@@ -35,7 +39,7 @@ function InstallPreCommit()
 	  "\${gpgcCreateCommentIssue}" commit
 	fi
 
-	### END ${installTag}
+	${endInstallTag}
 
 pre-commit-hook
 }
@@ -44,17 +48,21 @@ function InstallPrePush()
 {
   local prePushScript="${GitRepoRoot}/.git/hooks/pre-push"
   local installTag="hook from wireddown/ghpages-ghcomments"
-  if $(grep -q "${installTag}" "${prePushScript}" 2>/dev/null); then
-    exit 0;
-  fi
+  local beginInstallTag="### BEGIN ${installTag}"
+  local endInstallTag="### END ${installTag}"
 
   if ! test -f "${prePushScript}"; then
     echo "#!/bin/bash" > "${prePushScript}"
+  else
+    if $(grep -q "${installTag}" "${prePushScript}" 2>/dev/null); then
+      local everythingExceptThisHook="$(cat "${prePushScript}" | sed "\!${beginInstallTag}!,\!${endInstallTag}!d")"
+      echo "${everythingExceptThisHook}" > "${prePushScript}"
+    fi
   fi
 
   cat >> "${prePushScript}" <<-pre-push-hook
 
-	### BEGIN ${installTag}
+	${beginInstallTag}
 
 	gpgcCreateCommentIssue="\$(which gpgcCreateCommentIssue.sh)"
 
@@ -62,7 +70,7 @@ function InstallPrePush()
 	  "\${gpgcCreateCommentIssue}" push ${PersonalAccessToken}
 	fi
 
-	### END ${installTag}
+	${endInstallTag}
 
 pre-push-hook
 }
