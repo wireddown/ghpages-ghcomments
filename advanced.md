@@ -6,5 +6,5 @@ tags: [sidebar]
 
 Topics list:
 
-* [Manual]({{ site.baseurl }}manual)
-* [Uninstall]({{ site.baseurl }}uninstall)
+* [Manual](manual)
+* [Uninstall](uninstall)
