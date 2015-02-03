@@ -12,9 +12,9 @@ The following files, directories, and their contents are Copyright Joe Friedrich
 
     *.md
     _data/gpgc.yml
-    _images/
     _includes/gpgc_comments.html
     _posts/
     advanced/
+    images/
 
 All other directories and files are [MIT Licensed](https://raw.githubusercontent.com/poole/lanyon/master/LICENSE.md) since they are forked from [Lanyon](http://github.com/poole/lanyon), an unassuming [Jekyll](http://jekyllrb.com/) theme.
