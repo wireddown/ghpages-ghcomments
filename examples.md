@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Examples
+tags: [sidebar]
 ---
 
 The blog posts on this site show how [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release) works.

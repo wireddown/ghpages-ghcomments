@@ -18,7 +18,7 @@ Set up is quick, and everything has been automated to hook into your git workflo
       <li>
         <h3>
           <small>{{ post_date }}</small><br>
-          <a href="{{ site.baseurl}}{{ post.url }}">{{ post.title }}</a>
+          <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
         </h3>
       </li>
     {% endfor %}

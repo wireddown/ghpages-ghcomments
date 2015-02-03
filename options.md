@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Options
+tags: [sidebar]
 ---
 
 ### Show or cloak comments on page load

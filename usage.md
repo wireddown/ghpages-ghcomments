@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Usage
+tags: [sidebar]
 ---
 
 Using [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release) doesn't add any extra steps to your workflow.

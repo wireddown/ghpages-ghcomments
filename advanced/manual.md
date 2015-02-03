@@ -19,7 +19,7 @@ title: Manual
 
 ## <a id="theory-of-operation"></a>Theory of Operation
 
-ghpages-ghcomments associates a blog post with a GitHub issue using the **title** front matter.
+ghpages-ghcomments associates a blog post with a GitHub issue using the post's **title** front matter.
 
 For example, using this title in a post
 

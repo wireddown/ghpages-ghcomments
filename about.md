@@ -1,6 +1,7 @@
 ---
 layout: page
 title: About
+tags: [sidebar]
 ---
 
 With [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release), your Jekyll site can use GitHub to provide reader comments. 

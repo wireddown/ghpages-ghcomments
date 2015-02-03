@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Setup
+tags: [sidebar]
 ---
 
 ## Quick start
