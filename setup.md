@@ -56,15 +56,21 @@ Setup is fast -- these commits show just how easy it is:
 > {% include gpgc_comments.html post_title=page.title %}
 > ```
 
-#### <a name="step-4"></a>4. **Move** `_tools/gpgcCreateCommentIssue.sh` to your *$PATH*.
+#### <a name="step-4"></a>4. **Move** `_tools/gpgcCreateCommentIssue.sh` to your system *$PATH*.
 
-#### 5. **Install** the git hooks:
+> ```
+> $ mv _tools/gpgcCreateCommentIssue.sh /usr/local/bin
+> $ which gpgcCreateCommentIssue.sh
+> /usr/local/bin/gpgcCreateCommentIssue.sh
+> ```
+
+#### 5. **Install** the git hooks. From your repository root:
 
 ```
 $ gpgcCreateCommentIssue.sh install <personal_access_token>
 ```
 
-Where **\<personal\_access\_token\>** is your [GitHub personal API access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/).
+Where **\<personal\_access\_token\>** is your [GitHub personal API access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/). Your token must have the `public_repo` [scope](https://developer.github.com/v3/oauth/#scopes) so that the hooks can create labels and issues in your repository.
 
 #### 6. **Push** to your Jekyll site:
 

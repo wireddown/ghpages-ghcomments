@@ -4,7 +4,7 @@ title: Advanced
 tags: [sidebar]
 ---
 
-Topics list:
+Topic list:
 
 * [Manual](manual)
 * [Uninstall](uninstall)
