@@ -13,7 +13,8 @@ Set up is quick, and everything has been automated to hook into your git workflo
 
 <div>
   <ul class="related-posts">
-    {% for post in site.posts %}
+    {% capture example_offset %}{{ site.posts | size | minus: 5 }}{% endcapture %}
+    {% for post in site.posts limit:5 offset:example_offset %}
       {% assign post_date = post.date | date_to_string %}
       <li>
         <h3>
