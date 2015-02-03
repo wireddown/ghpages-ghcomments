@@ -94,15 +94,23 @@ function Commit
   fi
 }
 
+function GetValueFromYml()
+{
+  local ymlFile="$1"
+  local ymlKey="$2"
+  local value="$(grep "^[[:space:]]*${ymlKey}:" "${ymlFile}" 2>/dev/null | sed "s/\s*${ymlKey}:\s*//g" | sed s/#.*$//g | tr -d '"')"
+  echo "${value}"
+}
+
 function Push
 {
   local gpgcDataFile="${GitRepoRoot}/_data/gpgc.yml"
   local siteDataFile="${GitRepoRoot}/_config.yml"
 
-  local repo_owner="$(grep "^repo_owner:" "${gpgcDataFile}" 2>/dev/null | sed 's/^repo_owner: \+//g')"
-  local repo_name="$(grep "^repo_name:" "${gpgcDataFile}" 2>/dev/null | sed 's/^repo_name: \+//g')"
-  local label_name="$(grep "^label_name:" "${gpgcDataFile}" 2>/dev/null | sed 's/^label_name: \+//g')"
-  local label_color="$(grep "^label_color:" "${gpgcDataFile}" 2>/dev/null | sed 's/^label_color: \+//g')"
+  local repo_owner="$(GetValueFromYml "${gpgcDataFile}" repo_owner)"
+  local repo_name="$(GetValueFromYml "${gpgcDataFile}" repo_name)"
+  local label_name="$(GetValueFromYml "${gpgcDataFile}" label_name)"
+  local label_color="$(GetValueFromYml "${gpgcDataFile}" label_color)"
 
   if ! $(LabelExists "${repo_owner}" "${repo_name}" "${label_name}"); then
     if $(CreateLabel "${repo_owner}" "${repo_name}" "${label_name}" "${label_color}"); then
@@ -118,8 +126,8 @@ function Push
   if test -n "${allCommittedPosts}"; then
     for committed_post in ${allCommittedPosts}; do
       if test -f "${committed_post}"; then
-        local post_title="$(grep "^title:" "${committed_post}" | sed 's/^title: \+//g')"
-        local site="$(grep "^url:" "${siteDataFile}" | sed 's/^url: \+//g')"
+        local post_title="$(GetValueFromYml "${committed_post}" title)"
+        local site="$(GetValueFromYml "${siteDataFile}" url)"
         local year="$(basename "${committed_post}" | awk -F '-' '{print $1}')"
         local month="$(basename "${committed_post}" | awk -F '-' '{print $2}')"
         local day="$(basename "${committed_post}" | awk -F '-' '{print $3}')"
