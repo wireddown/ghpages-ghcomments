@@ -98,7 +98,7 @@ function GetValueFromYml()
 {
   local ymlFile="$1"
   local ymlKey="$2"
-  local value="$(grep "^[[:space:]]*${ymlKey}:" "${ymlFile}" 2>/dev/null | sed "s/\s*${ymlKey}:\s*//g" | sed s/#.*$//g | tr -d '"')"
+  local value="$(grep "^${ymlKey}:" "${ymlFile}" 2>/dev/null | head -n1 | sed "s/${ymlKey}:\s\+//g" | sed s/[[:space:]]*#.*$//g | tr -d '"')"
   echo "${value}"
 }
 
