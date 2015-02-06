@@ -22,6 +22,43 @@
       IssueUrl = searchResults.items[0].html_url;
       getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, onCommentsUpdated);
     }
+{% if site.data.gpgc.enable_diagnostics %}
+    else if (true) {
+      var css = document.styleSheets;
+      var foundCssInHead = false;
+      var fetchedCss = false;
+      for (var i = 0; i < css.length; i++) {
+        if (css[i].href.match("ghpages-ghcomments.css")) {
+          foundCssInHead = true;
+          if (css[i].cssRules.length > 0) {
+            fetchedCss = true;
+          }
+          break;
+        }
+      }
+
+      var missingCssMessage = "";
+      if (! foundCssInHead) {
+        missingCssMessage = '<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><strong>ghpages-ghcomments.css</strong> is not in the &lt;head&gt; element.</p><p>Add a <strong>&lt;link&gt;</strong> element to <strong>_includes/head.hml</strong>.</p>';
+      }
+
+      var css404Message = "";
+      if (! fetchedCss && foundCssInHead) {
+        css404Message = '<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <strong>ghpages-ghcomments.css</strong> from your site.</p><p>Check <strong>_includes/head.hml</strong> for typos.</p>';
+      }
+
+      var missingIssueMessage = "";
+      if (searchResults.total_count === 0) {
+        missingIssueMessage = '<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with title <strong>{{ include.post_title }}</strong> in repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p> <p>Check for typos in:<ul><li><strong>_data/gpgc.yml</strong></li><li>Jekyll <strong>title</strong> front matter for this post: <strong>{{ page.path }}</strong></li></ul></p>';
+      }
+
+      var allCommentsHtml = missingCssMessage + css404Message + missingIssueMessage;
+      allCommentsHtml += '<h3>Help</h3><p>Verify your site\'s configuration with the <a href="downtothewire.io/ghpages-ghcomments/setup/">setup instructions</a> and refer to the <a href="http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/">verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href="https://github.com/wireddown/ghpages-ghcomments/issues">ghpages-ghcomments</a></strong> for more help.</p>';
+      var loadCommentsHtml = "";
+      var leaveCommentsHtml = "";
+      updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml);
+    }
+{% endif %}
     else {
       updateCommentActions(CommentsArray);
     }
