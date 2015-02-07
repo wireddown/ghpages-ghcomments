@@ -49,7 +49,7 @@
 
       var missingIssueMessage = "";
       if (searchResults.total_count === 0) {
-        missingIssueMessage = '<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with title <strong>{{ include.post_title }}</strong> in repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p> <p>Check for typos in:<ul><li><strong>_data/gpgc.yml</strong></li><li>Jekyll <strong>title</strong> front matter for this post: <strong>{{ page.path }}</strong></li></ul></p>';
+        missingIssueMessage = '<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <strong>{{ include.post_title }}</strong> in the repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <strong>title</strong> front matter for this post: <strong>{{ page.path }}</strong>.</li><li>that the <strong>repo_name</strong> in <strong>_data/gpgc.yml</strong> matches the repository for this site.</li><li>the terminal output from <strong>git push</strong> for other error messages if the git hooks are installed.</li></ul></p>';
       }
 
       var allCommentsHtml = missingCssMessage + css404Message + missingIssueMessage;
