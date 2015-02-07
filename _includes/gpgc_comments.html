@@ -22,6 +22,48 @@
       IssueUrl = searchResults.items[0].html_url;
       getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, onCommentsUpdated);
     }
+{% if site.data.gpgc.enable_diagnostics %}
+    else if (true) {
+      var css = document.styleSheets;
+      var foundCssInHead = false;
+      var fetchedCss = false;
+      for (var i = 0; i < css.length; i++) {
+        if (css[i].href.match("ghpages-ghcomments.css")) {
+          foundCssInHead = true;
+          if (css[i].cssRules.length > 0) {
+            fetchedCss = true;
+          }
+          break;
+        }
+      }
+
+      var missingCssMessage = "";
+      if (! foundCssInHead) {
+        missingCssMessage = '<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><strong>ghpages-ghcomments.css</strong> is not in the &lt;head&gt; element.</p><p>Add a <strong>&lt;link&gt;</strong> element to <strong>_includes/head.hml</strong>.</p>';
+      }
+
+      var css404Message = "";
+      if (! fetchedCss && foundCssInHead) {
+        css404Message = '<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <strong>ghpages-ghcomments.css</strong> from your site.</p><p>Check <strong>_includes/head.hml</strong> for typos.</p>';
+      }
+
+      var searchErrorMessage = ""
+      if (searchRequest.status != 200) {
+        searchErrorMessage = '<h3><strong>gpgc</strong> Error: Search Failed</h3><p>Could not search GitHub repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>GitHub response:</p><p><pre>' + searchRequest.responseText + '</pre></p><p>Check:<ul><li><strong>repo_owner</strong> in <strong>_data/gpgc.yml</strong> for typos.</li><li><strong>repo_name</strong> in <strong>_data/gpgc.yml</strong> for typos.</li></ul></p>';
+      }
+
+      var missingIssueMessage = "";
+      if (searchResults.total_count === 0) {
+        missingIssueMessage = '<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <strong>{{ include.post_title }}</strong> in the repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <strong>title</strong> front matter for this post: <strong>{{ page.path }}</strong>.</li><li>that the <strong>repo_name</strong> in <strong>_data/gpgc.yml</strong> matches the repository for this site.</li><li>the terminal output from <strong>git push</strong> for other error messages if the git hooks are installed.</li></ul></p>';
+      }
+
+      var allCommentsHtml = missingCssMessage + css404Message + searchErrorMessage + missingIssueMessage;
+      allCommentsHtml += '<h3>Help</h3><p>Verify your site\'s configuration with the <a href="downtothewire.io/ghpages-ghcomments/setup/">setup instructions</a> and refer to the <a href="http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/">verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href="https://github.com/wireddown/ghpages-ghcomments/issues">ghpages-ghcomments</a></strong> for more help.</p>';
+      var loadCommentsHtml = "";
+      var leaveCommentsHtml = "";
+      updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml);
+    }
+{% endif %}
     else {
       updateCommentActions(CommentsArray);
     }
@@ -55,7 +97,7 @@
     var loadCommentsHtml = "";
     var leaveCommentUrl = "";
 
-    if ({{ site.data.gpgc.use_show_action}}) {
+    if (typeof {{ site.data.gpgc.use_show_action }} === 'boolean' && {{ site.data.gpgc.use_show_action }}) {
       var commentOrComments = allComments.length == 1 ? "Comment" : "Comments";
       loadCommentsHtml = '<button class="gpgc-show" onclick="presentAllComments(CommentsArray)">Show ' + allComments.length + ' ' + commentOrComments + '</button>';
     }
@@ -107,11 +149,15 @@
     var gitHubRequest = new XMLHttpRequest();
     gitHubRequest.open("GET", url, true);
     gitHubRequest.setRequestHeader("Accept", "application/vnd.github.v3.html+json");
-    gitHubRequest.onreadystatechange = function() {
-      if (gitHubRequest.readyState != 4 || gitHubRequest.status != 200) return;
-      completion(gitHubRequest);
-    };
+    gitHubRequest.onreadystatechange = function() { OnReadyStateChange(gitHubRequest, completion) };
     gitHubRequest.send();
+  }
+
+  function OnReadyStateChange(httpRequest, completion)
+  {
+    if (httpRequest.readyState != 4) { return; }
+    if (httpRequest.status != 200) { {% unless site.data.gpgc.enable_diagnostics %} return; {% endunless %} }
+    completion(httpRequest);
   }
 
   function updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml)

@@ -3,3 +3,4 @@ repo_name: __your_github_repository__
 use_show_action: true
 label_name: Post Comments
 label_color: 666666
+enable_diagnostics: false

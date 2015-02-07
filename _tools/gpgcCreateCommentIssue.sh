@@ -13,17 +13,29 @@ function PrintUsage
    echo >&2
 }
 
+function Diagnose()
+{
+  local sender="$1"
+  local message="$2"
+  if ${Verbose}; then
+    echo "${sender}: ${message}" >> /dev/stderr
+  fi
+}
+
 function InstallPreCommit()
 {
   local preCommitScript="${GitRepoRoot}/.git/hooks/pre-commit"
   local installTag="hook from wireddown/ghpages-ghcomments"
   local beginInstallTag="### BEGIN ${installTag}"
   local endInstallTag="### END ${installTag}"
+  Diagnose "InstallPreCommit" "preCommitScript == ${preCommitScript}"
 
   if ! test -f "${preCommitScript}"; then
+    Diagnose "InstallPreCommit" "Creating ${preCommitScript}"
     echo "#!/bin/bash" > "${preCommitScript}"
   else
     if $(grep -q "${installTag}" "${preCommitScript}" 2>/dev/null); then
+      Diagnose "InstallPreCommit" "Updating ${preCommitScript}"
       local everythingExceptThisHook="$(cat "${preCommitScript}" | sed "\!${beginInstallTag}!,\!${endInstallTag}!d")"
       echo "${everythingExceptThisHook}" > "${preCommitScript}"
     fi
@@ -50,11 +62,14 @@ function InstallPrePush()
   local installTag="hook from wireddown/ghpages-ghcomments"
   local beginInstallTag="### BEGIN ${installTag}"
   local endInstallTag="### END ${installTag}"
+  Diagnose "InstallPrePush" "prePushScript == ${prePushScript}"
 
   if ! test -f "${prePushScript}"; then
+    Diagnose "InstallPrePush" "Creating ${prePushScript}"
     echo "#!/bin/bash" > "${prePushScript}"
   else
     if $(grep -q "${installTag}" "${prePushScript}" 2>/dev/null); then
+      Diagnose "InstallPrePush" "Updating ${prePushScript}"
       local everythingExceptThisHook="$(cat "${prePushScript}" | sed "\!${beginInstallTag}!,\!${endInstallTag}!d")"
       echo "${everythingExceptThisHook}" > "${prePushScript}"
     fi
@@ -85,9 +100,12 @@ function Commit
 {
   local changedPosts="$(git diff --name-status --cached | grep "_posts/")"
   local allChangedPosts="$(echo "${changedPosts}" | awk '{print $2}')"
+  Diagnose "Commit" "changedPosts == ${changedPosts}"
+  Diagnose "Commit" "allChangedPosts == ${allChangedPosts}"
   if test -n "${allChangedPosts}"; then
     for changed_post in ${allChangedPosts}; do
       if ! $(grep -q "${changed_post}" "${GpgcCacheFile}" 2>/dev/null); then
+        Diagnose "Commit" "Adding ${changed_post} to ${GpgcCacheFile}"
         echo "${changed_post}" >> "${GpgcCacheFile}"
       fi
     done
@@ -99,18 +117,21 @@ function GetValueFromYml()
   local ymlFile="$1"
   local ymlKey="$2"
   local value="$(grep "^${ymlKey}:" "${ymlFile}" 2>/dev/null | head -n1 | sed "s/${ymlKey}:\s\+//g" | sed s/[[:space:]]*#.*$//g | tr -d '"')"
+  Diagnose "GetValueFromYml" "ymlFile == ${ymlFile}"
+  Diagnose "GetValueFromYml" "ymlKey == ${ymlKey}"
+  Diagnose "GetValueFromYml" "value == ${value}"
   echo "${value}"
 }
 
 function Push
 {
-  local gpgcDataFile="${GitRepoRoot}/_data/gpgc.yml"
   local siteDataFile="${GitRepoRoot}/_config.yml"
+  Diagnose "Push" "siteDataFile == ${siteDataFile}"
 
-  local repo_owner="$(GetValueFromYml "${gpgcDataFile}" repo_owner)"
-  local repo_name="$(GetValueFromYml "${gpgcDataFile}" repo_name)"
-  local label_name="$(GetValueFromYml "${gpgcDataFile}" label_name)"
-  local label_color="$(GetValueFromYml "${gpgcDataFile}" label_color)"
+  local repo_owner="$(GetValueFromYml "${GpgcDataFile}" repo_owner)"
+  local repo_name="$(GetValueFromYml "${GpgcDataFile}" repo_name)"
+  local label_name="$(GetValueFromYml "${GpgcDataFile}" label_name)"
+  local label_color="$(GetValueFromYml "${GpgcDataFile}" label_color)"
 
   if ! $(LabelExists "${repo_owner}" "${repo_name}" "${label_name}"); then
     if $(CreateLabel "${repo_owner}" "${repo_name}" "${label_name}" "${label_color}"); then
@@ -122,6 +143,7 @@ function Push
   fi
 
   local allCommittedPosts="$(cat "${GpgcCacheFile}" 2>/dev/null)"
+  Diagnose "Push" "allCommittedPosts == ${allCommittedPosts}"
   local resetCacheFile=false
   if test -n "${allCommittedPosts}"; then
     for committed_post in ${allCommittedPosts}; do
@@ -147,6 +169,7 @@ function Push
         fi
 
         if ${resetCacheFile}; then
+          Diagnose "Push" "Resetting ${GpgcCacheFile}"
           echo > "${GpgcCacheFile}"
         fi
       fi
@@ -160,7 +183,9 @@ function LabelExists()
   local owner="$1"
   local repo="$2"
   local label="$3"
+  Diagnose "LabelExists" "Querying \"https://api.github.com/repos/${owner}/${repo}/labels\" for \"${label}\""
   local labelList="$(curl -s https://api.github.com/repos/${owner}/${repo}/labels)"
+  Diagnose "LabelExists" "${labelList}"
   if echo "${labelList}" | grep -q "\"name\": \"${label}\""; then
     echo :
   else
@@ -175,12 +200,14 @@ function CreateLabel()
   local label="$3"
   local color="$4"
   local body="{\"name\":\"${label}\",\"color\":\"${color}\"}"
+  Diagnose "CreateLabel" "Posting to \"https://api.github.com/repos/${owner}/${repo}/labels\" with '${body}'"
   local creationResponse="$(curl -s -H "${AuthHeader}" -d "${body}" https://api.github.com/repos/${owner}/${repo}/labels)"
   if echo "${creationResponse}" | grep -q "\"name\": \"${label}\""; then
     echo :
   else
     echo false
     echo "${creationResponse}" > /dev/stderr
+    if ! ${Verbose} ; then echo "For more information, set 'enable_diagnostics' to 'true' in ${GpgcDataFile}" > /dev/stderr; fi
   fi
 }
 
@@ -189,6 +216,7 @@ function RawUrlEncode()
   local string="${1}"
   local strlen=${#string}
   local encoded=""
+  Diagnose "RawUrlEncode" "Encoding \"${string}\""
 
   for (( pos=0 ; pos<strlen ; pos++ )); do
      c=${string:$pos:1}
@@ -198,6 +226,7 @@ function RawUrlEncode()
      esac
      encoded+="${o}"
   done
+  Diagnose "RawUrlEncode" "Result: \"${encoded}\""
   echo "${encoded}"
 }
 
@@ -207,7 +236,9 @@ function IssueExists()
   local repo="$2"
   local title="$3"
   local safeTitle="$(RawUrlEncode "${title}")"
+  Diagnose "IssueExists" "Querying \"https://api.github.com/search/issues?q=${safeTitle}+repo:${owner}/${repo}+type:issue+in:title\" for \"${title}\""
   local issueList="$(curl -s "https://api.github.com/search/issues?q=${safeTitle}+repo:${owner}/${repo}+type:issue+in:title")"
+  Diagnose "IssueExists" "${issueList}"
   if echo "${issueList}" | grep -q "\"title\": \"${title}\""; then
     echo :
   else
@@ -223,12 +254,14 @@ function CreateIssue()
   local url="$4"
   local label="$5"
   local body="{\"title\":\"${title}\",\"body\":\"This is the comment thread for [${title}](${url}).\",\"assignee\":\"${owner}\",\"labels\":[\"${label}\"]}"
+  Diagnose "CreateIssue" "Posting to \"https://api.github.com/repos/${owner}/${repo}/issues\" with '${body}'"
   local creationResponse="$(curl -s -H "${AuthHeader}" -d "${body}" https://api.github.com/repos/${owner}/${repo}/issues)"
   if echo "${creationResponse}" | grep -q "\"title\": \"${title}\""; then
     echo :
   else
     echo false
     echo "${creationResponse}" > /dev/stderr
+    if ! ${Verbose} ; then echo "For more information, set 'enable_diagnostics' to 'true' in ${GpgcDataFile}" > /dev/stderr; fi
   fi
 }
 
@@ -236,7 +269,17 @@ PersonalAccessToken="$2"
 AuthHeader="Authorization: token ${PersonalAccessToken}"
 GitRepoRoot="$(git rev-parse --show-toplevel)"
 GpgcCacheFile="${GitRepoRoot}/.git/gpgc_cache"
+GpgcDataFile="${GitRepoRoot}/_data/gpgc.yml"
 
+Verbose=false
+enable_diagnostics="$(GetValueFromYml "${GpgcDataFile}" enable_diagnostics)"
+if test "x${enable_diagnostics}" = "xtrue"; then Verbose=: ; fi
+Diagnose "(global)" "enable_diagnostics == ${enable_diagnostics}"
+Diagnose "(global)" "GitRepoRoot == ${GitRepoRoot}"
+Diagnose "(global)" "GpgcCacheFile == ${GpgcCacheFile}"
+Diagnose "(global)" "GpgcDataFile == ${GpgcDataFile}"
+
+Diagnose "(global)" "operation == $1"
 case "$1" in
       install) Install ;;
       commit)  Commit  ;;
