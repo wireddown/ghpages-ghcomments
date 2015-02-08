@@ -26,8 +26,8 @@ By default, the elements have been tuned for [poole/lanyon](https://github.com/p
 ---
 
 ## Read more
- 1. [Advantages]({{ site.baseurl }}about)
- 1. [Examples]({{ site.baseurl }}examples)
- 1. [Usage]({{ site.baseurl }}usage)
+ 1. [Advantages]({{ site.baseurl }}/about)
+ 1. [Examples]({{ site.baseurl }}/examples)
+ 1. [Usage]({{ site.baseurl }}/usage)
  1. Options
- 1. [**Setup**]({{ site.baseurl }}setup)
+ 1. [**Setup**]({{ site.baseurl }}/setup)

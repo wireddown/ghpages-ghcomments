@@ -26,7 +26,7 @@ Set up is quick, and everything has been automated to hook into your git workflo
 
 ## Read more
  1. Advantages
- 1. [**Examples**]({{ site.baseurl }}examples)
- 1. [Usage]({{ site.baseurl }}usage)
- 1. [Options]({{ site.baseurl }}options)
- 1. [Setup]({{ site.baseurl }}setup)
+ 1. [**Examples**]({{ site.baseurl }}/examples)
+ 1. [Usage]({{ site.baseurl }}/usage)
+ 1. [Options]({{ site.baseurl }}/options)
+ 1. [Setup]({{ site.baseurl }}/setup)

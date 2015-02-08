@@ -16,8 +16,8 @@ The blog posts on this site show how [**ghpages-ghcomments**](https://github.com
 ---
 
 ## Read more
- 1. [Advantages]({{ site.baseurl }}about)
+ 1. [Advantages]({{ site.baseurl }}/about)
  1. Examples
- 1. [**Usage**]({{ site.baseurl }}usage)
- 1. [Options]({{ site.baseurl }}options)
- 1. [Setup]({{ site.baseurl }}setup)
+ 1. [**Usage**]({{ site.baseurl }}/usage)
+ 1. [Options]({{ site.baseurl }}/options)
+ 1. [Setup]({{ site.baseurl }}/setup)

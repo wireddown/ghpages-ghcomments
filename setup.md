@@ -43,7 +43,7 @@ Setup is fast -- these commits show just how easy it is:
 > [Add a link](https://github.com/wireddown/wireddown.github.io/commit/74a35798e15fc25ff097a0480ebbb997c0fbabc6?diff=split) to the `ghpages-ghcomments.css` to the \<head\> element:
 >
 > ```
-> <link rel="stylesheet" href="{{ site.baseurl }}public/css/ghpages-ghcomments.css">
+> <link rel="stylesheet" href="{{ site.baseurl }}/public/css/ghpages-ghcomments.css">
 > ```
 
 -
@@ -86,13 +86,13 @@ git push
 
 {% endraw %}
 
-#### 7. New posts now have GitHub comments! See [Usage]({{ site.baseurl }}usage) for a refresher or [Verbose Usage]({{ site.baseurl }}advanced/verbose-usage) for more details.
+#### 7. New posts now have GitHub comments! See [Usage]({{ site.baseurl }}/usage) for a refresher or [Verbose Usage]({{ site.baseurl }}/advanced/verbose-usage) for more details.
 
 ---
 
 ## Review
- 1. [Advantages]({{ site.baseurl }}about)
- 1. [Examples]({{ site.baseurl }}examples)
- 1. [Usage]({{ site.baseurl }}usage)
- 1. [Options]({{ site.baseurl }}options)
+ 1. [Advantages]({{ site.baseurl }}/about)
+ 1. [Examples]({{ site.baseurl }}/examples)
+ 1. [Usage]({{ site.baseurl }}/usage)
+ 1. [Options]({{ site.baseurl }}/options)
  1. Setup

@@ -7,7 +7,7 @@ With [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tr
 
 Set up is quick, and everything has been automated to hook into your git workflow.
 
-[Read more]({{ site.baseurl }}about)
+[Read more]({{ site.baseurl }}/about)
 
 # Example Posts and Comments
 

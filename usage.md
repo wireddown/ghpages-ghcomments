@@ -24,8 +24,8 @@ Created issue "Post Title" for "wireddown/ghpages-ghcomments"
 ---
 
 ## Read more
- 1. [Advantages]({{ site.baseurl }}about)
- 1. [Examples]({{ site.baseurl }}examples)
+ 1. [Advantages]({{ site.baseurl }}/about)
+ 1. [Examples]({{ site.baseurl }}/examples)
  1. Usage
- 1. [**Options**]({{ site.baseurl }}options)
- 1. [Setup]({{ site.baseurl }}setup)
+ 1. [**Options**]({{ site.baseurl }}/options)
+ 1. [Setup]({{ site.baseurl }}/setup)
