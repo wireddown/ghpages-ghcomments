@@ -18,52 +18,51 @@
 
   function onSearchComplete(searchRequest) {
     var searchResults = JSON.parse(searchRequest.responseText);
+{% if site.data.gpgc.enable_diagnostics %}
+    var css = document.styleSheets;
+    var foundCssInHead = false;
+    var fetchedCss = false;
+    for (var i = 0; i < css.length; i++) {
+      if (css[i].href.match("ghpages-ghcomments.css")) {
+        foundCssInHead = true;
+        if (css[i].cssRules.length > 0) {
+          fetchedCss = true;
+        }
+        break;
+      }
+    }
+
+    var missingCssMessage = "";
+    if (! foundCssInHead) {
+      missingCssMessage = '<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>ghpages-ghcomments.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>';
+    }
+
+    var css404Message = "";
+    if (! fetchedCss && foundCssInHead) {
+      css404Message = '<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>ghpages-ghcomments.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>';
+    }
+
+    var searchErrorMessage = ""
+    if (searchRequest.status != 200) {
+      searchErrorMessage = '<h3><strong>gpgc</strong> Error: Search Failed</h3><p>Could not search GitHub repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>GitHub response:</p><p><pre>' + searchRequest.responseText + '</pre></p><p>Check:<ul><li><code>repo_owner</code> in <code>_data/gpgc.yml</code> for typos.</li><li><code>repo_name</code> in <code>_data/gpgc.yml</code> for typos.</li></ul></p>';
+    }
+
+    var missingIssueMessage = "";
+    if (searchResults.total_count === 0) {
+      missingIssueMessage = '<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <em>{{ include.post_title }}</em> in the repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <code>title</code> front matter for this post: <code>{{ page.path }}</code>.</li><li>that the <code>repo_name</code> in <code>_data/gpgc.yml</code> matches the repository for this site.</li><li>the terminal output from <code>git push</code> for other error messages if the git hooks are installed.</li></ul></p>';
+    }
+
+    var allMessagesHtml = missingCssMessage + css404Message + searchErrorMessage + missingIssueMessage;
+    if (allMessagesHtml.length > 0) {
+      allMessagesHtml += '<h3>Help</h3><p>Verify your site\'s configuration with the <a href="downtothewire.io/ghpages-ghcomments/setup/">setup instructions</a> and refer to the <a href="http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/">verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href="https://github.com/wireddown/ghpages-ghcomments/issues">ghpages-ghcomments</a></strong> for more help.</p>';
+    }
+
+    document.body.innerHTML += '<div class="container content gpgc-all-comments">' + allMessagesHtml + '</div>';
+{% endif %}
     if (searchResults.total_count === 1) {
       IssueUrl = searchResults.items[0].html_url;
       getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, onCommentsUpdated);
     }
-{% if site.data.gpgc.enable_diagnostics %}
-    else if (true) {
-      var css = document.styleSheets;
-      var foundCssInHead = false;
-      var fetchedCss = false;
-      for (var i = 0; i < css.length; i++) {
-        if (css[i].href.match("ghpages-ghcomments.css")) {
-          foundCssInHead = true;
-          if (css[i].cssRules.length > 0) {
-            fetchedCss = true;
-          }
-          break;
-        }
-      }
-
-      var missingCssMessage = "";
-      if (! foundCssInHead) {
-        missingCssMessage = '<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><strong>ghpages-ghcomments.css</strong> is not in the &lt;head&gt; element.</p><p>Add a <strong>&lt;link&gt;</strong> element to <strong>_includes/head.hml</strong>.</p>';
-      }
-
-      var css404Message = "";
-      if (! fetchedCss && foundCssInHead) {
-        css404Message = '<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <strong>ghpages-ghcomments.css</strong> from your site.</p><p>Check <strong>_includes/head.hml</strong> for typos.</p>';
-      }
-
-      var searchErrorMessage = ""
-      if (searchRequest.status != 200) {
-        searchErrorMessage = '<h3><strong>gpgc</strong> Error: Search Failed</h3><p>Could not search GitHub repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>GitHub response:</p><p><pre>' + searchRequest.responseText + '</pre></p><p>Check:<ul><li><strong>repo_owner</strong> in <strong>_data/gpgc.yml</strong> for typos.</li><li><strong>repo_name</strong> in <strong>_data/gpgc.yml</strong> for typos.</li></ul></p>';
-      }
-
-      var missingIssueMessage = "";
-      if (searchResults.total_count === 0) {
-        missingIssueMessage = '<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <strong>{{ include.post_title }}</strong> in the repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <strong>title</strong> front matter for this post: <strong>{{ page.path }}</strong>.</li><li>that the <strong>repo_name</strong> in <strong>_data/gpgc.yml</strong> matches the repository for this site.</li><li>the terminal output from <strong>git push</strong> for other error messages if the git hooks are installed.</li></ul></p>';
-      }
-
-      var allCommentsHtml = missingCssMessage + css404Message + searchErrorMessage + missingIssueMessage;
-      allCommentsHtml += '<h3>Help</h3><p>Verify your site\'s configuration with the <a href="downtothewire.io/ghpages-ghcomments/setup/">setup instructions</a> and refer to the <a href="http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/">verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href="https://github.com/wireddown/ghpages-ghcomments/issues">ghpages-ghcomments</a></strong> for more help.</p>';
-      var loadCommentsHtml = "";
-      var leaveCommentsHtml = "";
-      updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml);
-    }
-{% endif %}
     else {
       updateCommentActions(CommentsArray);
     }

@@ -5,7 +5,7 @@ title: Use Diagnostics to Troubleshoot
 
 If you're having trouble adding ghpages-ghcomments to your site, there's a setting that will help you learn more about what is failing.
 
-In your `_data/gpgc.yml` file, add a new line:
+In your `_data/gpgc.yml` file, update this line:
 
 ```
 enable_diagnostics: true
