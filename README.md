@@ -46,7 +46,7 @@ Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 # Change log
 
 * 20 Jan 2015: _First release_
-* 02 Feb 2015: _Fix issues #6 and #7_
-* 08 Feb 2015: _Add diagnostics_
+* 02 Feb 2015: _Fix issues [#6](https://github.com/wireddown/ghpages-ghcomments/issues/6) and [#7](https://github.com/wireddown/ghpages-ghcomments/issues/7)_
+* 08 Feb 2015: _Add diagnostics (issue [#10](https://github.com/wireddown/ghpages-ghcomments/issues/10))_
 
 Full history: [`release` branch commit log](https://github.com/wireddown/ghpages-ghcomments/commits/release)
