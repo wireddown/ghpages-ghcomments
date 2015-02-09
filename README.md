@@ -36,3 +36,17 @@ The blog posts on this site show how [**ghpages-ghcomments**](https://github.com
 Setup is fast -- [these commits](https://github.com/wireddown/wireddown.github.io/compare/4c204b0a3fe7530423833731e201d60f225405bf...53d52bce0b4f590129e5cca8dde87910a93dcb95?diff=split) show just how easy it is.
 
 Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
+
+# Post index
+
+* 02 Feb 2015: [Issue 6 is fixed](http://downtothewire.io/ghpages-ghcomments/2015/02/02/issue-6-is-fixed/)
+* 07 Feb 2015: [Use Diagnostics to Troubleshoot](http://downtothewire.io/ghpages-ghcomments/2015/02/07/use-diagnostics-to-troubleshoot/)
+* 08 Feb 2015: [Use the Browser Console to Troubleshoot](http://downtothewire.io/ghpages-ghcomments/2015/02/08/use-the-browser-console-to-troubleshoot/)
+
+# Change log
+
+* 20 Jan 2015: _First release_
+* 02 Feb 2015: _Fix issues #6 and #7_
+* 08 Feb 2015: _Add diagnostics_
+
+Full history: [`release` branch commit log](https://github.com/wireddown/ghpages-ghcomments/commits/release)
