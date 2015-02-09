@@ -73,5 +73,6 @@ To https://github.com/wireddown/ghpages-ghcomments.git
 ## Other advanced topics:
 
 * Verbose Usage
+* [Troubleshooting](../troubleshooting)
 * [Manual](../manual)
 * [Uninstall](../uninstall)

@@ -291,5 +291,6 @@ Class list:
 ## Other advanced topics:
 
 * [Verbose Usage](../verbose-usage)
+* [Troubleshooting](../troubleshooting)
 * Manual
 * [Uninstall](../uninstall)

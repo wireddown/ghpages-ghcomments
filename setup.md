@@ -86,7 +86,7 @@ git push
 
 {% endraw %}
 
-#### 7. New posts now have GitHub comments! See [Usage]({{ site.baseurl }}/usage) for a refresher or [Verbose Usage]({{ site.baseurl }}/advanced/verbose-usage) for more details.
+#### 7. New posts now have GitHub comments! See [Usage]({{ site.baseurl }}/usage) for a refresher or [Verbose Usage]({{ site.baseurl }}/advanced/verbose-usage) for more details. If you're having trouble, see [Troubleshooting]({{ site.baseurl }}/advanced/troubleshooting/).
 
 ---
 

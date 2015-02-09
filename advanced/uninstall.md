@@ -21,5 +21,6 @@ For each repository with ghpages-ghcomments:
 ## Other advanced topics:
 
 * [Verbose Usage](../verbose-usage)
+* [Troubleshooting](../troubleshooting)
 * [Manual](../manual)
 * Uninstall

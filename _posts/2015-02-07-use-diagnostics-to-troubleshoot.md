@@ -11,7 +11,7 @@ In your `_data/gpgc.yml` file, update this line:
 enable_diagnostics: true
 ```
 
-With this setting, both the console output from the git hooks (in commit and push) and the blog page will give diagnostic information.
+With this setting, both the terminal output from the git hooks (in `commit` and `push`) and the blog pages will give diagnostic information.
 
 ## Example
 
