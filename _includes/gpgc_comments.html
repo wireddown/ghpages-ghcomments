@@ -1,5 +1,14 @@
 <div class="gpgc-all-comments" id="all-comments"></div>
 
+<div class="gpgc-all-comments">
+  <div class="gpgc-comment">
+  <a href="http://your-profile"><img class="gpgc-avatar" src="" height="42" />You</a> <small>today</small>
+  <form class="gpgc-comment-form" method="post" data-type="json" data-remote="true" action="/wireddown/ghpages-ghcomments/issue_comments" accept-charset="UTF-8">
+    <textarea class="gpgc-comment-form-textarea" id="new-comment-field" placeholder="Write a comment" tabindex="1" name="comment[body]"></textarea>
+  </form>
+  </div>
+</div>
+
 <div class="gpgc-actions">
   <span class="gpgc-action" id="load-comments-button"></span>
   <span class="gpgc-action" id="leave-comment-link"></span>
@@ -113,7 +122,7 @@
       leaveCommentUrl = allComments[allComments.length - 1].html_url;
     }
 
-    var leaveCommentsHtml = '<a class="gpgc-leave" href="' + leaveCommentUrl + '">Leave a comment</a>';
+    var leaveCommentsHtml = '<a class="gpgc-leave" href="' + leaveCommentUrl + '" target="_blank">Leave a comment</a>';
     updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml);
   }
 

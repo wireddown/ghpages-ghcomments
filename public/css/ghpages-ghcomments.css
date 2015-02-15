@@ -49,6 +49,24 @@
   background-color: #90a959; /* THEME: use `a` color */
 }
 
+.gpgc-comment-form {
+  padding-bottom: 1em;
+  padding-left: .4em;
+  padding-right: .4em;
+}
+
+.gpgc-comment-form-textarea {
+  font-family: inherit;
+  display: block;
+  width: 100%;
+  min-height: 12em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: .4em;
+  resize: vertical;
+  border: solid 1px #90a959; /* THEME: use `a` color */
+}
+
 .gpgc-no-comments {
   text-align: center;
 }
