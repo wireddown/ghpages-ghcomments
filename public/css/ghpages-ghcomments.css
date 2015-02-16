@@ -67,6 +67,43 @@
   border: solid 1px #90a959; /* THEME: use `a` color */
 }
 
+.gpgc-tabs {
+  float: right;
+  margin-top: 1.7em;
+  margin-right: .4em;
+}
+
+.gpgc-tab {
+  padding-left: 1.4em;
+  padding-right: 1.4em;
+  padding-top: .4em;
+  padding-bottom: .4em;
+  margin-left: -5px;
+  border: solid 1px #90a959; /* THEME: use `a` color */
+  background-color: #90a959; /* THEME: use `a` color */
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.gpgc-tab.write {
+  border: solid 1px;
+  border-color: #90a959 #90a959 #FFFFFF #90a959; /* THEME: use `a` color */
+  background-color: #FFFFFF;
+  color: inherit;
+  cursor: auto;
+}
+
+.gpgc-tab.preview {
+  border: solid 1px #90a959;
+  background-color: #FFFFFF;
+  color: inherit;
+  cursor: auto;
+}
+
+.gpgc-new-comment {
+  min-height: 13em;
+}
+
 .gpgc-no-comments {
   text-align: center;
 }

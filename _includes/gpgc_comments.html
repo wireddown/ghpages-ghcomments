@@ -2,10 +2,24 @@
 
 <div class="gpgc-all-comments">
   <div class="gpgc-comment">
+
   <a href="http://your-profile"><img class="gpgc-avatar" src="" height="42" />You</a> <small>today</small>
+
+  <span class="gpgc-tabs">
+    <button class="gpgc-tab" id="write-button">Write</button>
+    <button class="gpgc-tab" id="preview-button">Preview</button>
+  </span>
+
+  <div class="gpgc-new-comment" id="write-div">
   <form class="gpgc-comment-form" method="post" data-type="json" data-remote="true" action="/wireddown/ghpages-ghcomments/issue_comments" accept-charset="UTF-8">
     <textarea class="gpgc-comment-form-textarea" id="new-comment-field" placeholder="Write a comment" tabindex="1" name="comment[body]"></textarea>
+
   </form>
+  </div>
+
+  <div class="gpgc-new-comment gpgc-comment-contents" id="preview-div">
+  </div>
+
   </div>
 </div>
 
@@ -18,6 +32,48 @@
   var ShortMonthForIndex = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
   var IssueUrl = "";
   var CommentsArray = [];
+
+  function onMarkdownRendered(renderRequest) {
+    var previewDiv = document.getElementById('preview-div');
+    var renderedHtml = renderRequest.responseText;
+    previewDiv.innerHTML = renderedHtml;
+  }
+
+  function renderMarkdown(markdown) {
+    renderUrl = "https://api.github.com/markdown";
+    markdownBundle = {text: markdown, mode: "gfm", context: "{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}"};
+    postGitHubApiRequestWithCompletion(renderUrl, JSON.stringify(markdownBundle), onMarkdownRendered);
+  }
+
+  function updateCommentFormMode(newMode) {
+    var writeButton = document.getElementById('write-button');
+    var writeDiv = document.getElementById('write-div');
+    var previewButton = document.getElementById('preview-button');
+    var previewDiv = document.getElementById('preview-div');
+    if (newMode === "preview") {
+      writeButton.onclick = function() { updateCommentFormMode("write") };
+      writeButton.className = "gpgc-tab";
+      writeDiv.style.display = "none";
+      previewButton.onclick = null;
+      previewButton.className += " preview";
+      previewDiv.style.display = "block";
+      var commentMarkdown = document.getElementById('new-comment-field').value;
+      renderMarkdown(commentMarkdown);
+    } else if (newMode === "write") {
+      writeButton.onclick = null;
+      writeButton.className += " write";
+      writeDiv.style.display = "block";
+      previewButton.onclick = function() { updateCommentFormMode("preview") };
+      previewButton.className = "gpgc-tab";
+      previewDiv.style.display = "none";
+    } else {
+      alert("Unknown comment form mode: " + newMode);
+    }
+  }
+
+  function initializeNewCommentForm() {
+    updateCommentFormMode("write");
+  }
 
   function findAndCollectComments(userName, repositoryName, issueTitle) {
     var safeQuery = encodeURI(issueTitle);
@@ -154,11 +210,21 @@
 
   function getGitHubApiRequestWithCompletion(url, completion)
   {
+    doGitHubApiRequestWithCompletion("GET", url, null, completion);
+  }
+
+  function postGitHubApiRequestWithCompletion(url, data, completion)
+  {
+    doGitHubApiRequestWithCompletion("POST", url, data, completion);
+  }
+
+  function doGitHubApiRequestWithCompletion(method, url, data, completion)
+  {
     var gitHubRequest = new XMLHttpRequest();
-    gitHubRequest.open("GET", url, true);
+    gitHubRequest.open(method, url, true);
     gitHubRequest.setRequestHeader("Accept", "application/vnd.github.v3.html+json");
     gitHubRequest.onreadystatechange = function() { OnReadyStateChange(gitHubRequest, completion) };
-    gitHubRequest.send();
+    gitHubRequest.send(data);
   }
 
   function OnReadyStateChange(httpRequest, completion)
@@ -175,5 +241,6 @@
     if (leaveCommentsHtml != null) document.getElementById("leave-comment-link").innerHTML = leaveCommentsHtml;
   }
 
+  initializeNewCommentForm();
   findAndCollectComments("{{ site.data.gpgc.repo_owner }}", "{{ site.data.gpgc.repo_name }}", "{{ include.post_title }}");
 </script>
