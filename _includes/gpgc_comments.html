@@ -11,10 +11,12 @@
   </span>
 
   <div class="gpgc-new-comment" id="write-div">
-  <form class="gpgc-comment-form" method="post" data-type="json" data-remote="true" action="/wireddown/ghpages-ghcomments/issue_comments" accept-charset="UTF-8">
-    <textarea class="gpgc-comment-form-textarea" id="new-comment-field" placeholder="Write a comment" tabindex="1" name="comment[body]"></textarea>
+  <div class="gpgc-comment-form">
+    <textarea class="gpgc-comment-form-textarea" id="new-comment-field" placeholder="Write a comment"></textarea>
+    <button class="gpgc-submit" id="submit-button" onclick="submitComment()">Submit</button>
+    <input class="gpgc-oauth-token" id="oath-token-input" size="44" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
+  </div>
 
-  </form>
   </div>
 
   <div class="gpgc-new-comment gpgc-comment-contents" id="preview-div">
@@ -30,19 +32,65 @@
 
 <script>
   var ShortMonthForIndex = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
+  var access_token = localStorage.getItem('access_token');
   var IssueUrl = "";
+  var CommentsUrl = "";
   var CommentsArray = [];
 
+  function persistToken() {
+    localStorage.setItem('access_token', access_token);
+  }
+
+  function enableSubmitButton() {
+    var submitButton = document.getElementById('submit-button');
+    submitButton.disabled = false;
+  }
+
+  function disableSubmitButton() {
+    var submitButton = document.getElementById('submit-button');
+    submitButton.disabled = true;
+  }
+
+  function onUserAuthenticated(checkAuthenticationRequest) {
+    enableSubmitButton();
+    persistToken();
+  }
+
+  function authenticateUser() {
+    var oauthToken = document.getElementById('oath-token-input');
+    access_token = oauthToken.value;
+    if (access_token.length == 40) {
+      var userIdUrl = "https://api.github.com/user";
+      getGitHubApiRequestWithCompletion(userIdUrl, access_token, onUserAuthenticated);
+    } else {
+      disableSubmitButton();
+    }
+  }
+
+  function onCommentPosted(createCommentRequest) {
+  }
+
+  function submitComment() {
+    var commentMarkdown = document.getElementById('new-comment-field').value;
+    var createCommentJson = { body: commentMarkdown };
+    postGitHubApiRequestWithCompletion(CommentsUrl, JSON.stringify(createCommentJson), access_token, onCommentPosted);
+  }
+
   function onMarkdownRendered(renderRequest) {
-    var previewDiv = document.getElementById('preview-div');
     var renderedHtml = renderRequest.responseText;
+{% if site.data.gpgc.enable_diagnostics %}
+    if (renderRequest.status != 200) {
+      renderedHtml = '<h3><strong>gpgc</strong> Error: Render Failed</h3><p>Could not render comment markdown</p><p>GitHub response:</p><p><pre>' + renderRequest.responseText + '</pre></p>';
+    }
+{% endif %}
+    var previewDiv = document.getElementById('preview-div');
     previewDiv.innerHTML = renderedHtml;
   }
 
   function renderMarkdown(markdown) {
     renderUrl = "https://api.github.com/markdown";
     markdownBundle = {text: markdown, mode: "gfm", context: "{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}"};
-    postGitHubApiRequestWithCompletion(renderUrl, JSON.stringify(markdownBundle), onMarkdownRendered);
+    postGitHubApiRequestWithCompletion(renderUrl, JSON.stringify(markdownBundle), null /* access_token */, onMarkdownRendered);
   }
 
   function updateCommentFormMode(newMode) {
@@ -73,12 +121,13 @@
 
   function initializeNewCommentForm() {
     updateCommentFormMode("write");
+    disableSubmitButton();
   }
 
   function findAndCollectComments(userName, repositoryName, issueTitle) {
     var safeQuery = encodeURI(issueTitle);
     var seachQueryUrl = "https://api.github.com/search/issues?q=" + safeQuery + "+repo:" + userName + "/" + repositoryName + "+type:issue+in:title";
-    getGitHubApiRequestWithCompletion(seachQueryUrl, onSearchComplete);
+    getGitHubApiRequestWithCompletion(seachQueryUrl, null /* access_token */, onSearchComplete);
   }
 
   function onSearchComplete(searchRequest) {
@@ -126,7 +175,8 @@
 {% endif %}
     if (searchResults.total_count === 1) {
       IssueUrl = searchResults.items[0].html_url;
-      getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, onCommentsUpdated);
+      CommentsUrl = searchResults.items[0].comments_url
+      getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, null /* access_token */, onCommentsUpdated);
     }
     else {
       updateCommentActions(CommentsArray);
@@ -144,7 +194,7 @@
           var linkStart = commentsLinks[i].search("<");
           var linkStop = commentsLinks[i].search(">");
           var nextLink = commentsLinks[i].substring(linkStart + 1, linkStop);
-          getGitHubApiRequestWithCompletion(nextLink, onCommentsUpdated);
+          getGitHubApiRequestWithCompletion(nextLink, null /* access_token */, onCommentsUpdated);
           return;
         }
       }
@@ -208,30 +258,40 @@
     return commentHtml;
   }
 
-  function getGitHubApiRequestWithCompletion(url, completion)
+  function getGitHubApiRequestWithCompletion(url, access_token, completion)
   {
-    doGitHubApiRequestWithCompletion("GET", url, null, completion);
+    doGitHubApiRequestWithCompletion("GET", url, null, access_token, completion);
   }
 
-  function postGitHubApiRequestWithCompletion(url, data, completion)
+  function postGitHubApiRequestWithCompletion(url, data, access_token, completion)
   {
-    doGitHubApiRequestWithCompletion("POST", url, data, completion);
+    doGitHubApiRequestWithCompletion("POST", url, data, access_token, completion);
   }
 
-  function doGitHubApiRequestWithCompletion(method, url, data, completion)
+  function doGitHubApiRequestWithCompletion(method, url, data, access_token, completion)
   {
     var gitHubRequest = new XMLHttpRequest();
     gitHubRequest.open(method, url, true);
+
+    if (access_token) {
+      gitHubRequest.setRequestHeader('Authorization', 'token ' + access_token);
+    }
+
     gitHubRequest.setRequestHeader("Accept", "application/vnd.github.v3.html+json");
     gitHubRequest.onreadystatechange = function() { OnReadyStateChange(gitHubRequest, completion) };
+
     gitHubRequest.send(data);
   }
 
   function OnReadyStateChange(httpRequest, completion)
   {
     if (httpRequest.readyState != 4) { return; }
-    if (httpRequest.status != 200) { {% unless site.data.gpgc.enable_diagnostics %} return; {% endunless %} }
-    completion(httpRequest);
+    if (httpRequest.status == 200 || httpRequest.status == 201) {
+      completion(httpRequest);
+    } else {
+      {% if site.data.gpgc.enable_diagnostics %} completion(httpRequest); {% endif %}
+      return;
+    }
   }
 
   function updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml)
