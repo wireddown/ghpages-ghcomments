@@ -1,9 +1,13 @@
 <div class="gpgc-all-comments" id="all-comments"></div>
 
+<div class="gpgc-actions">
+  <span class="gpgc-action" id="load-comments-button"></span>
+</div>
+
 <div class="gpgc-all-comments">
   <div class="gpgc-comment">
 
-  <a href="http://your-profile"><img class="gpgc-avatar" src="" height="42" />You</a> <small>today</small>
+  <a href=""><img class="gpgc-avatar" id="gpgc-user-avatar" src="" height="42" /><span id="gpgc-user-login">You</span></a> <small>today</small>
 
   <span class="gpgc-tabs">
     <button class="gpgc-tab" id="write-button">Write</button>
@@ -11,69 +15,136 @@
   </span>
 
   <div class="gpgc-new-comment" id="write-div">
-  <div class="gpgc-comment-form">
-    <textarea class="gpgc-comment-form-textarea" id="new-comment-field" placeholder="Write a comment"></textarea>
-    <button class="gpgc-submit" id="submit-button" onclick="submitComment()">Submit</button>
-    <input class="gpgc-oauth-token" id="oath-token-input" size="44" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
-  </div>
-
+    <div class="gpgc-comment-form">
+      <textarea class="gpgc-comment-form-textarea" id="new-comment-field" placeholder="Write a comment"></textarea>
+    </div>
   </div>
 
   <div class="gpgc-new-comment gpgc-comment-contents" id="preview-div">
+  </div>
+
+  <div class="gpgc-comment-help" id="help-div">
+  </div>
+
+  <div>
+    <span>
+      <span>Comment token: </span>
+      <input class="gpgc-oauth-token" id="oauth-token-input" size="44" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
+      <span id="oauth-token-validated"><strong>&#x2713;</strong></span>
+      <button id='oauth-clear-token' onclick="clearToken()"><strong>&#x2715;</strong></button>
+    </span>
+    <button class="gpgc-submit" id="submit-button" onclick="submitComment()">Submit</button>
   </div>
 
   </div>
 </div>
 
 <div class="gpgc-actions">
-  <span class="gpgc-action" id="load-comments-button"></span>
   <span class="gpgc-action" id="leave-comment-link"></span>
 </div>
 
 <script>
   var ShortMonthForIndex = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
-  var access_token = localStorage.getItem('access_token');
+  var AccessToken = "";
   var IssueUrl = "";
   var CommentsUrl = "";
   var CommentsArray = [];
 
+  function initializeData() {
+    retrieveToken();
+    var oauthToken = document.getElementById('oauth-token-input');
+    oauthToken.value = AccessToken;
+  }
+
+  function retrieveToken() {
+    AccessToken = localStorage.getItem('AccessToken');
+  }
+
   function persistToken() {
-    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('AccessToken', AccessToken);
   }
 
-  function enableSubmitButton() {
-    var submitButton = document.getElementById('submit-button');
-    submitButton.disabled = false;
-  }
-
-  function disableSubmitButton() {
-    var submitButton = document.getElementById('submit-button');
-    submitButton.disabled = true;
-  }
-
-  function onUserAuthenticated(checkAuthenticationRequest) {
-    enableSubmitButton();
+  function clearToken() {
+    var oauthToken = document.getElementById('oauth-token-input');
+    oauthToken.value = "";
+    authenticateUser();
     persistToken();
   }
 
-  function authenticateUser() {
-    var oauthToken = document.getElementById('oath-token-input');
-    access_token = oauthToken.value;
-    if (access_token.length == 40) {
-      var userIdUrl = "https://api.github.com/user";
-      getGitHubApiRequestWithCompletion(userIdUrl, access_token, onUserAuthenticated);
+  function updateControl(control_id, requestDisabled, requestVisible) {
+    var control = document.getElementById(control_id);
+    if (requestDisabled != null) {
+      control.disabled = requestDisabled;
+    }
+
+    if (requestVisible == true) {
+      control.style.display = 'unset';
     } else {
-      disableSubmitButton();
+      control.style.display = 'none';
+    }
+  }
+
+  function updateCommenterInformation(userJson) {
+    var avatarElement = document.getElementById('gpgc-user-avatar');
+    var avatarUrl = userJson.avatar_url;
+    avatarElement.src = avatarUrl;
+    var userLoginLink = document.getElementById('gpgc-user-login');
+    userLoginLink.innerHTML = userJson.login;
+  }
+
+  function onUserAuthenticated(checkAuthenticationRequest) {
+    updateControl('submit-button', false /* requestDisabled */, true /* requestVisible */);
+    updateControl('oauth-token-validated', null /* requestDisabled */, true /* requestVisible */);
+    updateControl('oauth-token-input', null /* requestDisabled */, false /* requestVisible */);
+    updateControl('oauth-clear-token', false /* requestDisabled */, true /* requestVisible */);
+    persistToken();
+    updateCommenterInformation(JSON.parse(checkAuthenticationRequest.responseText));
+    var helpDiv = document.getElementById('help-div');
+    helpDiv.style.display = 'none';
+  }
+
+  function onAuthenticateUserFailed() {
+    updateControl('submit-button', true /* requestDisabled */, true /* requestVisible */);
+    updateControl('oauth-token-input', null /* requestDisabled */, true /* requestVisible */);
+    updateControl('oauth-token-validated', null /* requestDisabled */, false /* requestVisible */);
+    updateControl('oauth-clear-token', true /* requestDisabled */, false /* requestVisible */);
+    updateCommenterInformation({avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png", login: "You"});
+    var helpDiv = document.getElementById('help-div');
+    helpDiv.innerHTML = "<p>To leave a comment, please provide a <a href=''>GitHub OAuth token</a>.</p>";
+    helpDiv.style.display = 'block';
+  }
+
+  function authenticateUser() {
+    var oauthToken = document.getElementById('oauth-token-input');
+    AccessToken = oauthToken.value;
+    if (AccessToken.length == 40) {
+      var userIdUrl = "https://api.github.com/user";
+      getGitHubApiRequestWithCompletion(userIdUrl, AccessToken, onUserAuthenticated);
+    } else {
+      onAuthenticateUserFailed();
     }
   }
 
   function onCommentPosted(createCommentRequest) {
+    var commentInformation = JSON.parse(createCommentRequest.responseText);
+    var newComment = formatComment(commentInformation.user.avatar_url, commentInformation.user.html_url, commentInformation.user.login, commentInformation.body_html, commentInformation.updated_at);
+    document.getElementById("all-comments").innerHTML += newComment;
+    updateCommentFormMode("write", true /* reset */);
   }
 
   function submitComment() {
     var commentMarkdown = document.getElementById('new-comment-field').value;
+    var helpDiv = document.getElementById('help-div');
+    if (commentMarkdown.length == 0) {
+      helpDiv.innerHTML = '<p>Sorry, but your comment is empty. Please try again.</p>';
+      helpDiv.style.display = 'block';
+      return;
+    } else {
+      helpDiv.style.display = 'none';
+    }
+
     var createCommentJson = { body: commentMarkdown };
-    postGitHubApiRequestWithCompletion(CommentsUrl, JSON.stringify(createCommentJson), access_token, onCommentPosted);
+    postGitHubApiRequestWithCompletion(CommentsUrl, JSON.stringify(createCommentJson), AccessToken, onCommentPosted);
   }
 
   function onMarkdownRendered(renderRequest) {
@@ -93,35 +164,41 @@
     postGitHubApiRequestWithCompletion(renderUrl, JSON.stringify(markdownBundle), null /* access_token */, onMarkdownRendered);
   }
 
-  function updateCommentFormMode(newMode) {
+  function updateCommentFormMode(newMode, reset) {
     var writeButton = document.getElementById('write-button');
     var writeDiv = document.getElementById('write-div');
     var previewButton = document.getElementById('preview-button');
     var previewDiv = document.getElementById('preview-div');
     if (newMode === "preview") {
-      writeButton.onclick = function() { updateCommentFormMode("write") };
+      writeButton.onclick = function() { updateCommentFormMode("write", false /* reset */) };
       writeButton.className = "gpgc-tab";
       writeDiv.style.display = "none";
       previewButton.onclick = null;
       previewButton.className += " preview";
       previewDiv.style.display = "block";
       var commentMarkdown = document.getElementById('new-comment-field').value;
+      previewDiv.innerHTML = "";
       renderMarkdown(commentMarkdown);
     } else if (newMode === "write") {
       writeButton.onclick = null;
       writeButton.className += " write";
       writeDiv.style.display = "block";
-      previewButton.onclick = function() { updateCommentFormMode("preview") };
+      previewButton.onclick = function() { updateCommentFormMode("preview", false /* reset */) };
       previewButton.className = "gpgc-tab";
       previewDiv.style.display = "none";
     } else {
       alert("Unknown comment form mode: " + newMode);
     }
+
+    if (reset) {
+      document.getElementById('new-comment-field').value = "";
+      previewDiv.innerHTML = "";
+    }
   }
 
   function initializeNewCommentForm() {
-    updateCommentFormMode("write");
-    disableSubmitButton();
+    authenticateUser();
+    updateCommentFormMode("write", false /* reset */);
   }
 
   function findAndCollectComments(userName, repositoryName, issueTitle) {
@@ -296,11 +373,12 @@
 
   function updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml)
   {
-    if (allCommentsHtml != null) document.getElementById("all-comments").innerHTML = allCommentsHtml;
+    if (allCommentsHtml != null) document.getElementById("all-comments").innerHTML = allCommentsHtml + document.getElementById("all-comments").innerHTML;
     if (loadCommentsHtml != null) document.getElementById("load-comments-button").innerHTML = loadCommentsHtml;
     if (leaveCommentsHtml != null) document.getElementById("leave-comment-link").innerHTML = leaveCommentsHtml;
   }
 
+  initializeData();
   initializeNewCommentForm();
   findAndCollectComments("{{ site.data.gpgc.repo_owner }}", "{{ site.data.gpgc.repo_name }}", "{{ include.post_title }}");
 </script>
