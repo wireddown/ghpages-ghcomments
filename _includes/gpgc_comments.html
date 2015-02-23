@@ -1,46 +1,43 @@
-<div class="gpgc-all-comments" id="all-comments"></div>
+<div class="gpgc-all-comments gpgc-hidden" id="gpgc_all_comments">
+</div>
 
-<div class="gpgc-actions">
-  <span class="gpgc-action" id="load-comments-button"></span>
+<div class="gpgc-all-comments gpgc-hidden" id="gpgc_no_comments">
+  <p class="gpgc-no-comments">No comments</p>
+</div>
+
+<div class="gpgc-actions gpgc-hidden" id="gpgc_actions">
+  <span class="gpgc-action">
+    <button class="gpgc-show" id="show_comments_button" onclick="showAllComments(CommentsArray)"></button>
+  </span>
 </div>
 
 <div class="gpgc-all-comments">
   <div class="gpgc-comment">
-
-  <a href=""><img class="gpgc-avatar" id="gpgc-user-avatar" src="" height="42" /><span id="gpgc-user-login">You</span></a> <small>today</small>
-
-  <span class="gpgc-tabs">
-    <button class="gpgc-tab" id="write-button">Write</button>
-    <button class="gpgc-tab" id="preview-button">Preview</button>
-  </span>
-
-  <div class="gpgc-new-comment" id="write-div">
-    <div class="gpgc-comment-form">
-      <textarea class="gpgc-comment-form-textarea" id="new-comment-field" placeholder="Write a comment"></textarea>
+    <a id="gpgc_reader_url" href="#"><img class="gpgc-avatar" id="gpgc_reader_avatar" src="{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" height="42" /><span id="gpgc_reader_login">You</span></a>
+    <small>today</small>
+    <span class="gpgc-tabs">
+      <button class="gpgc-tab" id="write_button">Write</button>
+      <button class="gpgc-tab" id="preview_button">Preview</button>
+    </span>
+    <div class="gpgc-new-comment" id="write_div">
+      <div class="gpgc-comment-form">
+        <textarea class="gpgc-comment-form-textarea" id="new_comment_field" placeholder="Write a comment"></textarea>
+      </div>
+    </div>
+    <div class="gpgc-new-comment gpgc-comment-contents gpgc-hidden" id="preview_div">
+    </div>
+    <div class="gpgc-comment-help gpgc-hidden" id="help_div">
+    </div>
+    <div>
+      <span>
+        <span>Comment token:</span>
+        <input class="gpgc-oauth-token gpgc-hidden" id="oauth_token_input" size="44" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
+        <span class="gpgc-hidden" id="oauth_token_validated"><strong>&#x2713;</strong></span>
+        <button class="gpgc-hidden" id="oauth_clear_token" onclick="clearToken()"><strong>&#x2715;</strong></button>
+      </span>
+      <button class="gpgc-submit" id="submit_button" onclick="postComment()">Submit</button>
     </div>
   </div>
-
-  <div class="gpgc-new-comment gpgc-comment-contents" id="preview-div">
-  </div>
-
-  <div class="gpgc-comment-help" id="help-div">
-  </div>
-
-  <div>
-    <span>
-      <span>Comment token: </span>
-      <input class="gpgc-oauth-token" id="oauth-token-input" size="44" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
-      <span id="oauth-token-validated"><strong>&#x2713;</strong></span>
-      <button id='oauth-clear-token' onclick="clearToken()"><strong>&#x2715;</strong></button>
-    </span>
-    <button class="gpgc-submit" id="submit-button" onclick="submitComment()">Submit</button>
-  </div>
-
-  </div>
-</div>
-
-<div class="gpgc-actions">
-  <span class="gpgc-action" id="leave-comment-link"></span>
 </div>
 
 <script>
@@ -50,165 +47,226 @@
   var CommentsUrl = "";
   var CommentsArray = [];
 
+  var AllCommentsDiv = document.getElementById("gpgc_all_comments");
+  var NoCommentsDiv = document.getElementById("gpgc_no_comments");
+  var ActionsDiv = document.getElementById("gpgc_actions");
+  var ShowCommentsButton = document.getElementById("show_comments_button");
+
+  var WriteButton = document.getElementById("write_button");
+  var WriteDiv = document.getElementById("write_div");
+  var CommentMarkdown = document.getElementById("new_comment_field");
+  var PreviewButton = document.getElementById("preview_button");
+  var PreviewDiv = document.getElementById("preview_div");
+
+  var OAuthTokenInput = document.getElementById("oauth_token_input");
+  var ReaderGitHubUrl = document.getElementById("gpgc_reader_url");
+  var ReaderAvatarUrl = document.getElementById("gpgc_reader_avatar");
+  var ReaderLogin = document.getElementById("gpgc_reader_login");
+  var TokenValidatedMark = document.getElementById("oauth_token_validated");
+  var ClearTokenButton = document.getElementById("oauth_clear_token");
+  var SubmitButton = document.getElementById("submit_button");
+
+  var HelpDiv = document.getElementById("help_div");
+
   function initializeData() {
     retrieveToken();
-    var oauthToken = document.getElementById('oauth-token-input');
-    oauthToken.value = AccessToken;
+    OAuthTokenInput.value = AccessToken;
   }
 
   function retrieveToken() {
-    AccessToken = localStorage.getItem('AccessToken');
+    AccessToken = localStorage.getItem("AccessToken");
   }
 
   function persistToken() {
-    localStorage.setItem('AccessToken', AccessToken);
+    localStorage.setItem("AccessToken", AccessToken);
   }
 
   function clearToken() {
-    var oauthToken = document.getElementById('oauth-token-input');
-    oauthToken.value = "";
+    OAuthTokenInput.value = "";
     authenticateUser();
     persistToken();
   }
 
-  function updateControl(control_id, requestDisabled, requestVisible) {
-    var control = document.getElementById(control_id);
-    if (requestDisabled != null) {
-      control.disabled = requestDisabled;
-    }
+  function showReaderHelpMessage(message) {
+    showReaderHelp(message, /* isRawHtml: */ false, "gpgc-help-message", "gpgc-help-error");
+  }
 
-    if (requestVisible == true) {
-      control.style.display = 'unset';
+  function showReaderHelpError(error, isRawHtml) {
+    showReaderHelp(error, isRawHtml, "gpgc-help-error", "gpgc-help-message");
+  }
+
+  function showReaderHelp(message, isRawHtml, cssClassToAdd, cssClassToRemove) {
+    if (isRawHtml) {
+      HelpDiv.innerHTML = message;
     } else {
-      control.style.display = 'none';
+      HelpDiv.innerHTML = "<p>" + message + "</p>";
     }
+    HelpDiv.classList.add(cssClassToAdd);
+    HelpDiv.classList.remove(cssClassToRemove);
+    showElement(HelpDiv);
+  }
+
+  function clearReaderHelp() {
+    HelpDiv.innerHTML = 
+    HelpDiv.classList.remove("gpgc-help-message")
+    HelpDiv.classList.remove("gpgc-help-error");
+    hideElement(HelpDiv);
   }
 
   function updateCommenterInformation(userJson) {
-    var avatarElement = document.getElementById('gpgc-user-avatar');
-    var avatarUrl = userJson.avatar_url;
-    avatarElement.src = avatarUrl;
-    var userLoginLink = document.getElementById('gpgc-user-login');
-    userLoginLink.innerHTML = userJson.login;
+    ReaderGitHubUrl.href = userJson.html_url;
+    ReaderAvatarUrl.src = userJson.avatar_url;
+    ReaderLogin.innerHTML = userJson.login;
   }
 
   function onUserAuthenticated(checkAuthenticationRequest) {
-    updateControl('submit-button', false /* requestDisabled */, true /* requestVisible */);
-    updateControl('oauth-token-validated', null /* requestDisabled */, true /* requestVisible */);
-    updateControl('oauth-token-input', null /* requestDisabled */, false /* requestVisible */);
-    updateControl('oauth-clear-token', false /* requestDisabled */, true /* requestVisible */);
+    var elementsToShow = [ TokenValidatedMark, ClearTokenButton ];
+    var elementsToHide = [ OAuthTokenInput ];
+    var elementsToEnable = [ ClearTokenButton, SubmitButton ];
+    var elementsToDisable = [  ];
     persistToken();
     updateCommenterInformation(JSON.parse(checkAuthenticationRequest.responseText));
-    var helpDiv = document.getElementById('help-div');
-    helpDiv.style.display = 'none';
+    clearReaderHelp();
+    updateElements(elementsToShow, elementsToHide, elementsToEnable, elementsToDisable);
+  }
+
+  function onUserAuthenticationError(checkAuthenticationRequest) {
+    var helpErrorMessage = "Sorry, it looks like the token isn't valid. Please try again.";
+    var isRawHtml = false;
+{% if site.data.gpgc.enable_diagnostics %}
+    helpErrorMessage = "<h3><strong>gpgc</strong> Error: Authentication Failed</h3><p>Could not authenticate OAuth token</p><p>GitHub response:</p><p><pre>" + checkAuthenticationRequest.responseText + "</pre></p>";
+    isRawHtml = true;
+{% endif %}
+    showReaderHelpError(helpErrorMessage, isRawHtml);
+    return;
   }
 
   function onAuthenticateUserFailed() {
-    updateControl('submit-button', true /* requestDisabled */, true /* requestVisible */);
-    updateControl('oauth-token-input', null /* requestDisabled */, true /* requestVisible */);
-    updateControl('oauth-token-validated', null /* requestDisabled */, false /* requestVisible */);
-    updateControl('oauth-clear-token', true /* requestDisabled */, false /* requestVisible */);
-    updateCommenterInformation({avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png", login: "You"});
-    var helpDiv = document.getElementById('help-div');
-    helpDiv.innerHTML = "<p>To leave a comment, please provide a <a href=''>GitHub OAuth token</a>.</p>";
-    helpDiv.style.display = 'block';
+    var elementsToShow = [ OAuthTokenInput ];
+    var elementsToHide = [ TokenValidatedMark, ClearTokenButton ];
+    var elementsToEnable = [  ];
+    var elementsToDisable = [ ClearTokenButton, SubmitButton ];
+    updateCommenterInformation({ login: "You", html_url: "#", avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" });
+    showReaderHelpMessage("To leave a comment, please provide a <a href=''>GitHub OAuth token</a>.");
+    updateElements(elementsToShow, elementsToHide, elementsToEnable, elementsToDisable);
   }
 
   function authenticateUser() {
-    var oauthToken = document.getElementById('oauth-token-input');
-    AccessToken = oauthToken.value;
+    AccessToken = OAuthTokenInput.value;
     if (AccessToken.length == 40) {
       var userIdUrl = "https://api.github.com/user";
-      getGitHubApiRequestWithCompletion(userIdUrl, AccessToken, onUserAuthenticated);
+      getGitHubApiRequestWithCompletion(userIdUrl, AccessToken, onUserAuthenticated, onUserAuthenticationError);
     } else {
       onAuthenticateUserFailed();
     }
   }
 
-  function onCommentPosted(createCommentRequest) {
-    var commentInformation = JSON.parse(createCommentRequest.responseText);
+  function onCommentPosted(postCommentRequest) {
+    var commentInformation = JSON.parse(postCommentRequest.responseText);
     var newComment = formatComment(commentInformation.user.avatar_url, commentInformation.user.html_url, commentInformation.user.login, commentInformation.body_html, commentInformation.updated_at);
-    document.getElementById("all-comments").innerHTML += newComment;
-    updateCommentFormMode("write", true /* reset */);
+    AllCommentsDiv.innerHTML += newComment;
+    updateCommentFormMode("write", /* reset: */ true);
+    clearReaderHelp();
   }
 
-  function submitComment() {
-    var commentMarkdown = document.getElementById('new-comment-field').value;
-    var helpDiv = document.getElementById('help-div');
-    if (commentMarkdown.length == 0) {
-      helpDiv.innerHTML = '<p>Sorry, but your comment is empty. Please try again.</p>';
-      helpDiv.style.display = 'block';
+  function onPostCommentError(postCommentRequest) {
+    var helpErrorMessage = "Sorry, something surprising happened. Please try again.";
+    var isRawHtml = false;
+{% if site.data.gpgc.enable_diagnostics %}
+    helpErrorMessage = "<h3><strong>gpgc</strong> Error: Comment Failed</h3><p>Could not create a new comment</p><p>GitHub response:</p><p><pre>" + postCommentRequest.responseText + "</pre></p>";
+    isRawHtml = true;
+{% endif %}
+    showReaderHelpError(helpErrorMessage, isRawHtml);
+  }
+
+  function postComment() {
+    if (CommentMarkdown.value.length == 0) {
+      showReaderHelpError("Sorry, but your comment is empty. Please try again.");
       return;
     } else {
-      helpDiv.style.display = 'none';
+      clearReaderHelp();
     }
 
-    var createCommentJson = { body: commentMarkdown };
-    postGitHubApiRequestWithCompletion(CommentsUrl, JSON.stringify(createCommentJson), AccessToken, onCommentPosted);
+    var createCommentJson = { body: CommentMarkdown.value };
+    postGitHubApiRequestWithCompletion(CommentsUrl, JSON.stringify(createCommentJson), AccessToken, onCommentPosted, onPostCommentError);
   }
 
   function onMarkdownRendered(renderRequest) {
     var renderedHtml = renderRequest.responseText;
+    PreviewDiv.innerHTML = renderedHtml;
+  }
+
+  function onMarkdownRenderError(renderRequest) {
+    var helpErrorMessage = "Sorry, something surprising happened. Please try again.";
+    var isRawHtml = false;
 {% if site.data.gpgc.enable_diagnostics %}
-    if (renderRequest.status != 200) {
-      renderedHtml = '<h3><strong>gpgc</strong> Error: Render Failed</h3><p>Could not render comment markdown</p><p>GitHub response:</p><p><pre>' + renderRequest.responseText + '</pre></p>';
-    }
+    helpErrorMessage = "<h3><strong>gpgc</strong> Error: Render Failed</h3><p>Could not render comment markdown</p><p>GitHub response:</p><p><pre>" + renderRequest.responseText + "</pre></p>";
+    isRawHtml = true;
 {% endif %}
-    var previewDiv = document.getElementById('preview-div');
-    previewDiv.innerHTML = renderedHtml;
+    showReaderHelpError(helpErrorMessage, isRawHtml);
+    return;
   }
 
   function renderMarkdown(markdown) {
     renderUrl = "https://api.github.com/markdown";
     markdownBundle = {text: markdown, mode: "gfm", context: "{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}"};
-    postGitHubApiRequestWithCompletion(renderUrl, JSON.stringify(markdownBundle), null /* access_token */, onMarkdownRendered);
+    postGitHubApiRequestWithCompletion(renderUrl, JSON.stringify(markdownBundle), AccessToken, onMarkdownRendered, onMarkdownRenderError);
   }
 
   function updateCommentFormMode(newMode, reset) {
-    var writeButton = document.getElementById('write-button');
-    var writeDiv = document.getElementById('write-div');
-    var previewButton = document.getElementById('preview-button');
-    var previewDiv = document.getElementById('preview-div');
+    var elementsToShow = [];
+    var elementsToHide = [];
+
     if (newMode === "preview") {
-      writeButton.onclick = function() { updateCommentFormMode("write", false /* reset */) };
-      writeButton.className = "gpgc-tab";
-      writeDiv.style.display = "none";
-      previewButton.onclick = null;
-      previewButton.className += " preview";
-      previewDiv.style.display = "block";
-      var commentMarkdown = document.getElementById('new-comment-field').value;
-      previewDiv.innerHTML = "";
-      renderMarkdown(commentMarkdown);
+      WriteButton.onclick = function() { updateCommentFormMode("write", /* reset: */ false) };
+      WriteButton.className = "gpgc-tab";
+      PreviewButton.onclick = null;
+      PreviewButton.classList.add("preview");
+      elementsToHide.push(WriteDiv);
+      elementsToShow.push(PreviewDiv);
+      PreviewDiv.innerHTML = "";
+      renderMarkdown(CommentMarkdown.value);
     } else if (newMode === "write") {
-      writeButton.onclick = null;
-      writeButton.className += " write";
-      writeDiv.style.display = "block";
-      previewButton.onclick = function() { updateCommentFormMode("preview", false /* reset */) };
-      previewButton.className = "gpgc-tab";
-      previewDiv.style.display = "none";
-    } else {
-      alert("Unknown comment form mode: " + newMode);
+      WriteButton.onclick = null;
+      WriteButton.classList.add("write");
+      PreviewButton.onclick = function() { updateCommentFormMode("preview", /* reset: */ false) };
+      PreviewButton.className = "gpgc-tab";
+      elementsToShow.push(WriteDiv);
+      elementsToHide.push(PreviewDiv);
     }
 
+    updateElements(elementsToShow, elementsToHide, /* elementsToEnable: */ null, /* elementsToDisable: */ null);
+
     if (reset) {
-      document.getElementById('new-comment-field').value = "";
-      previewDiv.innerHTML = "";
+      CommentMarkdown.value = "";
+      PreviewDiv.innerHTML = "";
     }
   }
 
   function initializeNewCommentForm() {
     authenticateUser();
-    updateCommentFormMode("write", false /* reset */);
+    updateCommentFormMode("write", /* reset: */ false);
   }
 
   function findAndCollectComments(userName, repositoryName, issueTitle) {
     var safeQuery = encodeURI(issueTitle);
     var seachQueryUrl = "https://api.github.com/search/issues?q=" + safeQuery + "+repo:" + userName + "/" + repositoryName + "+type:issue+in:title";
-    getGitHubApiRequestWithCompletion(seachQueryUrl, null /* access_token */, onSearchComplete);
+    getGitHubApiRequestWithCompletion(seachQueryUrl, AccessToken, onSearchComplete, onSearchError);
   }
 
   function onSearchComplete(searchRequest) {
     var searchResults = JSON.parse(searchRequest.responseText);
+    if (searchResults.total_count === 1) {
+      IssueUrl = searchResults.items[0].html_url;
+      CommentsUrl = searchResults.items[0].comments_url
+      getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, AccessToken, onQueryComments, onQueryCommentsError);
+    }
+    else {
+      updateCommentsAndActions(CommentsArray);
+    }
+  }
+
+  function onSearchError(searchRequest) {
 {% if site.data.gpgc.enable_diagnostics %}
     var css = document.styleSheets;
     var foundCssInHead = false;
@@ -225,43 +283,35 @@
 
     var missingCssMessage = "";
     if (! foundCssInHead) {
-      missingCssMessage = '<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>ghpages-ghcomments.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>';
+      missingCssMessage = "<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>ghpages-ghcomments.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>";
     }
 
     var css404Message = "";
     if (! fetchedCss && foundCssInHead) {
-      css404Message = '<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>ghpages-ghcomments.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>';
+      css404Message = "<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>ghpages-ghcomments.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>";
     }
 
     var searchErrorMessage = ""
     if (searchRequest.status != 200) {
-      searchErrorMessage = '<h3><strong>gpgc</strong> Error: Search Failed</h3><p>Could not search GitHub repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>GitHub response:</p><p><pre>' + searchRequest.responseText + '</pre></p><p>Check:<ul><li><code>repo_owner</code> in <code>_data/gpgc.yml</code> for typos.</li><li><code>repo_name</code> in <code>_data/gpgc.yml</code> for typos.</li></ul></p>';
+      searchErrorMessage = "<h3><strong>gpgc</strong> Error: Search Failed</h3><p>Could not search GitHub repository <strong><a href='https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}'>{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>GitHub response:</p><p><pre>" + searchRequest.responseText + "</pre></p><p>Check:<ul><li><code>repo_owner</code> in <code>_data/gpgc.yml</code> for typos.</li><li><code>repo_name</code> in <code>_data/gpgc.yml</code> for typos.</li></ul></p>";
     }
 
     var missingIssueMessage = "";
     if (searchResults.total_count === 0) {
-      missingIssueMessage = '<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <em>{{ include.post_title }}</em> in the repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <code>title</code> front matter for this post: <code>{{ page.path }}</code>.</li><li>that the <code>repo_name</code> in <code>_data/gpgc.yml</code> matches the repository for this site.</li><li>the terminal output from <code>git push</code> for other error messages if the git hooks are installed.</li></ul></p>';
+      missingIssueMessage = "<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <em>{{ include.post_title }}</em> in the repository <strong><a href='https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}'>{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <code>title</code> front matter for this post: <code>{{ page.path }}</code>.</li><li>that the <code>repo_name</code> in <code>_data/gpgc.yml</code> matches the repository for this site.</li><li>the terminal output from <code>git push</code> for other error messages if the git hooks are installed.</li></ul></p>";
     }
 
     var allMessagesHtml = missingCssMessage + css404Message + searchErrorMessage + missingIssueMessage;
     if (allMessagesHtml.length > 0) {
-      allMessagesHtml += '<h3>Help</h3><p>Verify your site\'s configuration with the <a href="downtothewire.io/ghpages-ghcomments/setup/">setup instructions</a> and refer to the <a href="http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/">verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href="https://github.com/wireddown/ghpages-ghcomments/issues">ghpages-ghcomments</a></strong> for more help.</p>';
+      allMessagesHtml += "<h3>Help</h3><p>Verify your site's configuration with the <a href='downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
     }
 
-    document.body.innerHTML += '<div class="container content gpgc-all-comments">' + allMessagesHtml + '</div>';
+    document.body.innerHTML += "<div class='container content gpgc-all-comments'>" + allMessagesHtml + "</div>";
 {% endif %}
-    if (searchResults.total_count === 1) {
-      IssueUrl = searchResults.items[0].html_url;
-      CommentsUrl = searchResults.items[0].comments_url
-      getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, null /* access_token */, onCommentsUpdated);
-    }
-    else {
-      updateCommentActions(CommentsArray);
-    }
+    return;
   }
 
-  function onCommentsUpdated(commentRequest)
-  {
+  function onQueryComments(commentRequest) {
     CommentsArray = CommentsArray.concat(JSON.parse(commentRequest.responseText));
     var commentsPages = commentRequest.getResponseHeader("Link");
     if (commentsPages) {
@@ -271,51 +321,55 @@
           var linkStart = commentsLinks[i].search("<");
           var linkStop = commentsLinks[i].search(">");
           var nextLink = commentsLinks[i].substring(linkStart + 1, linkStop);
-          getGitHubApiRequestWithCompletion(nextLink, null /* access_token */, onCommentsUpdated);
+          getGitHubApiRequestWithCompletion(nextLink, /* accessToken: */ null, onQueryComments, onQueryCommentsError);
           return;
         }
       }
-      updateCommentActions(CommentsArray);
+      updateCommentsAndActions(CommentsArray);
     }
     else {
-      updateCommentActions(CommentsArray);
+      updateCommentsAndActions(CommentsArray);
     }
   }
 
-  function updateCommentActions(allComments)
-  {
-    var allCommentsHtml = "";
-    var loadCommentsHtml = "";
-    var leaveCommentUrl = "";
+  function onQueryCommentsError(commentRequest) {
+    updateCommentsAndActions(CommentsArray);
+  }
 
-    if (typeof {{ site.data.gpgc.use_show_action }} === 'boolean' && {{ site.data.gpgc.use_show_action }}) {
-      var commentOrComments = allComments.length == 1 ? "Comment" : "Comments";
-      loadCommentsHtml = '<button class="gpgc-show" onclick="presentAllComments(CommentsArray)">Show ' + allComments.length + ' ' + commentOrComments + '</button>';
-    }
-    else {
-      allCommentsHtml = formatAllComments(CommentsArray);
-    }
+  function updateCommentsAndActions(allComments) {
+    var elementsToShow = [];
+    var elementsToHide = [];
 
     if (allComments.length === 0) {
-      allCommentsHtml = '<p class="gpgc-no-comments">No comments</p>';
-      loadCommentsHtml = "";
-      leaveCommentUrl = IssueUrl;
-    }
-    else {
-      leaveCommentUrl = allComments[allComments.length - 1].html_url;
+      elementsToShow.push(NoCommentsDiv);
+    } else {
+      var allCommentsHtml = formatAllComments(CommentsArray);
+      AllCommentsDiv.innerHTML = allCommentsHtml + AllCommentsDiv.innerHTML;
+
+      var commentOrComments = allComments.length == 1 ? "Comment" : "Comments";
+      ShowCommentsButton.innerHTML = "Show " + allComments.length + " " + commentOrComments;
+
+      if (typeof {{ site.data.gpgc.use_show_action }} === "boolean" && {{ site.data.gpgc.use_show_action }}) {
+        elementsToShow.push(ActionsDiv);
+        elementsToHide.push(AllCommentsDiv);
+      }
+      else {
+        elementsToHide.push(ActionsDiv);
+        elementsToShow.push(AllCommentsDiv);
+      }
     }
 
-    var leaveCommentsHtml = '<a class="gpgc-leave" href="' + leaveCommentUrl + '" target="_blank">Leave a comment</a>';
-    updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml);
+    updateElements(elementsToShow, elementsToHide, /* elementsToEnable: */ null, /* elementsToDisable: */ null);
   }
 
-  function presentAllComments(allComments) {
-    allCommentsHtml = formatAllComments(allComments);
-    updateCommentDivs(allCommentsHtml, "", null);
+  function showAllComments(allComments) {
+    var elementsToShow = [ AllCommentsDiv ];
+    var elementsToHide = [ ActionsDiv, NoCommentsDiv ];
+    updateElements(elementsToShow, elementsToHide, /* elementsToEnable: */ null, /* elementsToDisable: */ null);
   }
 
   function formatAllComments(allComments) {
-    var allCommentsHtml = '';
+    var allCommentsHtml = "";
     for (var i = 0; i < allComments.length; i++) {
       var user = allComments[i].user;
       allCommentsHtml += formatComment(user.avatar_url, user.html_url, user.login, allComments[i].body_html, allComments[i].updated_at);
@@ -327,55 +381,106 @@
   function formatComment(userAvatarUrl, userHtmlUrl, userLogin, commentBodyHtml, commentTimeStamp) {
     var commentDate = new Date(commentTimeStamp);
     var shortMonth = ShortMonthForIndex[commentDate.getMonth()];
-    var commentHtml = '<div class="gpgc-comment">';
-    commentHtml += '<a href="' + userHtmlUrl + '"><img class="gpgc-avatar" src="' + userAvatarUrl + '" height="42" />' + userLogin + '</a> ';
-    commentHtml += '<small>on ' + commentDate.getDate() + ' ' + shortMonth + ' ' + commentDate.getFullYear() + '</small>';
-    commentHtml += '<div class="gpgc-comment-contents">' + commentBodyHtml + '</div>';
-    commentHtml += '</div>';
+    var commentHtml = "<div class='gpgc-comment'>";
+    commentHtml += "<a href='" + userHtmlUrl + "'><img class='gpgc-avatar' src='" + userAvatarUrl + "' height='42' />" + userLogin + "</a> ";
+    commentHtml += "<small>on " + commentDate.getDate() + " " + shortMonth + " " + commentDate.getFullYear() + "</small>";
+    commentHtml += "<div class='gpgc-comment-contents'>" + commentBodyHtml + "</div>";
+    commentHtml += "</div>";
     return commentHtml;
   }
 
-  function getGitHubApiRequestWithCompletion(url, access_token, completion)
-  {
-    doGitHubApiRequestWithCompletion("GET", url, null, access_token, completion);
+  function getGitHubApiRequestWithCompletion(url, accessToken, onSuccess, onError) {
+    doGitHubApiRequestWithCompletion("GET", url, null, accessToken, onSuccess, onError);
   }
 
-  function postGitHubApiRequestWithCompletion(url, data, access_token, completion)
-  {
-    doGitHubApiRequestWithCompletion("POST", url, data, access_token, completion);
+  function postGitHubApiRequestWithCompletion(url, data, accessToken, onSuccess, onError) {
+    doGitHubApiRequestWithCompletion("POST", url, data, accessToken, onSuccess, onError);
   }
 
-  function doGitHubApiRequestWithCompletion(method, url, data, access_token, completion)
-  {
+  function doGitHubApiRequestWithCompletion(method, url, data, accessToken, onSuccess, onError) {
     var gitHubRequest = new XMLHttpRequest();
-    gitHubRequest.open(method, url, true);
+    gitHubRequest.open(method, url, /* async: */ true);
 
-    if (access_token) {
-      gitHubRequest.setRequestHeader('Authorization', 'token ' + access_token);
+    if (accessToken != null && accessToken != "") {
+      gitHubRequest.setRequestHeader("Authorization", "token " + accessToken);
     }
 
     gitHubRequest.setRequestHeader("Accept", "application/vnd.github.v3.html+json");
-    gitHubRequest.onreadystatechange = function() { OnReadyStateChange(gitHubRequest, completion) };
+    gitHubRequest.onreadystatechange = function() { onRequestReadyStateChange(gitHubRequest, onSuccess, onError) };
 
     gitHubRequest.send(data);
   }
 
-  function OnReadyStateChange(httpRequest, completion)
-  {
+  function onRequestReadyStateChange(httpRequest, onSuccess, onError) {
     if (httpRequest.readyState != 4) { return; }
     if (httpRequest.status == 200 || httpRequest.status == 201) {
-      completion(httpRequest);
+      onSuccess(httpRequest);
     } else {
-      {% if site.data.gpgc.enable_diagnostics %} completion(httpRequest); {% endif %}
-      return;
+      onError(httpRequest);
     }
   }
 
-  function updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml)
-  {
-    if (allCommentsHtml != null) document.getElementById("all-comments").innerHTML = allCommentsHtml + document.getElementById("all-comments").innerHTML;
-    if (loadCommentsHtml != null) document.getElementById("load-comments-button").innerHTML = loadCommentsHtml;
-    if (leaveCommentsHtml != null) document.getElementById("leave-comment-link").innerHTML = leaveCommentsHtml;
+  function updateElements(elementsToShow, elementsToHide, elementsToEnable, elementsToDisable) {
+    if (elementsToShow != null) showElements(elementsToShow);
+    if (elementsToHide != null) hideElements(elementsToHide);
+    if (elementsToEnable != null) enableElements(elementsToEnable);
+    if (elementsToDisable != null) disableElements(elementsToDisable);
+  }
+
+  function updateElementVisibility(element, makeVisible) {
+    if (makeVisible) {
+      element.classList.remove("gpgc-hidden");
+    } else {
+      element.classList.add("gpgc-hidden");
+    }
+  }
+
+  function showElement(element) {
+    updateElementVisibility(element, /* makeVisible: */ true);
+  }
+
+  function showElements(elementList) {
+    for (var i = 0; i < elementList.length; i++) {
+      showElement(elementList[i]);
+    }
+  }
+
+  function hideElement(element) {
+    updateElementVisibility(element, /* makeVisible: */ false);
+  }
+
+  function hideElements(elementList) {
+    for (var i = 0; i < elementList.length; i++) {
+      hideElement(elementList[i]);
+    }
+  }
+
+  function updateElementInteractivity(element, makeInteractive) {
+    if (makeInteractive) {
+      element.disabled = false;
+    } else {
+      element.disabled = true;
+    }
+  }
+
+  function enableElement(elementToEnable) {
+    updateElementInteractivity(elementToEnable, /* makeInteractive: */ true);
+  }
+
+  function enableElements(elementList) {
+    for (var i = 0; i < elementList.length; i++) {
+      enableElement(elementList[i]);
+    }
+  }
+
+  function disableElement(elementToDisable) {
+    updateElementInteractivity(elementToDisable, /* makeInteractive: */ false);
+  }
+
+  function disableElements(elementList) {
+    for (var i = 0; i < elementList.length; i++) {
+      disableElement(elementList[i]);
+    }
   }
 
   initializeData();

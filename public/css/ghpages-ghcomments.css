@@ -7,6 +7,10 @@
  * Learn more at https://github.com/wireddown/ghpages-ghcomments
  */
 
+.gpgc-hidden {
+  display: none;
+}
+
 .gpgc-actions  {
   overflow: hidden; /* clearfix */
   margin-left: -1rem;
@@ -19,21 +23,13 @@
   text-align: center;
 }
 
-.gpgc-action:last-child {
-  padding-bottom: 6rem;
-}
-
-.gpgc-show,
-.gpgc-leave {
+.gpgc-show {
   display: inline-block;
   padding-top: 1rem;
   padding-bottom: 1rem;
   width: 14em;
   font-family: "PT Sans", Helvetica, Arial, sans-serif;
   font-size: 1rem;
-}
-
-.gpgc-show {
   border: solid 1px #90a959; /* THEME: use `a` color */
   color: #90a959; /* THEME: use `a` color */
   background-color: #fff;
@@ -42,11 +38,6 @@
 
 .gpgc-show:hover {
   background-color: #f5f5f5;
-}
-
-.gpgc-leave {
-  color: #fff !important; /* override existing `a` color to invert the 'button' look and feel */
-  background-color: #90a959; /* THEME: use `a` color */
 }
 
 .gpgc-comment-form {
@@ -102,6 +93,21 @@
 
 .gpgc-new-comment {
   min-height: 13em;
+}
+
+.gpgc-oauth-token {
+}
+
+.gpgc-submit {
+}
+
+.gpgc-comment-help {
+}
+
+.gpgc-help-message {
+}
+
+.gpgc-help-error {
 }
 
 .gpgc-no-comments {
