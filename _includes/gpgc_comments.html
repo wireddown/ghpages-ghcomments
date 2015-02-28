@@ -149,7 +149,7 @@
   }
 
   function onUserAuthenticationError(checkAuthenticationRequest) {
-    AccessToken = null;
+    AccessToken = "";
     var helpErrorMessage = "Sorry, it looks like the token isn't valid. Please try again.";
     var isRawHtml = false;
 {% if site.data.gpgc.enable_diagnostics %}
@@ -307,7 +307,13 @@
       document.body.innerHTML += "<div class='container content gpgc-all-comments'>" + allMessagesHtml + "</div>";
     }
 {% else %}
-    showFatalError("onSearchError: \n\n" + searchRequest.responseText);
+    if (searchRequest.status == 401) {
+      AccessToken = "";
+      findAndCollectComments("{{ site.data.gpgc.repo_owner }}", "{{ site.data.gpgc.repo_name }}", "{{ include.post_title }}");
+    }
+    else {
+      showFatalError("onSearchError: \n\n" + searchRequest.responseText);
+    }
 {% endif %}
     return;
   }
