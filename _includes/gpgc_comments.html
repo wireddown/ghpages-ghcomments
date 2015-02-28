@@ -1,7 +1,7 @@
-<div class="gpgc-all-comments gpgc-hidden" id="gpgc_all_comments">
+<div class="gpgc-new-section gpgc-comments-font gpgc-hidden" id="gpgc_all_comments">
 </div>
 
-<div class="gpgc-all-comments gpgc-hidden" id="gpgc_no_comments">
+<div class="gpgc-new-section gpgc-comments-font gpgc-hidden" id="gpgc_no_comments">
   <p class="gpgc-no-comments">No comments</p>
 </div>
 
@@ -11,14 +11,16 @@
   </span>
 </div>
 
-<div class="gpgc-all-comments" id="gpgc_new_comment">
-  <div class="gpgc-comment">
-    <a id="gpgc_reader_url" href="#"><img class="gpgc-avatar" id="gpgc_reader_avatar" src="{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" height="42" /><span id="gpgc_reader_login">You</span></a>
-    <small>today</small>
-    <span class="gpgc-tabs">
-      <button class="gpgc-tab" id="write_button">Write</button>
-      <button class="gpgc-tab" id="preview_button">Preview</button>
-    </span>
+<div class="gpgc-comment gpgc-comments-font" id="gpgc_new_comment">
+  <div>
+    <div class="gpgc-comment-header">
+      <a id="gpgc_reader_url" href="#"><img class="gpgc-avatar" id="gpgc_reader_avatar" src="{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" height="42" /><span id="gpgc_reader_login">You</span></a>
+      <small>today</small>
+      <span class="gpgc-tabs">
+        <button class="gpgc-tab" id="write_button">Write</button>
+        <button class="gpgc-tab" id="preview_button">Preview</button>
+      </span>
+    </div>
     <div class="gpgc-new-comment" id="write_div">
       <div class="gpgc-comment-form">
         <textarea class="gpgc-comment-form-textarea" id="new_comment_field" placeholder="Write a comment"></textarea>
@@ -28,19 +30,17 @@
     </div>
     <div class="gpgc-comment-help gpgc-hidden" id="help_div">
     </div>
-    <div>
-      <span>
-        <span>Comment token:</span>
-        <input class="gpgc-oauth-token gpgc-hidden" id="oauth_token_input" size="44" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
-        <span class="gpgc-hidden" id="oauth_token_validated"><strong>&#x2713;</strong></span>
-        <button class="gpgc-hidden" id="oauth_clear_token" onclick="clearToken()"><strong>&#x2715;</strong></button>
-      </span>
-      <button class="gpgc-submit" id="submit_button" onclick="postComment()">Submit</button>
+    <div class="gpgc-new-comment-bottom-actions">
+      <span>Comment token:</span>
+      <input class="gpgc-oauth-token gpgc-hidden" id="oauth_token_input" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
+      <span class="gpgc-hidden" id="oauth_token_validated"><strong>&#x2713;</strong></span>
+      <button class="gpgc-hidden gpgc-clear-token" id="oauth_clear_token" onclick="clearToken()">Reset</button>
+      <button class="gpgc-submit" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
     </div>
   </div>
 </div>
 
-<div class="gpgc-all-comments gpgc-help-error gpgc-hidden" id="gpgc_reader_error">
+<div class="gpgc-new-section gpgc-comments-font gpgc-help-error gpgc-hidden" id="gpgc_reader_error">
 </div>
 
 <div class="gpgc_last_div">
@@ -107,7 +107,7 @@
     if (isRawHtml) {
       HelpDiv.innerHTML = message;
     } else {
-      HelpDiv.innerHTML = "<p>" + message + "</p>";
+      HelpDiv.innerHTML = "<span>" + message + "</span>";
     }
     HelpDiv.classList.add(cssClassToAdd);
     HelpDiv.classList.remove(cssClassToRemove);
@@ -115,8 +115,8 @@
   }
 
   function clearCommentHelp() {
-    HelpDiv.innerHTML = 
-    HelpDiv.classList.remove("gpgc-help-message")
+    HelpDiv.innerHTML = "";
+    HelpDiv.classList.remove("gpgc-help-message");
     HelpDiv.classList.remove("gpgc-help-error");
     hideElement(HelpDiv);
   }
@@ -127,7 +127,7 @@
     {% else %}
       var nextStepMessage = "<p>If you're the site owner, please set <code>enable_diagnostics</code> to <code>true</code> in <code>_data/gpgc.yml</code> to see more details.</p>";
     {% endif %}
-    ErrorDiv.innerHTML = "<h2>Oops!</h2><p>Something surprising happened.</p>" + nextStepMessage;
+    ErrorDiv.innerHTML += "<h2>Oops!</h2><p>Something surprising happened.</p>" + nextStepMessage;
     showElement(ErrorDiv);
   }
 
@@ -304,7 +304,8 @@
     if (allMessagesHtml.length > 0) {
       allMessagesHtml += "<h3>Search Help</h3><p>Verify your site's configuration with the <a href='downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
 
-      document.body.innerHTML += "<div class='container content gpgc-all-comments'>" + allMessagesHtml + "</div>";
+      ErrorDiv.innerHTML += allMessagesHtml;
+      showElement(ErrorDiv);
     }
 {% else %}
     if (searchRequest.status == 401) {
@@ -389,8 +390,10 @@
     var commentDate = new Date(commentTimeStamp);
     var shortMonth = ShortMonthForIndex[commentDate.getMonth()];
     var commentHtml = "<div class='gpgc-comment'>";
+    commentHtml += "<div class='gpgc-comment-header'>";
     commentHtml += "<a href='" + userHtmlUrl + "'><img class='gpgc-avatar' src='" + userAvatarUrl + "' height='42' />" + userLogin + "</a> ";
     commentHtml += "<small>on " + commentDate.getDate() + " " + shortMonth + " " + commentDate.getFullYear() + "</small>";
+    commentHtml += "</div>";
     commentHtml += "<div class='gpgc-comment-contents'>" + commentBodyHtml + "</div>";
     commentHtml += "</div>";
     return commentHtml;
@@ -519,7 +522,8 @@
     if (allMessagesHtml.length > 0) {
       allMessagesHtml += "<h3>CSS Help</h3><p>Verify your site's configuration with the <a href='downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
 
-      document.body.innerHTML += "<div class='container content gpgc-all-comments'>" + allMessagesHtml + "</div>";
+      ErrorDiv.innerHTML += allMessagesHtml;
+      showElement(ErrorDiv);
     }
   }
 

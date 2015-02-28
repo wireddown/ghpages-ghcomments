@@ -27,7 +27,7 @@
   display: inline-block;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  width: 14em;
+  width: 14rem;
   font-family: "PT Sans", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   border: solid 1px #90a959; /* THEME: use `a` color */
@@ -40,35 +40,45 @@
   background-color: #f5f5f5;
 }
 
+.gpgc-comments-font {
+  font-size: .8rem;
+}
+
+.gpgc-comment-header {
+  padding-top: .4rem;
+  padding-right: .4rem;
+  padding-left: .4rem;
+  margin-bottom: .2rem;
+}
+
 .gpgc-comment-form {
-  padding-bottom: 1em;
-  padding-left: .4em;
-  padding-right: .4em;
+  padding-bottom: 1rem;
+  padding-left: .4rem;
+  padding-right: .4rem;
 }
 
 .gpgc-comment-form-textarea {
   font-family: inherit;
   display: block;
   width: 100%;
-  min-height: 12em;
+  min-height: 8rem;
   margin-left: auto;
   margin-right: auto;
-  padding: .4em;
+  padding: .4rem;
   resize: vertical;
   border: solid 1px #90a959; /* THEME: use `a` color */
 }
 
 .gpgc-tabs {
   float: right;
-  margin-top: 1.7em;
-  margin-right: .4em;
+  margin-top: .4rem;
 }
 
 .gpgc-tab {
-  padding-left: 1.4em;
-  padding-right: 1.4em;
-  padding-top: .4em;
-  padding-bottom: .4em;
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+  padding-top: .4rem;
+  padding-bottom: .4rem;
   margin-left: -5px;
   border: solid 1px #90a959; /* THEME: use `a` color */
   background-color: #90a959; /* THEME: use `a` color */
@@ -78,7 +88,7 @@
 
 .gpgc-tab.write {
   border: solid 1px;
-  border-color: #90a959 #90a959 #FFFFFF #90a959; /* THEME: use `a` color */
+  border-color: #90a959; /* THEME: use `a` color */
   background-color: #FFFFFF;
   color: inherit;
   cursor: auto;
@@ -92,31 +102,76 @@
 }
 
 .gpgc-new-comment {
-  min-height: 13em;
+  min-height: 4rem;
+}
+
+.gpgc-new-comment-bottom-actions {
+  padding: 0.4rem 0.4rem 1rem;
 }
 
 .gpgc-oauth-token {
+  width: 20em;
+  border: 1px solid #90A959;
+  padding: .4rem;
 }
 
 .gpgc-submit {
+  float: right;
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+  padding-top: .4rem;
+  padding-bottom: .4rem;
+  border: solid 1px #90a959; /* THEME: use `a` color */
+  background-color: #90a959; /* THEME: use `a` color */
+  cursor: pointer;
+}
+
+button:disabled {
+  border: solid 1px #888888;
+  background-color: #aaaaaa;
+  cursor: auto;
+}
+
+.gpgc-submit strong {
+ color: #FFFFFF;
+ }
+
+.gpgc-clear-token {
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+  padding-top: .4rem;
+  padding-bottom: .4rem;
+  border: solid 1px #90a959;
+  background-color: #FFFFFF;
+  color: inherit;
+  cursor: pointer;
+  color: #90a959; /* THEME: use `a` color */
+}
+
+.gpgc-clear-token:hover {
+  background-color: #f5f5f5;
 }
 
 .gpgc-comment-help {
+  padding: .4rem;
 }
 
 .gpgc-help-message {
 }
 
 .gpgc-help-error {
+  padding: .4rem;
+  margin: .4rem;
+  border: solid 2px #ab4642;
+  background-color: #ffeded;
 }
 
 .gpgc-no-comments {
   text-align: center;
 }
 
-.gpgc-all-comments {
+.gpgc-new-section {
   margin-top: 3rem;
-  font-size: .8rem;
 }
 
 .gpgc-comment {
@@ -128,13 +183,10 @@
   -webkit-border-radius: 0px 0px 24px 24px;
 }
 
-.gpgc-comment:last-child {
-  margin-bottom: .8rem;
-}
-
 .gpgc-avatar {
   display: inline;
-  margin: .4rem .4rem 0 .4rem;
+  margin-bottom: 0px;
+  margin-right: .4rem;
   vertical-align: baseline;
 }
 
@@ -143,4 +195,5 @@
 }
 
 .gpgc_last_div {
+  padding-top: 12rem;
 }
