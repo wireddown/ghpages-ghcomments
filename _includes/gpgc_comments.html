@@ -5,9 +5,6 @@
   <p class="gpgc-no-comments">No comments</p>
 </div>
 
-<div class="gpgc-all-comments gpgc-help-error gpgc-hidden" id="gpgc_reader_error">
-</div>
-
 <div class="gpgc-actions gpgc-hidden" id="gpgc_actions">
   <span class="gpgc-action">
     <button class="gpgc-show" id="show_comments_button" onclick="showAllComments(CommentsArray)"></button>
@@ -41,6 +38,9 @@
       <button class="gpgc-submit" id="submit_button" onclick="postComment()">Submit</button>
     </div>
   </div>
+</div>
+
+<div class="gpgc-all-comments gpgc-help-error gpgc-hidden" id="gpgc_reader_error">
 </div>
 
 <div class="gpgc_last_div">
@@ -122,16 +122,13 @@
   }
 
   function showFatalError(internalMessage) {
-    elementsToHide = [ NewCommentDiv ];
-    elementsToShow = [ ErrorDiv ];
-
     {% if site.data.gpgc.enable_diagnostics %}
       var nextStepMessage = "<p>If you're the site owner, please contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for help.</p><p><strong>Internal message</strong></p><pre>" + internalMessage + "</pre>";
     {% else %}
       var nextStepMessage = "<p>If you're the site owner, please set <code>enable_diagnostics</code> to <code>true</code> in <code>_data/gpgc.yml</code> to see more details.</p>";
     {% endif %}
     ErrorDiv.innerHTML = "<h2>Oops!</h2><p>Something surprising happened.</p>" + nextStepMessage;
-    updateElements(elementsToShow, elementsToHide, /* elementsToEnable: */ null, /* elementsToDisable: */ null);
+    showElement(ErrorDiv);
   }
 
   function updateCommenterInformation(userJson) {
@@ -152,6 +149,7 @@
   }
 
   function onUserAuthenticationError(checkAuthenticationRequest) {
+    AccessToken = null;
     var helpErrorMessage = "Sorry, it looks like the token isn't valid. Please try again.";
     var isRawHtml = false;
 {% if site.data.gpgc.enable_diagnostics %}
@@ -187,6 +185,7 @@
     var commentInformation = JSON.parse(postCommentRequest.responseText);
     var newComment = formatComment(commentInformation.user.avatar_url, commentInformation.user.html_url, commentInformation.user.login, commentInformation.body_html, commentInformation.updated_at);
     AllCommentsDiv.innerHTML += newComment;
+    showAllComments();
     updateCommentFormMode("write", /* reset: */ true);
     clearCommentHelp();
   }
