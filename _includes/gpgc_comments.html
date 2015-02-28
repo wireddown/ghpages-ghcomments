@@ -5,13 +5,16 @@
   <p class="gpgc-no-comments">No comments</p>
 </div>
 
+<div class="gpgc-all-comments gpgc-help-error gpgc-hidden" id="gpgc_reader_error">
+</div>
+
 <div class="gpgc-actions gpgc-hidden" id="gpgc_actions">
   <span class="gpgc-action">
     <button class="gpgc-show" id="show_comments_button" onclick="showAllComments(CommentsArray)"></button>
   </span>
 </div>
 
-<div class="gpgc-all-comments">
+<div class="gpgc-all-comments" id="gpgc_new_comment">
   <div class="gpgc-comment">
     <a id="gpgc_reader_url" href="#"><img class="gpgc-avatar" id="gpgc_reader_avatar" src="{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" height="42" /><span id="gpgc_reader_login">You</span></a>
     <small>today</small>
@@ -40,6 +43,9 @@
   </div>
 </div>
 
+<div class="gpgc_last_div">
+</div>
+
 <script>
   var ShortMonthForIndex = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
   var AccessToken = "";
@@ -52,6 +58,7 @@
   var ActionsDiv = document.getElementById("gpgc_actions");
   var ShowCommentsButton = document.getElementById("show_comments_button");
 
+  var NewCommentDiv = document.getElementById("gpgc_new_comment");
   var WriteButton = document.getElementById("write_button");
   var WriteDiv = document.getElementById("write_div");
   var CommentMarkdown = document.getElementById("new_comment_field");
@@ -67,6 +74,7 @@
   var SubmitButton = document.getElementById("submit_button");
 
   var HelpDiv = document.getElementById("help_div");
+  var ErrorDiv = document.getElementById("gpgc_reader_error");
 
   function initializeData() {
     retrieveToken();
@@ -87,15 +95,15 @@
     persistToken();
   }
 
-  function showReaderHelpMessage(message) {
-    showReaderHelp(message, /* isRawHtml: */ false, "gpgc-help-message", "gpgc-help-error");
+  function showCommentHelpMessage(message) {
+    showCommentHelp(message, /* isRawHtml: */ false, "gpgc-help-message", "gpgc-help-error");
   }
 
-  function showReaderHelpError(error, isRawHtml) {
-    showReaderHelp(error, isRawHtml, "gpgc-help-error", "gpgc-help-message");
+  function showCommentHelpError(error, isRawHtml) {
+    showCommentHelp(error, isRawHtml, "gpgc-help-error", "gpgc-help-message");
   }
 
-  function showReaderHelp(message, isRawHtml, cssClassToAdd, cssClassToRemove) {
+  function showCommentHelp(message, isRawHtml, cssClassToAdd, cssClassToRemove) {
     if (isRawHtml) {
       HelpDiv.innerHTML = message;
     } else {
@@ -106,11 +114,24 @@
     showElement(HelpDiv);
   }
 
-  function clearReaderHelp() {
+  function clearCommentHelp() {
     HelpDiv.innerHTML = 
     HelpDiv.classList.remove("gpgc-help-message")
     HelpDiv.classList.remove("gpgc-help-error");
     hideElement(HelpDiv);
+  }
+
+  function showFatalError(internalMessage) {
+    elementsToHide = [ NewCommentDiv ];
+    elementsToShow = [ ErrorDiv ];
+
+    {% if site.data.gpgc.enable_diagnostics %}
+      var nextStepMessage = "<p>If you're the site owner, please contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for help.</p><p><strong>Internal message</strong></p><pre>" + internalMessage + "</pre>";
+    {% else %}
+      var nextStepMessage = "<p>If you're the site owner, please set <code>enable_diagnostics</code> to <code>true</code> in <code>_data/gpgc.yml</code> to see more details.</p>";
+    {% endif %}
+    ErrorDiv.innerHTML = "<h2>Oops!</h2><p>Something surprising happened.</p>" + nextStepMessage;
+    updateElements(elementsToShow, elementsToHide, /* elementsToEnable: */ null, /* elementsToDisable: */ null);
   }
 
   function updateCommenterInformation(userJson) {
@@ -126,7 +147,7 @@
     var elementsToDisable = [  ];
     persistToken();
     updateCommenterInformation(JSON.parse(checkAuthenticationRequest.responseText));
-    clearReaderHelp();
+    clearCommentHelp();
     updateElements(elementsToShow, elementsToHide, elementsToEnable, elementsToDisable);
   }
 
@@ -137,7 +158,8 @@
     helpErrorMessage = "<h3><strong>gpgc</strong> Error: Authentication Failed</h3><p>Could not authenticate OAuth token</p><p>GitHub response:</p><p><pre>" + checkAuthenticationRequest.responseText + "</pre></p>";
     isRawHtml = true;
 {% endif %}
-    showReaderHelpError(helpErrorMessage, isRawHtml);
+    showCommentHelpError(helpErrorMessage, isRawHtml);
+    onAuthenticateUserFailed();
     return;
   }
 
@@ -146,8 +168,6 @@
     var elementsToHide = [ TokenValidatedMark, ClearTokenButton ];
     var elementsToEnable = [  ];
     var elementsToDisable = [ ClearTokenButton, SubmitButton ];
-    updateCommenterInformation({ login: "You", html_url: "#", avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" });
-    showReaderHelpMessage("To leave a comment, please provide a <a href=''>GitHub OAuth token</a>.");
     updateElements(elementsToShow, elementsToHide, elementsToEnable, elementsToDisable);
   }
 
@@ -158,6 +178,8 @@
       getGitHubApiRequestWithCompletion(userIdUrl, AccessToken, onUserAuthenticated, onUserAuthenticationError);
     } else {
       onAuthenticateUserFailed();
+      updateCommenterInformation({ login: "You", html_url: "#", avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" });
+      showCommentHelpMessage("To leave a comment, please provide a <a href=''>GitHub OAuth token</a>.");
     }
   }
 
@@ -166,7 +188,7 @@
     var newComment = formatComment(commentInformation.user.avatar_url, commentInformation.user.html_url, commentInformation.user.login, commentInformation.body_html, commentInformation.updated_at);
     AllCommentsDiv.innerHTML += newComment;
     updateCommentFormMode("write", /* reset: */ true);
-    clearReaderHelp();
+    clearCommentHelp();
   }
 
   function onPostCommentError(postCommentRequest) {
@@ -176,15 +198,15 @@
     helpErrorMessage = "<h3><strong>gpgc</strong> Error: Comment Failed</h3><p>Could not create a new comment</p><p>GitHub response:</p><p><pre>" + postCommentRequest.responseText + "</pre></p>";
     isRawHtml = true;
 {% endif %}
-    showReaderHelpError(helpErrorMessage, isRawHtml);
+    showCommentHelpError(helpErrorMessage, isRawHtml);
   }
 
   function postComment() {
     if (CommentMarkdown.value.length == 0) {
-      showReaderHelpError("Sorry, but your comment is empty. Please try again.");
+      showCommentHelpError("Sorry, but your comment is empty. Please try again.");
       return;
     } else {
-      clearReaderHelp();
+      clearCommentHelp();
     }
 
     var createCommentJson = { body: CommentMarkdown.value };
@@ -203,7 +225,7 @@
     helpErrorMessage = "<h3><strong>gpgc</strong> Error: Render Failed</h3><p>Could not render comment markdown</p><p>GitHub response:</p><p><pre>" + renderRequest.responseText + "</pre></p>";
     isRawHtml = true;
 {% endif %}
-    showReaderHelpError(helpErrorMessage, isRawHtml);
+    showCommentHelpError(helpErrorMessage, isRawHtml);
     return;
   }
 
@@ -259,54 +281,34 @@
     if (searchResults.total_count === 1) {
       IssueUrl = searchResults.items[0].html_url;
       CommentsUrl = searchResults.items[0].comments_url
-      getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, AccessToken, onQueryComments, onQueryCommentsError);
+      getGitHubApiRequestWithCompletion(CommentsUrl, AccessToken, onQueryComments, onQueryCommentsError);
     }
     else {
-      updateCommentsAndActions(CommentsArray);
+      onSearchError(searchRequest);
     }
   }
 
   function onSearchError(searchRequest) {
 {% if site.data.gpgc.enable_diagnostics %}
-    var css = document.styleSheets;
-    var foundCssInHead = false;
-    var fetchedCss = false;
-    for (var i = 0; i < css.length; i++) {
-      if (css[i].href.match("ghpages-ghcomments.css")) {
-        foundCssInHead = true;
-        if (css[i].cssRules.length > 0) {
-          fetchedCss = true;
-        }
-        break;
-      }
-    }
-
-    var missingCssMessage = "";
-    if (! foundCssInHead) {
-      missingCssMessage = "<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>ghpages-ghcomments.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>";
-    }
-
-    var css404Message = "";
-    if (! fetchedCss && foundCssInHead) {
-      css404Message = "<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>ghpages-ghcomments.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>";
-    }
-
     var searchErrorMessage = ""
     if (searchRequest.status != 200) {
       searchErrorMessage = "<h3><strong>gpgc</strong> Error: Search Failed</h3><p>Could not search GitHub repository <strong><a href='https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}'>{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>GitHub response:</p><p><pre>" + searchRequest.responseText + "</pre></p><p>Check:<ul><li><code>repo_owner</code> in <code>_data/gpgc.yml</code> for typos.</li><li><code>repo_name</code> in <code>_data/gpgc.yml</code> for typos.</li></ul></p>";
     }
 
     var missingIssueMessage = "";
-    if (searchResults.total_count === 0) {
+    var searchResults = JSON.parse(searchRequest.responseText);
+    if (searchResults.total_count !== undefined && searchResults.total_count === 0) {
       missingIssueMessage = "<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <em>{{ include.post_title }}</em> in the repository <strong><a href='https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}'>{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <code>title</code> front matter for this post: <code>{{ page.path }}</code>.</li><li>that the <code>repo_name</code> in <code>_data/gpgc.yml</code> matches the repository for this site.</li><li>the terminal output from <code>git push</code> for other error messages if the git hooks are installed.</li></ul></p>";
     }
 
-    var allMessagesHtml = missingCssMessage + css404Message + searchErrorMessage + missingIssueMessage;
+    var allMessagesHtml = searchErrorMessage + missingIssueMessage;
     if (allMessagesHtml.length > 0) {
-      allMessagesHtml += "<h3>Help</h3><p>Verify your site's configuration with the <a href='downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
-    }
+      allMessagesHtml += "<h3>Search Help</h3><p>Verify your site's configuration with the <a href='downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
 
-    document.body.innerHTML += "<div class='container content gpgc-all-comments'>" + allMessagesHtml + "</div>";
+      document.body.innerHTML += "<div class='container content gpgc-all-comments'>" + allMessagesHtml + "</div>";
+    }
+{% else %}
+    showFatalError("onSearchError: \n\n" + searchRequest.responseText);
 {% endif %}
     return;
   }
@@ -333,7 +335,7 @@
   }
 
   function onQueryCommentsError(commentRequest) {
-    updateCommentsAndActions(CommentsArray);
+    showFatalError("onQueryCommentsError: \n\n" + commentRequest.responseText);
   }
 
   function updateCommentsAndActions(allComments) {
@@ -482,6 +484,42 @@
       disableElement(elementList[i]);
     }
   }
+
+{% if site.data.gpgc.enable_diagnostics %}
+  function verifyCss() {
+    var css = document.styleSheets;
+    var foundCssInHead = false;
+    var fetchedCss = false;
+    for (var i = 0; i < css.length; i++) {
+      if (css[i].href.match("ghpages-ghcomments.css")) {
+        foundCssInHead = true;
+        if (css[i].cssRules.length > 0) {
+          fetchedCss = true;
+        }
+        break;
+      }
+    }
+
+    var missingCssMessage = "";
+    if (! foundCssInHead) {
+      missingCssMessage = "<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>ghpages-ghcomments.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>";
+    }
+
+    var css404Message = "";
+    if (! fetchedCss && foundCssInHead) {
+      css404Message = "<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>ghpages-ghcomments.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>";
+    }
+
+    var allMessagesHtml = missingCssMessage + css404Message;
+    if (allMessagesHtml.length > 0) {
+      allMessagesHtml += "<h3>CSS Help</h3><p>Verify your site's configuration with the <a href='downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
+
+      document.body.innerHTML += "<div class='container content gpgc-all-comments'>" + allMessagesHtml + "</div>";
+    }
+  }
+
+  verifyCss();
+{% endif %}
 
   initializeData();
   initializeNewCommentForm();
