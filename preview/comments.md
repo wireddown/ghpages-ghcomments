@@ -60,7 +60,7 @@ date: 2015-03-01 12:00:00
       </div>
       <div class="gpgc-token-actions gpgc-hidden" id="token_actions">
         <span>Comment token:</span>
-        <input class="gpgc-oauth-token gpgc-hidden" id="oauth_token_input" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
+        <input class="gpgc-oauth-token gpgc-hidden" id="oauth_token_input" type="password" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
         <span class="gpgc-hidden" id="oauth_token_validated"><strong>&#x2713;</strong></span>
         <button class="gpgc-hidden gpgc-clear-token" id="oauth_clear_token" onclick="clearToken()">Reset</button>
       </div>
