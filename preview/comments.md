@@ -1,0 +1,24 @@
+---
+layout: default
+title: Comments Preview
+---
+
+<div class="post">
+  <h1 class="post-title">{{ page.title }}</h1>
+  <span class="post-date">{{ page.date | date_to_string }}</span>
+  {{ content }}
+</div>
+
+<div class="pagination">
+  {% if page.previous %}
+    <a class="pagination-item older" href="{{ site.baseurl }}{{ page.previous.url }}">Older</a>
+  {% else %}
+    <span class="pagination-item older">Older</span>
+  {% endif %}
+  {% if page.next %}
+    <a class="pagination-item newer" href="{{ site.baseurl }}{{ page.next.url }}">Newer</a>
+  {% else %}
+    <span class="pagination-item newer">Newer</span>
+  {% endif %}
+</div>
+
