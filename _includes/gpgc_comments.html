@@ -16,10 +16,10 @@
     <div class="gpgc-comment-header">
       <a id="gpgc_reader_url" href="#"><img class="gpgc-avatar" id="gpgc_reader_avatar" src="{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" height="42" /><span id="gpgc_reader_login">You</span></a>
       <small>today</small>
-      <span class="gpgc-tabs">
+      <div class="gpgc-tabs">
         <button class="gpgc-tab" id="write_button">Write</button>
         <button class="gpgc-tab" id="preview_button">Preview</button>
-      </span>
+      </div>
     </div>
     <div class="gpgc-new-comment" id="write_div">
       <div class="gpgc-comment-form">
@@ -28,13 +28,17 @@
     </div>
     <div class="gpgc-new-comment gpgc-comment-contents gpgc-hidden" id="preview_div">
     </div>
-    <div class="gpgc-comment-help gpgc-hidden" id="help_div">
+    <div class="gpgc-comment-help">
+      <div class="gpgc-hidden" id="help_message">
+      </div>
+      <div class="gpgc-token-actions gpgc-hidden" id="token_actions">
+        <span>Comment token:</span>
+        <input class="gpgc-oauth-token gpgc-hidden" id="oauth_token_input" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
+        <span class="gpgc-hidden" id="oauth_token_validated"><strong>&#x2713;</strong></span>
+        <button class="gpgc-hidden gpgc-clear-token" id="oauth_clear_token" onclick="clearToken()">Reset</button>
+      </div>
     </div>
     <div class="gpgc-new-comment-bottom-actions">
-      <span>Comment token:</span>
-      <input class="gpgc-oauth-token gpgc-hidden" id="oauth_token_input" type="text" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
-      <span class="gpgc-hidden" id="oauth_token_validated"><strong>&#x2713;</strong></span>
-      <button class="gpgc-hidden gpgc-clear-token" id="oauth_clear_token" onclick="clearToken()">Reset</button>
       <button class="gpgc-submit" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
     </div>
   </div>
@@ -65,6 +69,7 @@
   var PreviewButton = document.getElementById("preview_button");
   var PreviewDiv = document.getElementById("preview_div");
 
+  var TokenActions = document.getElementById("token_actions");
   var OAuthTokenInput = document.getElementById("oauth_token_input");
   var ReaderGitHubUrl = document.getElementById("gpgc_reader_url");
   var ReaderAvatarUrl = document.getElementById("gpgc_reader_avatar");
@@ -73,7 +78,7 @@
   var ClearTokenButton = document.getElementById("oauth_clear_token");
   var SubmitButton = document.getElementById("submit_button");
 
-  var HelpDiv = document.getElementById("help_div");
+  var HelpMessageDiv = document.getElementById("help_message");
   var ErrorDiv = document.getElementById("gpgc_reader_error");
 
   function initializeData() {
@@ -105,20 +110,20 @@
 
   function showCommentHelp(message, isRawHtml, cssClassToAdd, cssClassToRemove) {
     if (isRawHtml) {
-      HelpDiv.innerHTML = message;
+      HelpMessageDiv.innerHTML = message;
     } else {
-      HelpDiv.innerHTML = "<span>" + message + "</span>";
+      HelpMessageDiv.innerHTML = "<p>" + message + "</p>";
     }
-    HelpDiv.classList.add(cssClassToAdd);
-    HelpDiv.classList.remove(cssClassToRemove);
-    showElement(HelpDiv);
+    HelpMessageDiv.classList.add(cssClassToAdd);
+    HelpMessageDiv.classList.remove(cssClassToRemove);
+    showElement(HelpMessageDiv);
   }
 
   function clearCommentHelp() {
-    HelpDiv.innerHTML = "";
-    HelpDiv.classList.remove("gpgc-help-message");
-    HelpDiv.classList.remove("gpgc-help-error");
-    hideElement(HelpDiv);
+    HelpMessageDiv.innerHTML = "";
+    HelpMessageDiv.classList.remove("gpgc-help-message");
+    HelpMessageDiv.classList.remove("gpgc-help-error");
+    hideElement(HelpMessageDiv);
   }
 
   function showFatalError(internalMessage) {
@@ -138,8 +143,13 @@
   }
 
   function onUserAuthenticated(checkAuthenticationRequest) {
-    var elementsToShow = [ TokenValidatedMark, ClearTokenButton ];
-    var elementsToHide = [ OAuthTokenInput ];
+    {% if site.data.gpgc.enable_diagnostics %}
+      var elementsToShow = [ TokenValidatedMark, ClearTokenButton ];
+      var elementsToHide = [ OAuthTokenInput ];
+    {% else %}
+      var elementsToShow = [  ];
+      var elementsToHide = [ TokenActions ];
+    {% endif %}
     var elementsToEnable = [ ClearTokenButton, SubmitButton ];
     var elementsToDisable = [  ];
     persistToken();
@@ -162,7 +172,7 @@
   }
 
   function onAuthenticateUserFailed() {
-    var elementsToShow = [ OAuthTokenInput ];
+    var elementsToShow = [ OAuthTokenInput, TokenActions ];
     var elementsToHide = [ TokenValidatedMark, ClearTokenButton ];
     var elementsToEnable = [  ];
     var elementsToDisable = [ ClearTokenButton, SubmitButton ];

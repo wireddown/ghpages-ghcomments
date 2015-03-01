@@ -8,7 +8,7 @@
  */
 
 .gpgc-hidden {
-  display: none;
+  display: none !important;
 }
 
 .gpgc-actions  {
@@ -44,6 +44,36 @@
   font-size: .8rem;
 }
 
+@media (min-width: 410px) {
+  .gpgc-submit {
+    float: right;
+    display: inline;
+  }
+
+  .gpgc-oauth-token {
+    width: 24em;
+  }
+
+  .gpgc-tabs {
+    float: right;
+    padding-left: 0px;
+  }
+  
+  .gpgc-token-actions {
+    width: 320px !important;
+  }
+
+  .gpgc-new-comment-bottom-actions {
+    padding: .4rem .4rem 3.2rem !important;
+  }
+}
+
+.gpgc-token-actions {
+  margin-bottom: .8rem;
+  display: inline-block;
+  width: 100%;
+}
+
 .gpgc-comment-header {
   padding-top: .4rem;
   padding-right: .4rem;
@@ -52,7 +82,6 @@
 }
 
 .gpgc-comment-form {
-  padding-bottom: 1rem;
   padding-left: .4rem;
   padding-right: .4rem;
 }
@@ -70,8 +99,8 @@
 }
 
 .gpgc-tabs {
-  float: right;
   margin-top: .4rem;
+  padding-left: 5px;
 }
 
 .gpgc-tab {
@@ -110,13 +139,12 @@
 }
 
 .gpgc-oauth-token {
-  width: 20em;
+  width: 100%;
   border: 1px solid #90A959;
   padding: .4rem;
 }
 
 .gpgc-submit {
-  float: right;
   padding-left: 1.4rem;
   padding-right: 1.4rem;
   padding-top: .4rem;
