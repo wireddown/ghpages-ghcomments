@@ -80,6 +80,7 @@ date: 2015-03-01 12:00:00
 <script>
   var ShortMonthForIndex = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
   var AccessToken = "";
+  var TokenAuthenticationStarted = false;
   var IssueUrl = "";
   var CommentsUrl = "";
   var CommentsArray = [];
@@ -169,6 +170,12 @@ date: 2015-03-01 12:00:00
     ReaderLogin.innerHTML = userJson.login;
   }
 
+  function onAuthenticateUserStarted() {
+    clearCommentHelp();
+    showCommentHelpMessage("Checking token...");
+    disableElement(OAuthTokenInput);
+  }
+
   function onUserAuthenticated(checkAuthenticationRequest) {
     {% if site.data.gpgc.enable_diagnostics %}
       var elementsToShow = [ TokenValidatedMark, ClearTokenButton ];
@@ -186,6 +193,7 @@ date: 2015-03-01 12:00:00
   }
 
   function onUserAuthenticationError(checkAuthenticationRequest) {
+    TokenAuthenticationStarted = false;
     AccessToken = "";
     var helpErrorMessage = "Sorry, it looks like the token isn't valid. Please try again.";
     var isRawHtml = false;
@@ -201,7 +209,7 @@ date: 2015-03-01 12:00:00
   function onAuthenticateUserFailed() {
     var elementsToShow = [ OAuthTokenInput, TokenActions ];
     var elementsToHide = [ TokenValidatedMark, ClearTokenButton ];
-    var elementsToEnable = [  ];
+    var elementsToEnable = [ OAuthTokenInput ];
     var elementsToDisable = [ ClearTokenButton, SubmitButton ];
     updateElements(elementsToShow, elementsToHide, elementsToEnable, elementsToDisable);
   }
@@ -209,13 +217,24 @@ date: 2015-03-01 12:00:00
   function authenticateUser() {
     AccessToken = OAuthTokenInput.value;
     if (AccessToken.length == 40) {
-      var userIdUrl = "https://api.github.com/user";
-      getGitHubApiRequestWithCompletion(userIdUrl, AccessToken, onUserAuthenticated, onUserAuthenticationError);
+      if (TokenAuthenticationStarted == false) {
+        TokenAuthenticationStarted = true;
+        var userIdUrl = "https://api.github.com/user";
+        getGitHubApiRequestWithCompletion(userIdUrl, AccessToken, onAuthenticateUserStarted, onUserAuthenticated, onUserAuthenticationError);
+      }
+    } else if (AccessToken.length == 0) {
+      onAuthenticateUserFailed();
+      updateCommenterInformation({ login: "You", html_url: "https://github.com/wireddown/ghpages-ghcomments", avatar_url: "https://raw.githubusercontent.com/wireddown/ghpages-ghcomments/gh-pages/public/apple-touch-icon-precomposed.png" });
+      showCommentHelpMessage("To leave a comment, please provide a <a href=''>GitHub OAuth token</a>.");
     } else {
       onAuthenticateUserFailed();
       updateCommenterInformation({ login: "You", html_url: "#", avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" });
-      showCommentHelpMessage("To leave a comment, please provide a <a href='https://help.github.com/articles/creating-an-access-token-for-command-line-use/#creating-a-token'>GitHub OAuth token</a>.");
+      showCommentHelpError("An OAuth token must be 40 characters long, yours is " + AccessToken.length + " long.", /* isRawHtml: */ false);
     }
+  }
+
+  function onPostCommentStarted() {
+    showCommentHelpMessage("<em>Posting comment...</em>");
   }
 
   function onCommentPosted(postCommentRequest) {
@@ -246,7 +265,11 @@ date: 2015-03-01 12:00:00
     }
 
     var createCommentJson = { body: CommentMarkdown.value };
-    postGitHubApiRequestWithCompletion(CommentsUrl, JSON.stringify(createCommentJson), AccessToken, onCommentPosted, onPostCommentError);
+    postGitHubApiRequestWithCompletion(CommentsUrl, JSON.stringify(createCommentJson), AccessToken, onPostCommentStarted, onCommentPosted, onPostCommentError);
+  }
+
+  function onRenderRequestStarted() {
+    PreviewDiv.innerHTML = "<p><em>Rendering...</em></p>";
   }
 
   function onMarkdownRendered(renderRequest) {
@@ -268,7 +291,7 @@ date: 2015-03-01 12:00:00
   function renderMarkdown(markdown) {
     renderUrl = "https://api.github.com/markdown";
     markdownBundle = {text: markdown, mode: "gfm", context: "{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}"};
-    postGitHubApiRequestWithCompletion(renderUrl, JSON.stringify(markdownBundle), AccessToken, onMarkdownRendered, onMarkdownRenderError);
+    postGitHubApiRequestWithCompletion(renderUrl, JSON.stringify(markdownBundle), AccessToken, onRenderRequestStarted, onMarkdownRendered, onMarkdownRenderError);
   }
 
   function updateCommentFormMode(newMode, reset) {
@@ -309,7 +332,7 @@ date: 2015-03-01 12:00:00
   function findAndCollectComments(userName, repositoryName, issueTitle) {
     var safeQuery = encodeURI(issueTitle);
     var seachQueryUrl = "https://api.github.com/search/issues?q=" + safeQuery + "+repo:" + userName + "/" + repositoryName + "+type:issue+in:title";
-    getGitHubApiRequestWithCompletion(seachQueryUrl, AccessToken, onSearchComplete, onSearchError);
+    getGitHubApiRequestWithCompletion(seachQueryUrl, AccessToken, /* onPreRequest: */ noop, onSearchComplete, onSearchError);
   }
 
   function onSearchComplete(searchRequest) {
@@ -317,7 +340,7 @@ date: 2015-03-01 12:00:00
     if (searchResults.total_count === 1) {
       IssueUrl = searchResults.items[0].html_url;
       CommentsUrl = searchResults.items[0].comments_url
-      getGitHubApiRequestWithCompletion(CommentsUrl, AccessToken, onQueryComments, onQueryCommentsError);
+      getGitHubApiRequestWithCompletion(CommentsUrl, AccessToken, /* onPreRequest: */ noop, onQueryComments, onQueryCommentsError);
     }
     else {
       onSearchError(searchRequest);
@@ -366,7 +389,7 @@ date: 2015-03-01 12:00:00
           var linkStart = commentsLinks[i].search("<");
           var linkStop = commentsLinks[i].search(">");
           var nextLink = commentsLinks[i].substring(linkStart + 1, linkStop);
-          getGitHubApiRequestWithCompletion(nextLink, /* accessToken: */ null, onQueryComments, onQueryCommentsError);
+          getGitHubApiRequestWithCompletion(nextLink, /* accessToken: */ null, /* onPreRequest: */ noop, onQueryComments, onQueryCommentsError);
           return;
         }
       }
@@ -436,15 +459,15 @@ date: 2015-03-01 12:00:00
     return commentHtml;
   }
 
-  function getGitHubApiRequestWithCompletion(url, accessToken, onSuccess, onError) {
-    doGitHubApiRequestWithCompletion("GET", url, null, accessToken, onSuccess, onError);
+  function getGitHubApiRequestWithCompletion(url, accessToken, onPreRequest, onSuccess, onError) {
+    doGitHubApiRequestWithCompletion("GET", url, null, accessToken, onPreRequest, onSuccess, onError);
   }
 
-  function postGitHubApiRequestWithCompletion(url, data, accessToken, onSuccess, onError) {
-    doGitHubApiRequestWithCompletion("POST", url, data, accessToken, onSuccess, onError);
+  function postGitHubApiRequestWithCompletion(url, data, accessToken, onPreRequest, onSuccess, onError) {
+    doGitHubApiRequestWithCompletion("POST", url, data, accessToken, onPreRequest, onSuccess, onError);
   }
 
-  function doGitHubApiRequestWithCompletion(method, url, data, accessToken, onSuccess, onError) {
+  function doGitHubApiRequestWithCompletion(method, url, data, accessToken, onPreRequest, onSuccess, onError) {
     var gitHubRequest = new XMLHttpRequest();
     gitHubRequest.open(method, url, /* async: */ true);
 
@@ -455,7 +478,11 @@ date: 2015-03-01 12:00:00
     gitHubRequest.setRequestHeader("Accept", "application/vnd.github.v3.html+json");
     gitHubRequest.onreadystatechange = function() { onRequestReadyStateChange(gitHubRequest, onSuccess, onError) };
 
+    onPreRequest();
     gitHubRequest.send(data);
+  }
+
+  function noop() {
   }
 
   function onRequestReadyStateChange(httpRequest, onSuccess, onError) {
