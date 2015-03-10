@@ -1,4 +1,5 @@
 <script>
+  debugger;
   var code = window.location.href.match(/\?code=(.*)/)[1];
   window.opener.postMessage(code, window.location);
   window.close();
