@@ -58,15 +58,10 @@ date: 2015-03-01 12:00:00
     <div class="gpgc-comment-help">
       <div class="gpgc-hidden" id="help_message">
       </div>
-      <div class="gpgc-token-actions gpgc-hidden" id="token_actions">
-        <span>Comment token:</span>
-        <input class="gpgc-oauth-token gpgc-hidden" id="oauth_token_input" type="password" name="oauth_token" oninput="authenticateUser()" onchange="authenticateUser()"></input>
-        <span class="gpgc-hidden" id="oauth_token_validated"><strong>&#x2713;</strong></span>
-        <button class="gpgc-hidden gpgc-clear-token" id="oauth_clear_token" onclick="clearToken()">Reset</button>
-      </div>
     </div>
     <div class="gpgc-new-comment-bottom-actions">
-      <button class="gpgc-submit" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
+      <button class="gpgc-submit" id="login_button" onclick="loginToGitHub()"><strong>Login to GitHub</strong></button>
+      <button class="gpgc-submit gpgc-hidden" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
     </div>
   </div>
 </div>
@@ -84,6 +79,7 @@ date: 2015-03-01 12:00:00
   var IssueUrl = "";
   var CommentsUrl = "";
   var CommentsArray = [];
+  var StateChallenge = "";
 
   var AllCommentsDiv = document.getElementById("gpgc_all_comments");
   var NoCommentsDiv = document.getElementById("gpgc_no_comments");
@@ -97,21 +93,47 @@ date: 2015-03-01 12:00:00
   var PreviewButton = document.getElementById("preview_button");
   var PreviewDiv = document.getElementById("preview_div");
 
-  var TokenActions = document.getElementById("token_actions");
-  var OAuthTokenInput = document.getElementById("oauth_token_input");
   var ReaderGitHubUrl = document.getElementById("gpgc_reader_url");
   var ReaderAvatarUrl = document.getElementById("gpgc_reader_avatar");
   var ReaderLogin = document.getElementById("gpgc_reader_login");
-  var TokenValidatedMark = document.getElementById("oauth_token_validated");
-  var ClearTokenButton = document.getElementById("oauth_clear_token");
+  var LoginButton = document.getElementById("login_button");
   var SubmitButton = document.getElementById("submit_button");
 
   var HelpMessageDiv = document.getElementById("help_message");
   var ErrorDiv = document.getElementById("gpgc_reader_error");
 
+  window.addEventListener("message", onLogin);
+
+  function onLogin(event) {
+    if (event.origin == "{{ site.url }}" && event.data.state == StateChallenge) {
+      disableElement(LoginButton);
+      getTokenUsingCode(event.data.code);
+    }
+  }
+
+  function getTokenUsingCode(code) {
+    getGitHubApiRequestWithCompletion("https://ghpages-ghcomments.herokuapp.com/authenticate/"+code, /* data: */ null, /* accessToken: */ null, /* onPreRequest: */ noop, onTokenRetrieved, onRetrieveTokenFailed);
+  }
+
+  function onTokenRetrieved(retrieveTokenRequest) {
+    var tokenResponse = JSON.parse(retrieveTokenRequest.responseText);
+    if (tokenResponse.token !== undefined) {
+      AccessToken = tokenResponse.token;
+      persistToken();
+    } else {
+      onRetrieveTokenFailed(retrieveTokenRequest);
+    }
+
+    authenticateUser();
+  }
+
+  function onRetrieveTokenFailed(retrieveTokenRequest) {
+    enableElement(LoginButton);
+    showFatalError("onRetrieveTokenFailed: \n\n" + retrieveTokenRequest.responseText);
+  }
+
   function initializeData() {
     retrieveToken();
-    OAuthTokenInput.value = AccessToken;
   }
 
   function retrieveToken() {
@@ -123,7 +145,6 @@ date: 2015-03-01 12:00:00
   }
 
   function clearToken() {
-    OAuthTokenInput.value = "";
     authenticateUser();
     persistToken();
   }
@@ -170,21 +191,40 @@ date: 2015-03-01 12:00:00
     ReaderLogin.innerHTML = userJson.login;
   }
 
+  function loginToGitHub() {
+    var challengeArray = new Uint32Array(2);
+    window.crypto.getRandomValues(challengeArray);
+    StateChallenge = challengeArray[0].toString() + challengeArray[1].toString();
+    var data = {
+      "client_id": "0ef5ca17b24db4e46807",
+      "scope": "public_repo",
+      "state": StateChallenge,
+      "redirect_uri": "{{ site.url }}/ghpages-ghcomments/preview/on_login/index.html"};
+
+    var urlParameters = Object.keys(data).map(function(key){ 
+      return encodeURIComponent(key) + "=" + encodeURIComponent(data[key]); 
+    }).join("&");
+
+    window.open(
+      "https://github.com/login/oauth/authorize?"+urlParameters,
+      "Log In to GitHub",
+      "resizable,scrollbars,status,width=1024,height=620"
+    );
+  }
+
   function onAuthenticateUserStarted() {
     clearCommentHelp();
-    showCommentHelpMessage("Checking token...");
-    disableElement(OAuthTokenInput);
   }
 
   function onUserAuthenticated(checkAuthenticationRequest) {
     {% if site.data.gpgc.enable_diagnostics %}
-      var elementsToShow = [ TokenValidatedMark, ClearTokenButton ];
-      var elementsToHide = [ OAuthTokenInput ];
+      var elementsToShow = [ SubmitButton ];
+      var elementsToHide = [ LoginButton ];
     {% else %}
-      var elementsToShow = [  ];
-      var elementsToHide = [ TokenActions ];
+      var elementsToShow = [ SubmitButton ];
+      var elementsToHide = [ LoginButton ];
     {% endif %}
-    var elementsToEnable = [ ClearTokenButton, SubmitButton ];
+    var elementsToEnable = [ SubmitButton ];
     var elementsToDisable = [  ];
     persistToken();
     updateCommenterInformation(JSON.parse(checkAuthenticationRequest.responseText));
@@ -207,20 +247,22 @@ date: 2015-03-01 12:00:00
   }
 
   function onAuthenticateUserFailed() {
-    var elementsToShow = [ OAuthTokenInput, TokenActions ];
-    var elementsToHide = [ TokenValidatedMark, ClearTokenButton ];
-    var elementsToEnable = [ OAuthTokenInput ];
-    var elementsToDisable = [ ClearTokenButton, SubmitButton ];
+    var elementsToShow = [ LoginButton ];
+    var elementsToHide = [ SubmitButton ];
+    var elementsToEnable = [ LoginButton ];
+    var elementsToDisable = [ SubmitButton ];
     updateElements(elementsToShow, elementsToHide, elementsToEnable, elementsToDisable);
   }
 
   function authenticateUser() {
-    AccessToken = OAuthTokenInput.value;
-    if (AccessToken.length == 40) {
+    if (AccessToken == null) {
+      onAuthenticateUserFailed();
+      updateCommenterInformation({ login: "You", html_url: "#", avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" });
+    } else if (AccessToken.length == 40) {
       if (TokenAuthenticationStarted == false) {
         TokenAuthenticationStarted = true;
         var userIdUrl = "https://api.github.com/user";
-        getGitHubApiRequestWithCompletion(userIdUrl, AccessToken, onAuthenticateUserStarted, onUserAuthenticated, onUserAuthenticationError);
+        getGitHubApiRequestWithCompletion(userIdUrl, /* data: */ null, AccessToken, onAuthenticateUserStarted, onUserAuthenticated, onUserAuthenticationError);
       }
     } else if (AccessToken.length == 0) {
       onAuthenticateUserFailed();
@@ -332,7 +374,7 @@ date: 2015-03-01 12:00:00
   function findAndCollectComments(userName, repositoryName, issueTitle) {
     var safeQuery = encodeURI(issueTitle);
     var seachQueryUrl = "https://api.github.com/search/issues?q=" + safeQuery + "+repo:" + userName + "/" + repositoryName + "+type:issue+in:title";
-    getGitHubApiRequestWithCompletion(seachQueryUrl, AccessToken, /* onPreRequest: */ noop, onSearchComplete, onSearchError);
+    getGitHubApiRequestWithCompletion(seachQueryUrl, /* data: */ null, AccessToken, /* onPreRequest: */ noop, onSearchComplete, onSearchError);
   }
 
   function onSearchComplete(searchRequest) {
@@ -340,7 +382,7 @@ date: 2015-03-01 12:00:00
     if (searchResults.total_count === 1) {
       IssueUrl = searchResults.items[0].html_url;
       CommentsUrl = searchResults.items[0].comments_url
-      getGitHubApiRequestWithCompletion(CommentsUrl, AccessToken, /* onPreRequest: */ noop, onQueryComments, onQueryCommentsError);
+      getGitHubApiRequestWithCompletion(CommentsUrl, /* data: */ null, AccessToken, /* onPreRequest: */ noop, onQueryComments, onQueryCommentsError);
     }
     else {
       onSearchError(searchRequest);
@@ -389,7 +431,7 @@ date: 2015-03-01 12:00:00
           var linkStart = commentsLinks[i].search("<");
           var linkStop = commentsLinks[i].search(">");
           var nextLink = commentsLinks[i].substring(linkStart + 1, linkStop);
-          getGitHubApiRequestWithCompletion(nextLink, /* accessToken: */ null, /* onPreRequest: */ noop, onQueryComments, onQueryCommentsError);
+          getGitHubApiRequestWithCompletion(nextLink, /* data: */ null, /* accessToken: */ null, /* onPreRequest: */ noop, onQueryComments, onQueryCommentsError);
           return;
         }
       }
@@ -459,8 +501,8 @@ date: 2015-03-01 12:00:00
     return commentHtml;
   }
 
-  function getGitHubApiRequestWithCompletion(url, accessToken, onPreRequest, onSuccess, onError) {
-    doGitHubApiRequestWithCompletion("GET", url, null, accessToken, onPreRequest, onSuccess, onError);
+  function getGitHubApiRequestWithCompletion(url, data, accessToken, onPreRequest, onSuccess, onError) {
+    doGitHubApiRequestWithCompletion("GET", url, data, accessToken, onPreRequest, onSuccess, onError);
   }
 
   function postGitHubApiRequestWithCompletion(url, data, accessToken, onPreRequest, onSuccess, onError) {

@@ -1,10 +1,13 @@
+---
+---
+
 <script>
-  var targetOrigin = "*";
+  var targetOrigin = "{{ site.url }}";
   var eventData = {};
-  var parameters = window.location.href.split('?')[1];
-  var pairs = parameters.split('&');
+  var parameters = window.location.href.split("?")[1];
+  var pairs = parameters.split("&");
   pairs.forEach(function(item) {
-    var kvp = item.split('=');
+    var kvp = item.split("=");
     eventData[kvp[0]] = kvp[1];
   });
   window.opener.postMessage(eventData, targetOrigin);
