@@ -1,6 +1,6 @@
 <script>
   debugger;
   var code = window.location.href.match(/\?code=(.*)/)[1];
-  window.opener.postMessage(code, window.location.origin);
+  window.opener.postMessage(code, "*");
   window.close();
 </script>
