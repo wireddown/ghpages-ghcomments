@@ -107,6 +107,8 @@ date: 2015-03-01 12:00:00
   function onLogin(event) {
     if (event.origin == "{{ site.url }}" && event.data.state == StateChallenge) {
       disableElement(LoginButton);
+      clearCommentHelp();
+      showCommentHelpMessage("Finishing login...");
       getTokenUsingCode(event.data.code);
     }
   }
@@ -129,6 +131,7 @@ date: 2015-03-01 12:00:00
 
   function onRetrieveTokenFailed(retrieveTokenRequest) {
     enableElement(LoginButton);
+    clearCommentHelp();
     showFatalError("onRetrieveTokenFailed: \n\n" + retrieveTokenRequest.responseText);
   }
 
@@ -138,6 +141,9 @@ date: 2015-03-01 12:00:00
 
   function retrieveToken() {
     AccessToken = localStorage.getItem("AccessToken");
+    if (AccessToken == null) {
+      AccessToken = "";
+    }
   }
 
   function persistToken() {
@@ -212,10 +218,6 @@ date: 2015-03-01 12:00:00
     );
   }
 
-  function onAuthenticateUserStarted() {
-    clearCommentHelp();
-  }
-
   function onUserAuthenticated(checkAuthenticationRequest) {
     {% if site.data.gpgc.enable_diagnostics %}
       var elementsToShow = [ SubmitButton ];
@@ -235,7 +237,7 @@ date: 2015-03-01 12:00:00
   function onUserAuthenticationError(checkAuthenticationRequest) {
     TokenAuthenticationStarted = false;
     AccessToken = "";
-    var helpErrorMessage = "Sorry, it looks like the token isn't valid. Please try again.";
+    var helpErrorMessage = "Sorry, it looks like the login failed. Please try again, or <a href='https://github.com/settings/applications'>reset</a> your <strong>ghpages-ghcomments</strong> authorization.";
     var isRawHtml = false;
 {% if site.data.gpgc.enable_diagnostics %}
     helpErrorMessage = "<h3><strong>gpgc</strong> Error: Authentication Failed</h3><p>Could not authenticate OAuth token</p><p>GitHub response:</p><p><pre>" + checkAuthenticationRequest.responseText + "</pre></p>";
@@ -255,23 +257,20 @@ date: 2015-03-01 12:00:00
   }
 
   function authenticateUser() {
-    if (AccessToken == null) {
-      onAuthenticateUserFailed();
-      updateCommenterInformation({ login: "You", html_url: "#", avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" });
-    } else if (AccessToken.length == 40) {
+    if (AccessToken.length == 40) {
       if (TokenAuthenticationStarted == false) {
         TokenAuthenticationStarted = true;
         var userIdUrl = "https://api.github.com/user";
-        getGitHubApiRequestWithCompletion(userIdUrl, /* data: */ null, AccessToken, onAuthenticateUserStarted, onUserAuthenticated, onUserAuthenticationError);
+        getGitHubApiRequestWithCompletion(userIdUrl, /* data: */ null, AccessToken, /* onPreRequest: */ noop, onUserAuthenticated, onUserAuthenticationError);
       }
     } else if (AccessToken.length == 0) {
       onAuthenticateUserFailed();
       updateCommenterInformation({ login: "You", html_url: "https://github.com/wireddown/ghpages-ghcomments", avatar_url: "https://raw.githubusercontent.com/wireddown/ghpages-ghcomments/gh-pages/public/apple-touch-icon-precomposed.png" });
-      showCommentHelpMessage("To leave a comment, please provide a <a href=''>GitHub OAuth token</a>.");
+      showCommentHelpMessage("To leave a comment, please login to GitHub.");
     } else {
       onAuthenticateUserFailed();
       updateCommenterInformation({ login: "You", html_url: "#", avatar_url: "{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" });
-      showCommentHelpError("An OAuth token must be 40 characters long, yours is " + AccessToken.length + " long.", /* isRawHtml: */ false);
+      showFatalError("An OAuth token must be 40 characters long, this one is " + AccessToken.length + " long.");
     }
   }
 
@@ -412,7 +411,7 @@ date: 2015-03-01 12:00:00
 {% else %}
     if (searchRequest.status == 401) {
       AccessToken = "";
-      findAndCollectComments("{{ site.data.gpgc.repo_owner }}", "{{ site.data.gpgc.repo_name }}", "{{ include.post_title }}");
+      findAndCollectComments("{{ site.data.gpgc.repo_owner }}", "{{ site.data.gpgc.repo_name }}", "{{ page.title }}");
     }
     else {
       showFatalError("onSearchError: \n\n" + searchRequest.responseText);
