@@ -47,7 +47,7 @@ function initializeData() {
 
 function retrieveToken() {
   AccessToken = localStorage.getItem("AccessToken");
-  if (AccessToken == null) {
+  if (AccessToken === null) {
     AccessToken = "";
   }
 }
@@ -72,14 +72,14 @@ function onMessage(event) {
   if (event.data.type === undefined) { return; }
 
   switch (event.data.type) {
-    case "login":
-      if (event.origin == gpgc.site_url && event.data.state == StateChallenge) {
-        handleLogin(event.data.code);
-      }
-      return;
-    default:
-      showFatalError("Unknown event: " + JSON.stringify(event.data));
-      return;
+  case "login":
+    if (event.origin === gpgc.site_url && event.data.state === StateChallenge) {
+      handleLogin(event.data.code);
+    }
+    return;
+  default:
+    showFatalError("Unknown event: " + JSON.stringify(event.data));
+    return;
   }
 }
 
@@ -95,7 +95,7 @@ function updateCommentFormMode(newMode, reset) {
   var elementsToHide = [];
 
   if (newMode === PreviewMode) {
-    WriteButton.onclick = function() { updateCommentFormMode(WriteMode, /* reset: */ false) };
+    WriteButton.onclick = function () { updateCommentFormMode(WriteMode, /* reset: */ false); };
     WriteButton.classList.remove("selected");
     PreviewButton.onclick = null;
     PreviewButton.classList.add("selected");
@@ -106,7 +106,7 @@ function updateCommentFormMode(newMode, reset) {
   } else if (newMode === WriteMode) {
     WriteButton.onclick = null;
     WriteButton.classList.add("selected");
-    PreviewButton.onclick = function() { updateCommentFormMode(PreviewMode, /* reset: */ false) };
+    PreviewButton.onclick = function () { updateCommentFormMode(PreviewMode, /* reset: */ false); };
     PreviewButton.classList.remove("selected");
     elementsToShow.push(WriteDiv);
     elementsToHide.push(PreviewDiv);
@@ -129,7 +129,7 @@ function updateCommenterInformation(userJson) {
 /* GitHub: User authentication */
 
 function authenticateUser() {
-  if (AccessToken.length == 40) {
+  if (AccessToken.length === 40) {
     var userIdUrl = "https://api.github.com/user";
     getGitHubApiRequestWithCompletion(
       userIdUrl,
@@ -137,8 +137,9 @@ function authenticateUser() {
       AccessToken,
       /* onPreRequest: */ noop,
       onUserAuthenticated,
-      onUserAuthenticationError);
-  } else if (AccessToken.length == 0) {
+      onUserAuthenticationError
+    );
+  } else if (AccessToken.length === 0) {
     onAuthenticateUserFailed();
     showCommentHelpMessage("To leave a comment, please login to GitHub.");
   } else {
@@ -198,12 +199,12 @@ function loginToGitHub() {
     "redirect_uri": gpgc.github_application_login_redirect_url
   };
 
-  var urlParameters = Object.keys(data).map(function(key){
+  var urlParameters = Object.keys(data).map(function (key) {
     return encodeURIComponent(key) + "=" + encodeURIComponent(data[key]);
   }).join("&");
 
   window.open(
-    "https://github.com/login/oauth/authorize?"+urlParameters,
+    "https://github.com/login/oauth/authorize?" + urlParameters,
     "Log In to GitHub",
     "resizable,scrollbars,status,width=1024,height=620"
   );
@@ -223,7 +224,8 @@ function getTokenUsingCode(code) {
     /* accessToken: */ null,
     /* onPreRequest: */ noop,
     onTokenRetrieved,
-    onRetrieveTokenFailed);
+    onRetrieveTokenFailed
+  );
 }
 
 function onTokenRetrieved(retrieveTokenRequest) {
@@ -255,31 +257,32 @@ function findAndCollectComments(repositoryID, issueTitle) {
     AccessToken,
     /* onPreRequest: */ noop,
     onSearchComplete,
-    onSearchError);
+    onSearchError
+  );
 }
 
 function onSearchComplete(searchRequest) {
   var searchResults = JSON.parse(searchRequest.responseText);
   if (searchResults.total_count === 1) {
     IssueUrl = searchResults.items[0].html_url;
-    CommentsUrl = searchResults.items[0].comments_url
+    CommentsUrl = searchResults.items[0].comments_url;
     getGitHubApiRequestWithCompletion(
       CommentsUrl,
       /* data: */ null,
       AccessToken,
       /* onPreRequest: */ noop,
       onQueryComments,
-      onQueryCommentsError);
-  }
-  else {
+      onQueryCommentsError
+    );
+  } else {
     onSearchError(searchRequest);
   }
 }
 
 function onSearchError(searchRequest) {
   if (gpgc.enable_diagnostics) {
-    var searchErrorMessage = ""
-    if (searchRequest.status != 200) {
+    var searchErrorMessage = "";
+    if (searchRequest.status !== 200) {
       searchErrorMessage = "<h3><strong>gpgc</strong> Error: Search Failed</h3><p>Could not search GitHub repository <strong><a href='https://www.github.com/" + gpgc.repo_id + "'>" + gpgc.repo_id + "</a></strong>.</p><p>GitHub response:</p><p><pre>" + searchRequest.responseText + "</pre></p><p>Check:<ul><li><code>repo_owner</code> in <code>_data/gpgc.yml</code> for typos.</li><li><code>repo_name</code> in <code>_data/gpgc.yml</code> for typos.</li></ul></p>";
     }
 
@@ -297,11 +300,10 @@ function onSearchError(searchRequest) {
       showElement(ErrorDiv);
     }
   } else {
-    if (searchRequest.status == 401) {
+    if (searchRequest.status === 401) {
       AccessToken = "";
       findAndCollectComments(gpgc.repo_id, gpgc.issue_title);
-    }
-    else {
+    } else {
       showFatalError("onSearchError: \n\n" + searchRequest.responseText);
     }
   }
@@ -355,7 +357,8 @@ function renderMarkdown(markdown) {
     AccessToken,
     onRenderRequestStarted,
     onMarkdownRendered,
-    onMarkdownRenderError);
+    onMarkdownRenderError
+  );
 }
 
 function onRenderRequestStarted() {
@@ -382,9 +385,8 @@ function onMarkdownRenderError(renderRequest) {
 /* GitHub: Post comment */
 
 function postComment() {
-  if (CommentMarkdown.value.length == 0) {
+  if (CommentMarkdown.value.length === 0) {
     showCommentHelpError("Sorry, but your comment is empty. Please try again.");
-    return;
   } else {
     clearCommentHelp();
   }
@@ -396,7 +398,8 @@ function postComment() {
     AccessToken,
     onPostCommentStarted,
     onCommentPosted,
-    onPostCommentError);
+    onPostCommentError
+  );
 }
 
 function onPostCommentStarted() {
@@ -435,14 +438,13 @@ function updateCommentsAndActions(allComments) {
     var allCommentsHtml = formatAllComments(CommentsArray);
     AllCommentsDiv.innerHTML = allCommentsHtml + AllCommentsDiv.innerHTML;
 
-    var commentOrComments = allComments.length == 1 ? "Comment" : "Comments";
+    var commentOrComments = allComments.length === 1 ? "Comment" : "Comments";
     ShowCommentsButton.innerHTML = "Show " + allComments.length + " " + commentOrComments;
 
     if (typeof gpgc.use_show_action === "boolean" && gpgc.use_show_action) {
       elementsToShow.push(ActionsDiv);
       elementsToHide.push(AllCommentsDiv);
-    }
-    else {
+    } else {
       elementsToHide.push(ActionsDiv);
       elementsToShow.push(AllCommentsDiv);
     }
@@ -521,10 +523,10 @@ function showFatalError(internalMessage) {
 /* Visual element manipulation */
 
 function updateElements(elementsToShow, elementsToHide, elementsToEnable, elementsToDisable) {
-  if (elementsToShow != null) showElements(elementsToShow);
-  if (elementsToHide != null) hideElements(elementsToHide);
-  if (elementsToEnable != null) enableElements(elementsToEnable);
-  if (elementsToDisable != null) disableElements(elementsToDisable);
+  if (elementsToShow !== null) { showElements(elementsToShow); }
+  if (elementsToHide !== null) { hideElements(elementsToHide); }
+  if (elementsToEnable !== null) { enableElements(elementsToEnable); }
+  if (elementsToDisable !== null) { disableElements(elementsToDisable); }
 }
 
 function updateElementVisibility(element, makeVisible) {
@@ -597,12 +599,12 @@ function doGitHubApiRequestWithCompletion(method, url, data, accessToken, onPreR
   var gitHubRequest = new XMLHttpRequest();
   gitHubRequest.open(method, url, /* async: */ true);
 
-  if (accessToken != null && accessToken != "") {
+  if (accessToken !== null && accessToken !== "") {
     gitHubRequest.setRequestHeader("Authorization", "token " + accessToken);
   }
 
   gitHubRequest.setRequestHeader("Accept", "application/vnd.github.v3.html+json");
-  gitHubRequest.onreadystatechange = function() { onRequestReadyStateChange(gitHubRequest, onSuccess, onError) };
+  gitHubRequest.onreadystatechange = function () { onRequestReadyStateChange(gitHubRequest, onSuccess, onError); };
 
   onPreRequest();
   gitHubRequest.send(data);
@@ -612,8 +614,8 @@ function noop() {
 }
 
 function onRequestReadyStateChange(httpRequest, onSuccess, onError) {
-  if (httpRequest.readyState != 4) { return; }
-  if (httpRequest.status == 200 || httpRequest.status == 201) {
+  if (httpRequest.readyState !== 4) { return; }
+  if (httpRequest.status === 200 || httpRequest.status === 201) {
     onSuccess(httpRequest);
   } else {
     onError(httpRequest);
