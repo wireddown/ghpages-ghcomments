@@ -11,7 +11,7 @@ exclude:             [README.md, LICENSE]
 title:               'GitHub Comments'
 tagline:             'for your GitHub Pages'
 description:         'Fully integrated comments for your GitHub Pages.'
-url:                 http://wireddown.github.io
+url:                 http://downtothewire.io
 baseurl:             /ghpages-ghcomments
 
 # About/contact
