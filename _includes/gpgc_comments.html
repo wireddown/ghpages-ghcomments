@@ -12,30 +12,26 @@
 </div>
 
 <div class="gpgc-comment gpgc-comments-font gpgc-color-theme" id="gpgc_new_comment">
-  <div>
-    <div class="gpgc-comment-header">
-      <a id="gpgc_reader_url" href="#"><img class="gpgc-avatar" id="gpgc_reader_avatar" src="{{ site.baseurl }}/public/apple-touch-icon-precomposed.png" height="42" /><span id="gpgc_reader_login">You</span></a>
-      <small>today</small>
-      <div class="gpgc-tabs">
-        <button class="gpgc-tab gpgc-text-button" id="write_button">Write</button>
-        <button class="gpgc-tab gpgc-text-button" id="preview_button">Preview</button>
-      </div>
+  <div class="gpgc-comment-header">
+    <a id="gpgc_reader_url" href="https://github.com/wireddown/ghpages-ghcomments"><img class="gpgc-avatar" id="gpgc_reader_avatar" src="https://raw.githubusercontent.com/wireddown/ghpages-ghcomments/gh-pages/public/apple-touch-icon-precomposed.png" height="42" /><span id="gpgc_reader_login">You</span></a>
+    <small>today</small>
+    <div class="gpgc-tabs">
+      <button class="gpgc-tab gpgc-text-button" id="write_button">Write</button>
+      <button class="gpgc-tab gpgc-text-button" id="preview_button">Preview</button>
     </div>
-    <div class="gpgc-new-comment" id="write_div">
-      <div class="gpgc-new-comment-form">
-        <textarea class="gpgc-new-comment-form-textarea" id="new_comment_field" placeholder="Write a comment"></textarea>
-      </div>
+  </div>
+  <div class="gpgc-new-comment" id="write_div">
+    <div class="gpgc-new-comment-form">
+      <textarea class="gpgc-new-comment-form-textarea" id="new_comment_field" placeholder="Write a comment"></textarea>
     </div>
-    <div class="gpgc-new-comment gpgc-comment-contents gpgc-hidden" id="preview_div">
-    </div>
-    <div class="gpgc-comment-help">
-      <div class="gpgc-hidden" id="help_message">
-      </div>
-    </div>
-    <div class="gpgc-new-comment-actions">
-      <button class="gpgc-normal-primary-button gpgc-text-button" id="login_button" onclick="loginToGitHub()"><strong>Login to GitHub</strong></button>
-      <button class="gpgc-normal-primary-button gpgc-text-button gpgc-hidden" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
-    </div>
+  </div>
+  <div class="gpgc-new-comment gpgc-comment-contents gpgc-hidden" id="preview_div">
+  </div>
+  <div class="gpgc-hidden gpgc-comment-help" id="help_message">
+  </div>
+  <div class="gpgc-new-comment-actions">
+    <button class="gpgc-normal-primary-button gpgc-text-button" id="login_button" onclick="loginToGitHub()"><strong>Login to GitHub</strong></button>
+    <button class="gpgc-normal-primary-button gpgc-text-button gpgc-hidden" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
   </div>
 </div>
 
