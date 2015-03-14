@@ -7,7 +7,7 @@
 
 <div class="gpgc-actions gpgc-hidden" id="gpgc_actions">
   <span class="gpgc-action">
-    <button class="gpgc-show" id="show_comments_button" onclick="showAllComments(CommentsArray)"></button>
+    <button class="gpgc-large-secondary-button" id="show_comments_button" onclick="showAllComments(CommentsArray)"></button>
   </span>
 </div>
 
@@ -32,9 +32,9 @@
       <div class="gpgc-hidden" id="help_message">
       </div>
     </div>
-    <div class="gpgc-new-comment-bottom-actions">
-      <button class="gpgc-submit" id="login_button" onclick="loginToGitHub()"><strong>Login to GitHub</strong></button>
-      <button class="gpgc-submit gpgc-hidden" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
+    <div class="gpgc-new-comment-actions">
+      <button class="gpgc-normal-primary-button" id="login_button" onclick="loginToGitHub()"><strong>Login to GitHub</strong></button>
+      <button class="gpgc-normal-primary-button gpgc-hidden" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
     </div>
   </div>
 </div>
@@ -313,18 +313,18 @@
 
     if (newMode === "preview") {
       WriteButton.onclick = function() { updateCommentFormMode("write", /* reset: */ false) };
-      WriteButton.className = "gpgc-tab";
+      WriteButton.classList.remove("selected");
       PreviewButton.onclick = null;
-      PreviewButton.classList.add("preview");
+      PreviewButton.classList.add("selected");
       elementsToHide.push(WriteDiv);
       elementsToShow.push(PreviewDiv);
       PreviewDiv.innerHTML = "";
       renderMarkdown(CommentMarkdown.value);
     } else if (newMode === "write") {
       WriteButton.onclick = null;
-      WriteButton.classList.add("write");
+      WriteButton.classList.add("selected");
       PreviewButton.onclick = function() { updateCommentFormMode("preview", /* reset: */ false) };
-      PreviewButton.className = "gpgc-tab";
+      PreviewButton.classList.remove("selected");
       elementsToShow.push(WriteDiv);
       elementsToHide.push(PreviewDiv);
     }

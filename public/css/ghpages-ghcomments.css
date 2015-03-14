@@ -23,7 +23,7 @@
   text-align: center;
 }
 
-.gpgc-show {
+.gpgc-large-secondary-button {
   display: inline-block;
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -36,7 +36,7 @@
   cursor: pointer;
 }
 
-.gpgc-show:hover {
+.gpgc-large-secondary-button:hover {
   background-color: #f5f5f5;
 }
 
@@ -45,7 +45,7 @@
 }
 
 @media (min-width: 410px) {
-  .gpgc-submit {
+  .gpgc-normal-primary-button {
     float: right;
     display: inline;
   }
@@ -55,7 +55,7 @@
     padding-left: 0px;
   }
   
-  .gpgc-new-comment-bottom-actions {
+  .gpgc-new-comment-actions {
     padding: .4rem .4rem 3.2rem !important;
   }
 }
@@ -101,14 +101,7 @@
   cursor: pointer;
 }
 
-.gpgc-tab.write {
-  border: solid 1px #90a959; /* THEME: use `a` color */
-  background-color: #FFFFFF;
-  color: inherit;
-  cursor: auto;
-}
-
-.gpgc-tab.preview {
+.gpgc-tab.selected {
   border: solid 1px #90a959; /* THEME: use `a` color */
   background-color: #FFFFFF;
   color: inherit;
@@ -119,11 +112,11 @@
   min-height: 4rem;
 }
 
-.gpgc-new-comment-bottom-actions {
+.gpgc-new-comment-actions {
   padding: 0.4rem 0.4rem 1rem;
 }
 
-.gpgc-submit {
+.gpgc-normal-primary-button {
   padding-left: 1.4rem;
   padding-right: 1.4rem;
   padding-top: .4rem;
@@ -139,7 +132,7 @@ button:disabled {
   cursor: auto;
 }
 
-.gpgc-submit strong {
+.gpgc-normal-primary-button strong {
  color: #FFFFFF;
  }
 
@@ -170,7 +163,6 @@ button:disabled {
   background-color: #eee;
   border: solid 1px #eee;
           border-radius: 0px 0px 24px 24px;
-     -moz-border-radius: 0px 0px 24px 24px;
   -webkit-border-radius: 0px 0px 24px 24px;
 }
 
