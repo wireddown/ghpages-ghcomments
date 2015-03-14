@@ -50,28 +50,14 @@
     display: inline;
   }
 
-  .gpgc-oauth-token {
-    width: 24em;
-  }
-
   .gpgc-tabs {
     float: right;
     padding-left: 0px;
   }
   
-  .gpgc-token-actions {
-    width: 320px !important;
-  }
-
   .gpgc-new-comment-bottom-actions {
     padding: .4rem .4rem 3.2rem !important;
   }
-}
-
-.gpgc-token-actions {
-  margin-bottom: .8rem;
-  display: inline-block;
-  width: 100%;
 }
 
 .gpgc-comment-header {
@@ -116,15 +102,14 @@
 }
 
 .gpgc-tab.write {
-  border: solid 1px;
-  border-color: #90a959; /* THEME: use `a` color */
+  border: solid 1px #90a959; /* THEME: use `a` color */
   background-color: #FFFFFF;
   color: inherit;
   cursor: auto;
 }
 
 .gpgc-tab.preview {
-  border: solid 1px #90a959;
+  border: solid 1px #90a959; /* THEME: use `a` color */
   background-color: #FFFFFF;
   color: inherit;
   cursor: auto;
@@ -136,12 +121,6 @@
 
 .gpgc-new-comment-bottom-actions {
   padding: 0.4rem 0.4rem 1rem;
-}
-
-.gpgc-oauth-token {
-  width: 100%;
-  border: 1px solid #90A959;
-  padding: .4rem;
 }
 
 .gpgc-submit {
@@ -163,22 +142,6 @@ button:disabled {
 .gpgc-submit strong {
  color: #FFFFFF;
  }
-
-.gpgc-clear-token {
-  padding-left: 1.4rem;
-  padding-right: 1.4rem;
-  padding-top: .4rem;
-  padding-bottom: .4rem;
-  border: solid 1px #90a959;
-  background-color: #FFFFFF;
-  color: inherit;
-  cursor: pointer;
-  color: #90a959; /* THEME: use `a` color */
-}
-
-.gpgc-clear-token:hover {
-  background-color: #f5f5f5;
-}
 
 .gpgc-comment-help {
   padding: .4rem;
