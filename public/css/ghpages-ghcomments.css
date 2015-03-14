@@ -38,20 +38,27 @@
   display: none !important;
 }
 
-.gpgc-comments-font {
-  font-size: .8rem;
-}
-
 .gpgc-centered-text {
   text-align: center;
+}
+
+.gpgc-comments-font {
+  font-size: .8rem;
 }
 
 .gpgc-new-section {
   margin-top: 3rem;
 }
 
+.gpgc-text-button {
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+  padding-top: .4rem;
+  padding-bottom: .4rem;
+  cursor: pointer;
+}
+
 /*
- *
  * Wider display overrides
  *
  */
@@ -140,6 +147,7 @@
 
 /*
  * New comment form classes
+ *
  */
 
 .gpgc-new-comment {
@@ -157,13 +165,8 @@
 }
 
 .gpgc-tab {
-  padding-left: 1.4rem;
-  padding-right: 1.4rem;
-  padding-top: .4rem;
-  padding-bottom: .4rem;
   margin-left: -5px;
   color: #fff;
-  cursor: pointer;
 }
 
 .gpgc-tab.selected {
@@ -188,11 +191,6 @@
 }
 
 .gpgc-normal-primary-button {
-  padding-left: 1.4rem;
-  padding-right: 1.4rem;
-  padding-top: .4rem;
-  padding-bottom: .4rem;
-  cursor: pointer;
 }
 
 .gpgc-normal-primary-button strong {
