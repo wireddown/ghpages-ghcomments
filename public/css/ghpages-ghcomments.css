@@ -7,9 +7,75 @@
  * Learn more at https://github.com/wireddown/ghpages-ghcomments
  */
 
+/*
+ * Color theme
+ *
+ */
+
+.gpgc-color-theme .gpgc-large-secondary-button,
+.gpgc-color-theme .gpgc-normal-primary-button,
+.gpgc-color-theme .gpgc-tab,
+.gpgc-color-theme .gpgc-tab .selected,
+.gpgc-color-theme .gpgc-new-comment-form-textarea {
+  border: solid 1px #90a959;
+}
+
+.gpgc-color-theme .gpgc-large-secondary-button {
+  color: #90a959;
+}
+
+.gpgc-color-theme .gpgc-normal-primary-button,
+.gpgc-color-theme .gpgc-tab {
+  background-color: #90a959;
+}
+
+/*
+ * Mix-ins
+ *
+ */
+
 .gpgc-hidden {
   display: none !important;
 }
+
+.gpgc-comments-font {
+  font-size: .8rem;
+}
+
+.gpgc-centered-text {
+  text-align: center;
+}
+
+.gpgc-new-section {
+  margin-top: 3rem;
+}
+
+/*
+ *
+ * Wider display overrides
+ *
+ */
+
+@media (min-width: 410px) {
+  .gpgc-normal-primary-button {
+    float: right;
+    display: inline;
+  }
+
+  .gpgc-tabs {
+    float: right;
+    padding-left: 0px;
+  }
+  
+  .gpgc-new-comment-actions {
+    padding: .4rem .4rem 3.2rem !important;
+  }
+}
+
+/*
+ * Classes
+ *
+ */
 
 .gpgc-actions  {
   overflow: hidden; /* clearfix */
@@ -28,8 +94,6 @@
   width: 14rem;
   font-family: "PT Sans", Helvetica, Arial, sans-serif;
   font-size: 1rem;
-  border: solid 1px #90a959; /* THEME: use `a` color */
-  color: #90a959; /* THEME: use `a` color */
   background-color: #fff;
   cursor: pointer;
 }
@@ -38,123 +102,14 @@
   background-color: #f5f5f5;
 }
 
-.gpgc-comments-font {
-  font-size: .8rem;
+.gpgc_last_div {
+  padding-top: 12rem;
 }
 
-@media (min-width: 410px) {
-  .gpgc-normal-primary-button {
-    float: right;
-    display: inline;
-  }
-
-  .gpgc-tabs {
-    float: right;
-    padding-left: 0px;
-  }
-  
-  .gpgc-new-comment-actions {
-    padding: .4rem .4rem 3.2rem !important;
-  }
-}
-
-.gpgc-comment-header {
-  padding-top: .4rem;
-  padding-right: .4rem;
-  padding-left: .4rem;
-  margin-bottom: .2rem;
-}
-
-.gpgc-comment-form {
-  padding-left: .4rem;
-  padding-right: .4rem;
-}
-
-.gpgc-comment-form-textarea {
-  font-family: inherit;
-  display: block;
-  width: 100%;
-  min-height: 8rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: .4rem;
-  resize: vertical;
-  border: solid 1px #90a959; /* THEME: use `a` color */
-}
-
-.gpgc-tabs {
-  margin-top: .4rem;
-  padding-left: 5px;
-}
-
-.gpgc-tab {
-  padding-left: 1.4rem;
-  padding-right: 1.4rem;
-  padding-top: .4rem;
-  padding-bottom: .4rem;
-  margin-left: -5px;
-  border: solid 1px #90a959; /* THEME: use `a` color */
-  background-color: #90a959; /* THEME: use `a` color */
-  color: #FFFFFF;
-  cursor: pointer;
-}
-
-.gpgc-tab.selected {
-  border: solid 1px #90a959; /* THEME: use `a` color */
-  background-color: #FFFFFF;
-  color: inherit;
-  cursor: auto;
-}
-
-.gpgc-new-comment {
-  min-height: 4rem;
-}
-
-.gpgc-new-comment-actions {
-  padding: 0.4rem 0.4rem 1rem;
-}
-
-.gpgc-normal-primary-button {
-  padding-left: 1.4rem;
-  padding-right: 1.4rem;
-  padding-top: .4rem;
-  padding-bottom: .4rem;
-  border: solid 1px #90a959; /* THEME: use `a` color */
-  background-color: #90a959; /* THEME: use `a` color */
-  cursor: pointer;
-}
-
-button:disabled {
-  border: solid 1px #888888;
-  background-color: #aaaaaa;
-  cursor: auto;
-}
-
-.gpgc-normal-primary-button strong {
- color: #FFFFFF;
- }
-
-.gpgc-comment-help {
-  padding: .4rem;
-}
-
-.gpgc-help-message {
-}
-
-.gpgc-help-error {
-  padding: .4rem;
-  margin: .4rem;
-  border: solid 2px #ab4642;
-  background-color: #ffeded;
-}
-
-.gpgc-centered-text {
-  text-align: center;
-}
-
-.gpgc-new-section {
-  margin-top: 3rem;
-}
+/*
+ * Comment classes
+ *
+ */
 
 .gpgc-comment {
   margin-top: .8rem;
@@ -162,6 +117,13 @@ button:disabled {
   border: solid 1px #eee;
           border-radius: 0px 0px 24px 24px;
   -webkit-border-radius: 0px 0px 24px 24px;
+}
+
+.gpgc-comment-header {
+  padding-top: .4rem;
+  padding-right: .4rem;
+  padding-left: .4rem;
+  margin-bottom: .2rem;
 }
 
 .gpgc-avatar {
@@ -176,6 +138,83 @@ button:disabled {
   padding: .4rem .4rem 0 .4rem;
 }
 
-.gpgc_last_div {
-  padding-top: 12rem;
+/*
+ * New comment form classes
+ */
+
+.gpgc-new-comment {
+  min-height: 4rem;
+}
+
+.gpgc-new-comment-form {
+  padding-left: .4rem;
+  padding-right: .4rem;
+}
+
+.gpgc-tabs {
+  margin-top: .4rem;
+  padding-left: 5px;
+}
+
+.gpgc-tab {
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+  padding-top: .4rem;
+  padding-bottom: .4rem;
+  margin-left: -5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.gpgc-tab.selected {
+  background-color: #fff;
+  color: inherit;
+  cursor: auto;
+}
+
+.gpgc-new-comment-form-textarea {
+  font-family: inherit;
+  display: block;
+  width: 100%;
+  min-height: 8rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: .4rem;
+  resize: vertical;
+}
+
+.gpgc-new-comment-actions {
+  padding: 0.4rem 0.4rem 1rem;
+}
+
+.gpgc-normal-primary-button {
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+  padding-top: .4rem;
+  padding-bottom: .4rem;
+  cursor: pointer;
+}
+
+.gpgc-normal-primary-button strong {
+ color: #fff;
+ }
+
+button:disabled {
+  border: solid 1px #888 !important;
+  background-color: #aaa !important;
+  cursor: auto !important;
+}
+
+.gpgc-comment-help {
+  padding: .4rem;
+}
+
+.gpgc-help-message {
+}
+
+.gpgc-help-error {
+  padding: .4rem;
+  margin: .4rem;
+  border: solid 2px #ab4642;
+  background-color: #ffeded;
 }
