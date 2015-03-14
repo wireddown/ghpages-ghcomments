@@ -78,7 +78,7 @@ function onMessage(event) {
       }
       return;
     default:
-      showFatalError("Unknown event: " + event);
+      showFatalError("Unknown event: " + JSON.stringify(event.data));
       return;
   }
 }
@@ -246,7 +246,7 @@ function onRetrieveTokenFailed(retrieveTokenRequest) {
 
 /* GitHub: Search for comment issue */
 
-  function findAndCollectComments(repositoryID, issueTitle) {
+function findAndCollectComments(repositoryID, issueTitle) {
   var safeQuery = encodeURI(issueTitle);
   var seachQueryUrl = "https://api.github.com/search/issues?q=" + safeQuery + "+repo:" + repositoryID + "+type:issue+in:title";
   getGitHubApiRequestWithCompletion(
