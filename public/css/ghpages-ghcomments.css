@@ -20,11 +20,9 @@
 .gpgc-action {
   display: block;
   padding: 1rem;
-  text-align: center;
 }
 
 .gpgc-large-secondary-button {
-  display: inline-block;
   padding-top: 1rem;
   padding-bottom: 1rem;
   width: 14rem;
@@ -150,7 +148,7 @@ button:disabled {
   background-color: #ffeded;
 }
 
-.gpgc-no-comments {
+.gpgc-centered-text {
   text-align: center;
 }
 
@@ -171,6 +169,7 @@ button:disabled {
   margin-bottom: 0px;
   margin-right: .4rem;
   vertical-align: baseline;
+  border-radius: 0px;
 }
 
 .gpgc-comment-contents {
