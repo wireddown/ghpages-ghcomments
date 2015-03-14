@@ -3,7 +3,7 @@
 
 <script>
   var targetOrigin = "*";
-  var eventData = {};
+  var eventData = { type: "login" };
   var parameters = window.location.href.split("?")[1];
   var pairs = parameters.split("&");
   pairs.forEach(function(item) {
