@@ -83,7 +83,7 @@
   findAndCollectComments("{{ site.data.gpgc.repo_owner }}", "{{ site.data.gpgc.repo_name }}", "{{ include.post_title }}");
 
   /* Data */
-  
+
   function initializeData() {
     retrieveToken();
   }
@@ -112,11 +112,17 @@
   }
 
   function onMessage(event) {
-    if (event.origin == "{{ site.url }}" && event.data.state == StateChallenge) {
-      disableElement(LoginButton);
-      clearCommentHelp();
-      showCommentHelpMessage("Finishing login...");
-      getTokenUsingCode(event.data.code);
+    if (event.data.type === undefined) { return; }
+
+    switch (event.data.type) {
+      case "login":
+        if (event.origin == "{{ site.url }}" && event.data.state == StateChallenge) {
+          handleLogin(event.data.code);
+        }
+        return;
+      default:
+        showFatalError("Unknown event: " + event);
+        return;
     }
   }
 
@@ -232,13 +238,13 @@
     window.crypto.getRandomValues(challengeArray);
     StateChallenge = challengeArray[0].toString() + challengeArray[1].toString();
     var data = {
-      "client_id": "0ef5ca17b24db4e46807",
+      "client_id": "{{ site.data.gpgc.github_application.client_id }}",
       "scope": "public_repo",
       "state": StateChallenge,
       "redirect_uri": "{{ site.url }}/ghpages-ghcomments/preview/on_login/index.html"};
 
-    var urlParameters = Object.keys(data).map(function(key){ 
-      return encodeURIComponent(key) + "=" + encodeURIComponent(data[key]); 
+    var urlParameters = Object.keys(data).map(function(key){
+      return encodeURIComponent(key) + "=" + encodeURIComponent(data[key]);
     }).join("&");
 
     window.open(
@@ -248,9 +254,16 @@
     );
   }
 
+  function handleLogin(code) {
+    disableElement(LoginButton);
+    clearCommentHelp();
+    showCommentHelpMessage("Finishing login...");
+    getTokenUsingCode(code);
+  }
+
   function getTokenUsingCode(code) {
     getGitHubApiRequestWithCompletion(
-      "{{ site.data.gpgc.github_code_authenticator }}" + code,
+      "{{ site.data.gpgc.github_application.code_authenticator }}" + code,
       /* data: */ null,
       /* accessToken: */ null,
       /* onPreRequest: */ noop,
