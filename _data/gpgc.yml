@@ -1,6 +1,9 @@
 repo_owner: __your_github_username__
 repo_name: __your_github_repository__
-use_show_action: true
+use_show_action: false
 label_name: Post Comments
 label_color: 666666
+github_application:
+  client_id: 0ef5ca17b24db4e46807
+  code_authenticator: https://ghpages-ghcomments.herokuapp.com/authenticate/
 enable_diagnostics: false
