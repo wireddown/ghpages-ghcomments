@@ -29,21 +29,29 @@ Setup is fast -- these commits show just how easy it is:
 > [Specify](https://github.com/wireddown/wireddown.github.io/commit/6e3586ea934f9a16ead56ac9572f19fffe4d1e0b?diff=split) your GitHub username, Jekyll repo, and other preferences:
 >
 > ```
-> repo_owner: your_github_username
-> repo_name: your_github_repository
-> use_show_action: true
+> repo_owner: __YOUR_GITHUB_USERNAME__
+> repo_name: __YOUR_GITHUB_REPOSITORY__
+> use_show_action: false
 > label_name: Blog post comments
 > label_color: 666666
+> github_application:
+>   client_id: 012..def
+>   code_authenticator: https://example.com/auth/
+> enable_diagnostics: false
 > ```
+>
+> For details about the `github_application` entries, see [Custom GitHub Application](../advanced/custom-github-app/).
 
 -
 
 > **_includes/head.html**
 > 
-> [Add a link](https://github.com/wireddown/wireddown.github.io/commit/74a35798e15fc25ff097a0480ebbb997c0fbabc6?diff=split) to the `ghpages-ghcomments.css` to the \<head\> element:
+> [Add a link](https://github.com/wireddown/wireddown.github.io/commit/74a35798e15fc25ff097a0480ebbb997c0fbabc6?diff=split) to the `gpgc_styles.css` to the \<head\> element:
 >
 > ```
-> <link rel="stylesheet" href="{{ site.baseurl }}/public/css/ghpages-ghcomments.css">
+> <link
+>   rel="stylesheet"
+>   href="{{ site.baseurl }}/public/css/gpgc_styles.css">
 > ```
 
 -
@@ -79,7 +87,9 @@ git add _includes/head.html
 git add _layouts/post.html
 git add _data/gpgc.yml
 git add _includes/gpgc_comments.html
-git add public/css/ghpages-ghcomments.css
+git add public/css/gpgc_styles.css
+git add public/html/gpgc_redirect.html
+git add public/js/gpgc_core.js
 git commit -m "Add ghpages-ghcomments"
 git push
 ```

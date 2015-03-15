@@ -21,6 +21,7 @@ For each repository with ghpages-ghcomments:
 ## Other advanced topics:
 
 * [Verbose Usage](../verbose-usage)
+* [Custom GitHub App](../custom-github-app)
 * [Troubleshooting](../troubleshooting)
 * [Manual](../manual)
 * Uninstall

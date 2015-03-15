@@ -24,6 +24,7 @@ When you're at a laptop or desktop, you can use the developer console in Firefox
 ## Other advanced topics:
 
 * [Verbose Usage](../verbose-usage)
+* [Custom GitHub App](../custom-github-app)
 * Troubleshooting
 * [Manual](../manual)
 * [Uninstall](../uninstall)

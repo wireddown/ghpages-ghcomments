@@ -13,7 +13,7 @@ Set up is quick, and everything has been automated to hook into your git workflo
 ### It's good for your readers
  1. **Your readers' web habits are not tracked** by services like [Disqus](http://en.wikipedia.org/wiki/Disqus).
  1. **Your readers have full control** over their comments -- they can edit and delete them.
- 1. **Page presentation is still Jekyll-fast** from lean built-in JavaScript -- no jQuery or AJAX.
+ 1. **Page presentation is still Jekyll-fast** from lean built-in and cached JavaScript -- no jQuery or other *"frameworks"*.
  1. **Customize the look and feel** with a small collection of CSS classes.
 
 ### It's good for you
