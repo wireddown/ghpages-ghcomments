@@ -35,8 +35,9 @@ Setup is fast -- these commits show just how easy it is:
 > label_name: Blog post comments
 > label_color: 666666
 > github_application:
->   client_id: 012..def
->   code_authenticator: https://example.com/auth/
+>   client_id: 0ef...807
+>   code_authenticator: https://.../authenticate/
+>   callback_url: http://.../gpgc_redirect/index.html
 > enable_diagnostics: false
 > ```
 >

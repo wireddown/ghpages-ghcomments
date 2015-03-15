@@ -213,7 +213,7 @@ function loginToGitHub() {
 function handleLogin(code) {
   disableElement(LoginButton);
   clearCommentHelp();
-  showCommentHelpMessage("Finishing login...");
+  showCommentHelpMessage("<em>Finishing login...<em>");
   getTokenUsingCode(code);
 }
 
@@ -386,7 +386,8 @@ function onMarkdownRenderError(renderRequest) {
 
 function postComment() {
   if (CommentMarkdown.value.length === 0) {
-    showCommentHelpError("Sorry, but your comment is empty. Please try again.");
+    showCommentHelpError("Sorry, but your comment is empty. Please try again.", /* isRawHtml: */ false);
+    return;
   } else {
     clearCommentHelp();
   }

@@ -52,7 +52,7 @@
     use_show_action: {{ site.data.gpgc.use_show_action }},
     github_application_client_id: "{{ site.data.gpgc.github_application.client_id }}",
     github_application_code_authenticator_url: "{{ site.data.gpgc.github_application.code_authenticator }}",
-    github_application_login_redirect_url: "{{ site.url }}{{ site.baseurl }}" + "/public/html/gpgc_redirect/index.html",
+    github_application_login_redirect_url: "{{ site.data.gpgc.github_application.callback_url }}",
     enable_diagnostics: {{ site.data.gpgc.enable_diagnostics }},
   };
 
