@@ -11,7 +11,7 @@ Set up is quick, and everything has been automated to hook into your git workflo
 ### It's good for your readers
  1. **Your readers' web habits are not tracked** by services like [Disqus](http://en.wikipedia.org/wiki/Disqus).
  1. **Your readers have full control** over their comments -- they can edit and delete them.
- 1. **Page presentation is still Jekyll-fast** from lean built-in JavaScript -- no jQuery or AJAX.
+ 1. **Page presentation is still Jekyll-fast** from lean built-in JavaScript -- no jQuery or other *"frameworks"*.
  1. **Customize the look and feel** with a small collection of CSS classes.
 
 ### It's good for you
@@ -33,7 +33,7 @@ The blog posts on this site show how [**ghpages-ghcomments**](https://github.com
 
 # Setup
 
-Setup is fast -- [these commits](https://github.com/wireddown/wireddown.github.io/compare/4c204b0a3fe7530423833731e201d60f225405bf...53d52bce0b4f590129e5cca8dde87910a93dcb95?diff=split) show just how easy it is.
+Setup is fast -- [these commits](https://github.com/wireddown/gpgc-test/compare/2896ce7f85c8f4e07f2afe7700670386f0ec5b95...240420c7dd0f7ef0f2dd39c06897cf0d3e711c24?diff=split) show just how easy it is.
 
 Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 
@@ -48,5 +48,6 @@ Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 * 20 Jan 2015: _First release_
 * 02 Feb 2015: _Fix issues [#6](https://github.com/wireddown/ghpages-ghcomments/issues/6) and [#7](https://github.com/wireddown/ghpages-ghcomments/issues/7)_
 * 08 Feb 2015: _Add diagnostics (issue [#10](https://github.com/wireddown/ghpages-ghcomments/issues/10))_
+* 15 Mar 2015: _Add on-page comments (issue [#11](https://github.com/wireddown/ghpages-ghcomments/issues/11))_
 
 Full history: [`release` branch commit log](https://github.com/wireddown/ghpages-ghcomments/commits/release)
