@@ -8,10 +8,10 @@ tags: [sidebar]
 
 Setup is fast -- these commits show just how easy it is:
 
- 1. [Add](https://github.com/wireddown/wireddown.github.io/commit/4c204b0a3fe7530423833731e201d60f225405bf?diff=unified) the ghpages-ghcomments files.
- 1. [Configure](https://github.com/wireddown/wireddown.github.io/commit/6e3586ea934f9a16ead56ac9572f19fffe4d1e0b?diff=split) comments for your blog.
- 1. [Add the CSS](https://github.com/wireddown/wireddown.github.io/commit/74a35798e15fc25ff097a0480ebbb997c0fbabc6?diff=split) to your \<head\>.
- 1. [Add the comments tag](https://github.com/wireddown/wireddown.github.io/commit/53d52bce0b4f590129e5cca8dde87910a93dcb95?diff=split) to your post.html layout.
+ 1. [Add](https://github.com/wireddown/gpgc-test/commit/e6eefb8539f1630d5e847760b288a857b31fe55e?diff=unified) the ghpages-ghcomments files.
+ 1. [Configure](https://github.com/wireddown/gpgc-test/commit/f73cc70e931c14f63ea8081ec3c006b67258df4d?diff=split) comments for your blog.
+ 1. [Add the CSS](https://github.com/wireddown/gpgc-test/commit/b84c65db227b867228178a50554f3374e70a9314?diff=split) to your \<head\>.
+ 1. [Add the comments tag](https://github.com/wireddown/gpgc-test/commit/240420c7dd0f7ef0f2dd39c06897cf0d3e711c24?diff=split) to your post.html layout.
  1. Install the git hooks (skip to [step 4](#step-4) below)
 
 ## Step-by-step
@@ -26,7 +26,7 @@ Setup is fast -- these commits show just how easy it is:
 
 > **_data/gpgc.yml**
 >
-> [Specify](https://github.com/wireddown/wireddown.github.io/commit/6e3586ea934f9a16ead56ac9572f19fffe4d1e0b?diff=split) your GitHub username, Jekyll repo, and other preferences:
+> [Specify](https://github.com/wireddown/gpgc-test/commit/f73cc70e931c14f63ea8081ec3c006b67258df4d?diff=split) your GitHub username, Jekyll repo, and other preferences:
 >
 > ```
 > repo_owner: __YOUR_GITHUB_USERNAME__
@@ -47,7 +47,7 @@ Setup is fast -- these commits show just how easy it is:
 
 > **_includes/head.html**
 > 
-> [Add a link](https://github.com/wireddown/wireddown.github.io/commit/74a35798e15fc25ff097a0480ebbb997c0fbabc6?diff=split) to the `gpgc_styles.css` to the \<head\> element:
+> [Add a link](https://github.com/wireddown/gpgc-test/commit/b84c65db227b867228178a50554f3374e70a9314?diff=split) to the `gpgc_styles.css` to the \<head\> element:
 >
 > ```
 > <link
@@ -59,7 +59,7 @@ Setup is fast -- these commits show just how easy it is:
 
 > **_layouts/post.html**
 >
-> [Add an include tag](https://github.com/wireddown/wireddown.github.io/commit/53d52bce0b4f590129e5cca8dde87910a93dcb95?diff=split) at the bottom (or wherever you want comments to appear):
+> [Add an include tag](https://github.com/wireddown/gpgc-test/commit/240420c7dd0f7ef0f2dd39c06897cf0d3e711c24?diff=split) at the bottom (or wherever you want comments to appear):
 >
 > ```
 > {% include gpgc_comments.html post_title=page.title %}

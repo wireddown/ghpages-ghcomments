@@ -15,7 +15,7 @@ When you set up [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-gh
 
 All of the HTML elements have CSS classes assigned to them, making it easy to control how you present the comments.
 
-By default, the elements have been tuned for [poole/lanyon](https://github.com/poole/lanyon). If you chose a different color theme than this one, you can change the color of the comments buttons to match yours by updating the `.gpgc-color-theme` classes in the CSS.
+By default, the elements have been tuned for [poole/lanyon](https://github.com/poole/lanyon). If you chose a different color theme than this one, you can change the color of the comments buttons to match yours by [updating the `.gpgc-color-theme` classes](https://github.com/wireddown/gpgc-test/commit/6c9bb1b880c59211afdeccdab0011be19de4b9f7?diff=split) in the CSS.
 
 ### Use your own GitHub API application
 
