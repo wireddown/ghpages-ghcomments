@@ -1,170 +1,60 @@
-<div class="gpgc-all-comments" id="all-comments"></div>
-
-<div class="gpgc-actions">
-  <span class="gpgc-action" id="load-comments-button"></span>
-  <span class="gpgc-action" id="leave-comment-link"></span>
+<div class="gpgc-new-section gpgc-comments-font gpgc-hidden" id="gpgc_all_comments">
 </div>
 
+<div class="gpgc-new-section gpgc-comments-font gpgc-hidden" id="gpgc_no_comments">
+  <p class="gpgc-centered-text">No comments</p>
+</div>
+
+<div class="gpgc-actions gpgc-hidden gpgc-color-theme" id="gpgc_actions">
+  <span class="gpgc-action gpgc-centered-text">
+    <button class="gpgc-large-secondary-button" id="show_comments_button" onclick="showAllComments(CommentsArray)"></button>
+  </span>
+</div>
+
+<div class="gpgc-comment gpgc-comments-font gpgc-color-theme" id="gpgc_new_comment">
+  <div class="gpgc-comment-header">
+    <a id="gpgc_reader_url" href="https://github.com/wireddown/ghpages-ghcomments"><img class="gpgc-avatar" id="gpgc_reader_avatar" src="https://raw.githubusercontent.com/wireddown/ghpages-ghcomments/gh-pages/public/apple-touch-icon-precomposed.png" height="42" /><span id="gpgc_reader_login">You</span></a>
+    <small>today</small>
+    <div class="gpgc-tabs">
+      <button class="gpgc-tab gpgc-text-button" id="write_button">Write</button>
+      <button class="gpgc-tab gpgc-text-button" id="preview_button">Preview</button>
+    </div>
+  </div>
+  <div class="gpgc-new-comment" id="write_div">
+    <div class="gpgc-new-comment-form">
+      <textarea class="gpgc-new-comment-form-textarea" id="new_comment_field" placeholder="Write a comment"></textarea>
+    </div>
+  </div>
+  <div class="gpgc-new-comment gpgc-comment-contents gpgc-hidden" id="preview_div">
+  </div>
+  <div class="gpgc-hidden gpgc-comment-help" id="help_message">
+  </div>
+  <div class="gpgc-new-comment-actions">
+    <button class="gpgc-normal-primary-button gpgc-text-button" id="login_button" onclick="loginToGitHub()"><strong>Login to GitHub</strong></button>
+    <button class="gpgc-normal-primary-button gpgc-text-button gpgc-hidden" id="submit_button" onclick="postComment()"><strong>Submit</strong></button>
+  </div>
+</div>
+
+<div class="gpgc-new-section gpgc-comments-font gpgc-help-error gpgc-hidden" id="gpgc_reader_error">
+</div>
+
+<div class="gpgc_last_div">
+</div>
+
+<script type="text/javascript" src="{{ site.baseurl }}/public/js/gpgc_core.js"></script>
+
 <script>
-  var ShortMonthForIndex = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
-  var IssueUrl = "";
-  var CommentsArray = [];
+  var gpgc = {
+    site_url: "{{ site.url }}",
+    page_path: "{{ page.path }}",
+    issue_title: "{{ include.post_title }}",
+    repo_id: "{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}",
+    use_show_action: {{ site.data.gpgc.use_show_action }},
+    github_application_client_id: "{{ site.data.gpgc.github_application.client_id }}",
+    github_application_code_authenticator_url: "{{ site.data.gpgc.github_application.code_authenticator }}",
+    github_application_login_redirect_url: "{{ site.url }}{{ site.baseurl }}" + "/public/html/gpgc_redirect/index.html",
+    enable_diagnostics: {{ site.data.gpgc.enable_diagnostics }},
+  };
 
-  function findAndCollectComments(userName, repositoryName, issueTitle) {
-    var safeQuery = encodeURI(issueTitle);
-    var seachQueryUrl = "https://api.github.com/search/issues?q=" + safeQuery + "+repo:" + userName + "/" + repositoryName + "+type:issue+in:title";
-    getGitHubApiRequestWithCompletion(seachQueryUrl, onSearchComplete);
-  }
-
-  function onSearchComplete(searchRequest) {
-    var searchResults = JSON.parse(searchRequest.responseText);
-{% if site.data.gpgc.enable_diagnostics %}
-    var css = document.styleSheets;
-    var foundCssInHead = false;
-    var fetchedCss = false;
-    for (var i = 0; i < css.length; i++) {
-      if (css[i].href.match("ghpages-ghcomments.css")) {
-        foundCssInHead = true;
-        if (css[i].cssRules.length > 0) {
-          fetchedCss = true;
-        }
-        break;
-      }
-    }
-
-    var missingCssMessage = "";
-    if (! foundCssInHead) {
-      missingCssMessage = '<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>ghpages-ghcomments.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>';
-    }
-
-    var css404Message = "";
-    if (! fetchedCss && foundCssInHead) {
-      css404Message = '<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>ghpages-ghcomments.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>';
-    }
-
-    var searchErrorMessage = ""
-    if (searchRequest.status != 200) {
-      searchErrorMessage = '<h3><strong>gpgc</strong> Error: Search Failed</h3><p>Could not search GitHub repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>GitHub response:</p><p><pre>' + searchRequest.responseText + '</pre></p><p>Check:<ul><li><code>repo_owner</code> in <code>_data/gpgc.yml</code> for typos.</li><li><code>repo_name</code> in <code>_data/gpgc.yml</code> for typos.</li></ul></p>';
-    }
-
-    var missingIssueMessage = "";
-    if (searchResults.total_count === 0) {
-      missingIssueMessage = '<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <em>{{ include.post_title }}</em> in the repository <strong><a href="https://www.github.com/{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}">{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <code>title</code> front matter for this post: <code>{{ page.path }}</code>.</li><li>that the <code>repo_name</code> in <code>_data/gpgc.yml</code> matches the repository for this site.</li><li>the terminal output from <code>git push</code> for other error messages if the git hooks are installed.</li></ul></p>';
-    }
-
-    var allMessagesHtml = missingCssMessage + css404Message + searchErrorMessage + missingIssueMessage;
-    if (allMessagesHtml.length > 0) {
-      allMessagesHtml += '<h3>Help</h3><p>Verify your site\'s configuration with the <a href="downtothewire.io/ghpages-ghcomments/setup/">setup instructions</a> and refer to the <a href="http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/">verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href="https://github.com/wireddown/ghpages-ghcomments/issues">ghpages-ghcomments</a></strong> for more help.</p>';
-    }
-
-    document.body.innerHTML += '<div class="container content gpgc-all-comments">' + allMessagesHtml + '</div>';
-{% endif %}
-    if (searchResults.total_count === 1) {
-      IssueUrl = searchResults.items[0].html_url;
-      getGitHubApiRequestWithCompletion(searchResults.items[0].comments_url, onCommentsUpdated);
-    }
-    else {
-      updateCommentActions(CommentsArray);
-    }
-  }
-
-  function onCommentsUpdated(commentRequest)
-  {
-    CommentsArray = CommentsArray.concat(JSON.parse(commentRequest.responseText));
-    var commentsPages = commentRequest.getResponseHeader("Link");
-    if (commentsPages) {
-      var commentsLinks = commentsPages.split(",");
-      for (var i = 0; i < commentsLinks.length; i++) {
-        if (commentsLinks[i].search('rel="next"') > 0) {
-          var linkStart = commentsLinks[i].search("<");
-          var linkStop = commentsLinks[i].search(">");
-          var nextLink = commentsLinks[i].substring(linkStart + 1, linkStop);
-          getGitHubApiRequestWithCompletion(nextLink, onCommentsUpdated);
-          return;
-        }
-      }
-      updateCommentActions(CommentsArray);
-    }
-    else {
-      updateCommentActions(CommentsArray);
-    }
-  }
-
-  function updateCommentActions(allComments)
-  {
-    var allCommentsHtml = "";
-    var loadCommentsHtml = "";
-    var leaveCommentUrl = "";
-
-    if (typeof {{ site.data.gpgc.use_show_action }} === 'boolean' && {{ site.data.gpgc.use_show_action }}) {
-      var commentOrComments = allComments.length == 1 ? "Comment" : "Comments";
-      loadCommentsHtml = '<button class="gpgc-show" onclick="presentAllComments(CommentsArray)">Show ' + allComments.length + ' ' + commentOrComments + '</button>';
-    }
-    else {
-      allCommentsHtml = formatAllComments(CommentsArray);
-    }
-
-    if (allComments.length === 0) {
-      allCommentsHtml = '<p class="gpgc-no-comments">No comments</p>';
-      loadCommentsHtml = "";
-      leaveCommentUrl = IssueUrl;
-    }
-    else {
-      leaveCommentUrl = allComments[allComments.length - 1].html_url;
-    }
-
-    var leaveCommentsHtml = '<a class="gpgc-leave" href="' + leaveCommentUrl + '">Leave a comment</a>';
-    updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml);
-  }
-
-  function presentAllComments(allComments) {
-    allCommentsHtml = formatAllComments(allComments);
-    updateCommentDivs(allCommentsHtml, "", null);
-  }
-
-  function formatAllComments(allComments) {
-    var allCommentsHtml = '';
-    for (var i = 0; i < allComments.length; i++) {
-      var user = allComments[i].user;
-      allCommentsHtml += formatComment(user.avatar_url, user.html_url, user.login, allComments[i].body_html, allComments[i].updated_at);
-    }
-
-    return allCommentsHtml;
-  }
-
-  function formatComment(userAvatarUrl, userHtmlUrl, userLogin, commentBodyHtml, commentTimeStamp) {
-    var commentDate = new Date(commentTimeStamp);
-    var shortMonth = ShortMonthForIndex[commentDate.getMonth()];
-    var commentHtml = '<div class="gpgc-comment">';
-    commentHtml += '<a href="' + userHtmlUrl + '"><img class="gpgc-avatar" src="' + userAvatarUrl + '" height="42" />' + userLogin + '</a> ';
-    commentHtml += '<small>on ' + commentDate.getDate() + ' ' + shortMonth + ' ' + commentDate.getFullYear() + '</small>';
-    commentHtml += '<div class="gpgc-comment-contents">' + commentBodyHtml + '</div>';
-    commentHtml += '</div>';
-    return commentHtml;
-  }
-
-  function getGitHubApiRequestWithCompletion(url, completion)
-  {
-    var gitHubRequest = new XMLHttpRequest();
-    gitHubRequest.open("GET", url, true);
-    gitHubRequest.setRequestHeader("Accept", "application/vnd.github.v3.html+json");
-    gitHubRequest.onreadystatechange = function() { OnReadyStateChange(gitHubRequest, completion) };
-    gitHubRequest.send();
-  }
-
-  function OnReadyStateChange(httpRequest, completion)
-  {
-    if (httpRequest.readyState != 4) { return; }
-    if (httpRequest.status != 200) { {% unless site.data.gpgc.enable_diagnostics %} return; {% endunless %} }
-    completion(httpRequest);
-  }
-
-  function updateCommentDivs(allCommentsHtml, loadCommentsHtml, leaveCommentsHtml)
-  {
-    if (allCommentsHtml != null) document.getElementById("all-comments").innerHTML = allCommentsHtml;
-    if (loadCommentsHtml != null) document.getElementById("load-comments-button").innerHTML = loadCommentsHtml;
-    if (leaveCommentsHtml != null) document.getElementById("leave-comment-link").innerHTML = leaveCommentsHtml;
-  }
-
-  findAndCollectComments("{{ site.data.gpgc.repo_owner }}", "{{ site.data.gpgc.repo_name }}", "{{ include.post_title }}");
+  gpgc_main();
 </script>

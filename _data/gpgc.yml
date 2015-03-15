@@ -3,4 +3,7 @@ repo_name: ghpages-ghcomments
 use_show_action: true
 label_name: Example GitHub Pages Comments
 label_color: 90a959
+github_application:
+  client_id: 0ef5ca17b24db4e46807
+  code_authenticator: https://ghpages-ghcomments.herokuapp.com/authenticate/
 enable_diagnostics: false
