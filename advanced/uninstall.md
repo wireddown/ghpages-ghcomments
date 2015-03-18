@@ -11,7 +11,9 @@ For each repository with ghpages-ghcomments:
  1. Remove the ghpages-ghcomments files:
   * **_data/gpgc.yml**
   * **\_includes/gpgc_comments.html**
-  * **public/css/ghpages-ghcomments.css**
+  * **public/css/gpgc_styles.css**
+  * **public/html/gpgc_redirect.html**
+  * **public/js/gpgc_core.js**
  1. Remove the lines you added from:
   * **_includes/head.html**
   * **_layouts/post.html**
