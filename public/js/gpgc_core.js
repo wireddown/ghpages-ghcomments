@@ -1,3 +1,13 @@
+/*
+ * Comments for GitHub Pages via Liquid/Jekyll
+ *
+ * Copyright 2015 Joe Friedrichsen
+ * Released under the Apache 2.0 license.
+ *
+ * Learn more at https://github.com/wireddown/ghpages-ghcomments
+ *
+ */
+
 /* Globals */
 
 var ShortMonthForIndex = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
@@ -630,7 +640,7 @@ function verifyCss() {
   var foundCssInHead = false;
   var fetchedCss = false;
   for (var i = 0; i < css.length; i++) {
-    if (css[i].href.match("ghpages-ghcomments.css")) {
+    if (css[i].href.match("gpgc_styles.css")) {
       foundCssInHead = true;
       if (css[i].cssRules.length > 0) {
         fetchedCss = true;
@@ -641,12 +651,12 @@ function verifyCss() {
 
   var missingCssMessage = "";
   if (! foundCssInHead) {
-    missingCssMessage = "<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>ghpages-ghcomments.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>";
+    missingCssMessage = "<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>gpgc_styles.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>";
   }
 
   var css404Message = "";
   if (! fetchedCss && foundCssInHead) {
-    css404Message = "<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>ghpages-ghcomments.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>";
+    css404Message = "<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>gpgc_styles.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>";
   }
 
   var allMessagesHtml = missingCssMessage + css404Message;

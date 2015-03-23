@@ -143,8 +143,8 @@ ghpages-ghcomments can detect four problems:
 
 #### 3. gpgc Error: Search Failed
 
-> ![gpgc Error: Search Failed]({{ site.baseurl }}/images/DiagnosticSearchFailed.png)
+![gpgc Error: Search Failed]({{ site.baseurl }}/images/DiagnosticSearchFailed.png)
 
 #### 4. gpgc Error: Missing Issue
 
-> ![gpgc Error: Missing Issue]({{ site.baseurl }}/images/DiagnosticMissingIssue.png)
+![gpgc Error: Missing Issue]({{ site.baseurl }}/images/DiagnosticMissingIssue.png)
