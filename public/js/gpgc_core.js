@@ -299,7 +299,7 @@ function onSearchError(searchRequest) {
     var missingIssueMessage = "";
     var searchResults = JSON.parse(searchRequest.responseText);
     if (searchResults.total_count !== undefined && searchResults.total_count === 0) {
-      missingIssueMessage = "<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <em>" + gpgc.post_title + "</em> in the repository <strong><a href='https://www.github.com/" + gpgc.repo_id + "'>" + gpgc.repo_id + "</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <code>title</code> front matter for this post: <code>" + gpgc.page_path + "</code>.</li><li>that the <code>repo_name</code> in <code>_data/gpgc.yml</code> matches the repository for this site.</li><li>the terminal output from <code>git push</code> for other error messages if the git hooks are installed.</li></ul></p>";
+      missingIssueMessage = "<h3><strong>gpgc</strong> Error: Missing Issue</h3><p>Could not find comment issue with the title <em>" + gpgc.issue_title + "</em> in the repository <strong><a href='https://www.github.com/" + gpgc.repo_id + "'>" + gpgc.repo_id + "</a></strong>.</p><p>Check:<ul><li>for typos in the Jekyll <code>title</code> front matter for this post: <code>" + gpgc.page_path + "</code>.</li><li>that the <code>repo_name</code> in <code>_data/gpgc.yml</code> matches the repository for this site.</li><li>the terminal output from <code>git push</code> for other error messages if the git hooks are installed.</li></ul></p>";
     }
 
     var allMessagesHtml = searchErrorMessage + missingIssueMessage;
@@ -640,7 +640,7 @@ function verifyCss() {
   var foundCssInHead = false;
   var fetchedCss = false;
   for (var i = 0; i < css.length; i++) {
-    if (css[i].href.match("ghpages-ghcomments.css")) {
+    if (css[i].href.match("gpgc_styles.css")) {
       foundCssInHead = true;
       if (css[i].cssRules.length > 0) {
         fetchedCss = true;
@@ -651,12 +651,12 @@ function verifyCss() {
 
   var missingCssMessage = "";
   if (! foundCssInHead) {
-    missingCssMessage = "<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>ghpages-ghcomments.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>";
+    missingCssMessage = "<h3><strong>gpgc</strong> Error: Missing CSS</h3><p><code>gpgc_styles.css</code> is not in the &lt;head&gt; element.</p><p>Add a <code>&lt;link&gt;</code> element to <code>_includes/head.hml</code>.</p>";
   }
 
   var css404Message = "";
   if (! fetchedCss && foundCssInHead) {
-    css404Message = "<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>ghpages-ghcomments.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>";
+    css404Message = "<h3><strong>gpgc</strong> Error: CSS 404</h3><p>Could not retrieve <code>gpgc_styles.css</code> from your site.</p><p>Check <code>_includes/head.hml</code> for typos.</p>";
   }
 
   var allMessagesHtml = missingCssMessage + css404Message;
