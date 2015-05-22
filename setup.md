@@ -69,8 +69,9 @@ Setup is fast -- these commits show just how easy it is:
 
 > ```
 > $ mv _tools/gpgcCreateCommentIssue.sh /usr/local/bin
-> $ which gpgcCreateCommentIssue.sh
-> /usr/local/bin/gpgcCreateCommentIssue.sh
+> $ sudo chmod +x /usr/local/bin/gpgcCreateCommentIssue.sh
+> $ if test -x "`which gpgcCreateCommentIssue.sh`"; then echo ok; fi
+> ok
 > ```
 
 #### 5. **Install** the git hooks. From your repository root:
