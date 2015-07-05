@@ -26,7 +26,7 @@ Setup is fast -- these commits show just how easy it is:
 
 > **_data/gpgc.yml**
 >
-> [Specify](https://github.com/wireddown/gpgc-test/commit/f73cc70e931c14f63ea8081ec3c006b67258df4d?diff=split) your GitHub username, Jekyll repo, and other preferences:
+> At a minimum, [specify](https://github.com/wireddown/gpgc-test/commit/f73cc70e931c14f63ea8081ec3c006b67258df4d?diff=split) your GitHub username and Jekyll repo:
 >
 > ```
 > repo_owner: __YOUR_GITHUB_USERNAME__
@@ -35,15 +35,15 @@ Setup is fast -- these commits show just how easy it is:
 > label_name: Blog post comments
 > label_color: 666666
 > github_application:
->   client_id: 0ef...807
->   code_authenticator: https://.../authenticate/
->   callback_url: http://.../gpgc_redirect/index.html
+>   client_id: 0ef5ca17b24db4e46807
+>   code_authenticator: https://ghpages-ghcomments.herokuapp.com/authenticate/
+>   callback_url: http://downtothewire.io/ghpages-ghcomments/public/html/gpgc_redirect/index.html
 > enable_diagnostics: false
 > ```
 >
 > For details about the `github_application` entries, see [Custom GitHub Application](../advanced/custom-github-app/).
 
--
+##
 
 > **_includes/head.html**
 > 
@@ -55,7 +55,7 @@ Setup is fast -- these commits show just how easy it is:
 >   href="{{ site.baseurl }}/public/css/gpgc_styles.css">
 > ```
 
--
+##
 
 > **_layouts/post.html**
 >
