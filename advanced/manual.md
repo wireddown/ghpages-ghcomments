@@ -16,10 +16,12 @@ title: Manual
   * [When comments are presented](#presented)
   * [Comment structure](#comment-structure)
 * [Look and Feel with CSS](#look-and-feel)
+  * [Theme](#theme)
+  * [Class list](#class-list)
 
 ## <a id="theory-of-operation"></a>Theory of Operation
 
-ghpages-ghcomments associates a blog post with a GitHub issue using the post's **title** front matter.
+ghpages-ghcomments uses GitHub issues to store comments by associating a specific page with a specific GitHub issue using the page's **title** front matter.
 
 For example, using this title in a post
 
@@ -30,13 +32,21 @@ title: The Phrenic Shrine Reveals Itself
 ---
 ```
 
-causes ghpages-ghcomments to look for an issue titled _The Phrenic Shrine Reveals Itself_ in a specific GitHub repository.
+causes ghpages-ghcomments to look for an issue titled _The Phrenic Shrine Reveals Itself_ in the GitHub repository specified by **\_data/gpgc.yml**.
 
 ### <a id="jekyll"></a>Jekyll
 
-The algorithm for retrieving and presenting comments is in **\_includes/gpgc_comments.html**, and the input data is provided by **_data/gpgc.yml** and Jekyll variables.
+There are four files that implement ghpages-ghcomments:
 
-Including gpgc\_comments.html requires one [tag parameter](http://jekyllrb.com/docs/templates/#includes): **post_title**.
+* Structure:
+  * **includes/gpgc\_comments.html**
+* Behavior:
+  * **public/js/gpgc_core.js**
+  * **public/html/gpgc_redirect.html**
+* Data:
+  * **_data/gpgc.yml**
+
+Including gpgc\_comments.html requires one [Jekyll tag parameter](http://jekyllrb.com/docs/templates/#includes): **post_title**.
 
 For example, adding this line to **_layouts/post.html**
 
@@ -50,34 +60,58 @@ yields this input to **\_includes/gpgc_comments.html**
 
 {% raw %}
 <pre>
-findAndCollectComments(
-  "{{ site.data.gpgc.repo_owner }}",
-  "{{ site.data.gpgc.repo_name }}",
-  "{{ include.post_title }}");
+  var gpgc = {
+    site_url: "{{ site.url }}",
+    page_path: "{{ page.path }}",
+    issue_title: "{{ include.post_title }}",
+    repo_id: "{{ site.data.gpgc.repo_owner }}/{{ site.data.gpgc.repo_name }}",
+    use_show_action: {{ site.data.gpgc.use_show_action }},
+    github_application_client_id: "{{ site.data.gpgc.github_application.client_id }}",
+    github_application_code_authenticator_url: "{{ site.data.gpgc.github_application.code_authenticator }}",
+    github_application_login_redirect_url: "{{ site.data.gpgc.github_application.callback_url }}",
+    enable_diagnostics: {{ site.data.gpgc.enable_diagnostics }},
+  };
 </pre>
 {% endraw %}
 
 and is rendered to HTML by Jekyll like this:
 
-``` html
-findAndCollectComments(
-  "wireddown",
-  "ghpages-ghcomments",
-  "The Phrenic Shrine Reveals Itself");
+``` js
+  var gpgc = {
+    site_url: "http://downtothewire.io",
+    page_path: "_posts/2015-01-18-the-phrenic-shrine-reveals-itself.md",
+    issue_title: "The Phrenic Shrine Reveals Itself",
+    repo_id: "wireddown/ghpages-ghcomments",
+    use_show_action: true,
+    github_application_client_id: "0ef5ca17b24db4e46807",
+    github_application_code_authenticator_url: "https://ghpages-ghcomments.herokuapp.com/authenticate/",
+    github_application_login_redirect_url: "http://downtothewire.io/ghpages-ghcomments/public/html/gpgc_redirect/index.html",
+    enable_diagnostics: false,
+  };
 ```
 
 ### <a id="javascript"></a>JavaScript
 
-The JavaScript in **\_includes/gpgc_comments.html** has one entry point:
+ghpages-ghcomments has two fundamental capabilities:
+
+1. Finding and showing comments, accessible to every site visitor
+2. Drafting and posting a new comment, accessible to visitors that login to GitHub
+
+#### **Finding and showing comments**
+
+When a visitor views a page, ghpages-ghcomments uses the GitHub web API to find and show the comments for the page, which happens in three steps:
+
+1. Use the page's title to find the associated issue in the owner's repository.
+2. Retrieve the comments from the issue as HTML.
+3. Place the comments in the page's DOM.
+
+The process begins at the single entry point to **public/js/gpgc_core.js**:
 
 ```
-findAndCollectComments(
-  userName,
-  repositoryName,
-  issueTitle);
+gpgc_main();
 ```
 
-The function uses its parameters to build a [GitHub query](https://developer.github.com/v3/search/#search-issues) to search a repository's issues. Continuing the example above, the request looks like:
+After initializing the page, `gpgc_main()` calls `findAndCollectComments()`, which uses the global variable **gpgc** to build a [GitHub query](https://developer.github.com/v3/search/#search-issues) to search a repository's issues. Continuing the example above, the request looks like:
 
 ```
 https://api.github.com/search/issues?
@@ -87,7 +121,7 @@ https://api.github.com/search/issues?
   +in:title
 ```
 
-When the request returns, `onSearchComplete` parses the JSON sent by GitHub and
+When the request returns, `onSearchComplete()` parses the JSON sent by GitHub and
 
 * stores the issue's browser URL in the global variable `IssueUrl`
 * sends a request to [retrieve the issue's comments](https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue)
@@ -98,7 +132,7 @@ Continuing the example above, the request looks like:
 https://api.github.com/repos/wireddown/ghpages-ghcomments/issues/4/comments
 ```
 
-When the request returns, `onCommentsUpdated` parses the JSON sent by GitHub and
+When the request returns, `onCommentsUpdated()` parses the JSON sent by GitHub and
 
 * appends the returned comments in the global variable `CommentsArray`
 * sends a request to retrieve the next page of the issue's comments
@@ -118,10 +152,9 @@ Continuing the example above, the second page of comments is retrieved by sendin
 https://api.github.com/repositories/29450581/issues/4/comments
 ```
 
-Once the last page has been collected, `updateCommentActions` adjusts the contents of the HTML structural elements (discussed below) to show the reader two actions:
+Once the last page has been collected, `updateCommentsAndActions()` adjusts the contents of the HTML structural elements (discussed below) to show the reader an action:
 
-* _Show *N* Comments_, which uses `presentAllComments` and `CommentsArray` to format and insert the comments in the document
-* _Leave a Comment_, which sends the reader to the comment entry box at `IssueUrl`, at the bottom of the issue page
+* _Show *N* Comments_, which uses `showAllComments()` and `CommentsArray` to format and insert the comments in the document
 
 All of the web requests for searches and comments are sent using `XMLHttpRequest` with a custom request header:
 
@@ -132,6 +165,35 @@ Accept:	application/vnd.github.v3.html+json
 This asks GitHub to return everything in JSON but to [render the markdown content to HTML](https://developer.github.com/v3/media/#comment-body-properties).
 
 In addition, GitHub has [permissive CORS](https://developer.github.com/v3/#cross-origin-resource-sharing), which allows `XMLHttpRequest` to make GitHub API calls in modern browsers without any additional configuration.
+
+#### **Drafting and posting a new comment**
+
+When a visitor wants to leave a comment, they must login to GitHub since the comments are stored in an issue for a GitHub repository.
+
+ghpages-ghcomments uses the [Web Application Flow](https://developer.github.com/v3/oauth/#web-application-flow) to authenticate a visitor with GitHub, which happens in three steps:
+
+1. Open a new browser window to redirect the visitor to login to GitHub.
+2. Upon login, close the newly opened window and exchange GitHub's temporary code with the visitor's OAuth token.
+3. Persist the visitor's token in the browser's local storage for the site so the visitor doesn't need to login every time.
+
+The process starts when the visitor clicks or taps the _Login_ button, which calls `loginToGitHub()` to build a **secure** [GitHub authentication request](https://developer.github.com/v3/oauth/#redirect-users-to-request-github-access) with URL-encoded data:
+
+``` js
+  var data = {
+    "client_id": gpgc.github_application_client_id,
+    "scope": "public_repo",
+    "state": StateChallenge,
+    "redirect_uri": gpgc.github_application_login_redirect_url
+  };
+```
+
+This request is opened in a new browser window so that it can handle GitHub's redirect and send the original window a message event. When the visitor logs in using the new window, GitHub redirects back to the `redirect_uri` with a temporary `code` and the `state` provided in the request. The `redirect_uri` is a simple JavaScript-only Jekyll page (**public/html/gpgc_redirect.html**) that uses the data from GitHub's response to send a message event to the original window before closing itself.
+
+The original window handles the event in `onMessage()`, and inspects the event data to confirm the security of the transaction. Once the message has been verified, ghpages-ghcomments uses a simple GitHub application to exchange the temporary code with a revocable OAuth token. For more details about this step, see [Custom GitHub App](../custom-github-app/).
+
+The last login step is saving the OAuth token in the site's local storage. The next time the visitor returns, ghpages-ghcomments automatically authenticates them with GitHub with the [User API](https://developer.github.com/v3/users/#get-the-authenticated-user).
+
+Once logged in, the visitor can post their draft as a new comment. ghpages-ghcomments uses the [GitHub Markdown API](https://developer.github.com/v3/markdown/#render-an-arbitrary-markdown-document) to render a markdown draft in HTML when the visitor clicks or taps the _Preview_ button, and uses the [GitHub Issue API](https://developer.github.com/v3/issues/comments/#create-a-comment) to add comment to the page's associated issue when the visitor clicks or taps the _Submit_ button.
 
 ### <a id="git"></a>git
 
@@ -221,70 +283,101 @@ When the **pre-push** hook creates a [label](https://developer.github.com/v3/iss
 
 ## <a id="html-structure"></a>HTML Structure
 
+The source is the authority on the HTML structure (**[includes/gpgc\_comments.html](https://raw.githubusercontent.com/wireddown/ghpages-ghcomments/release/_includes/gpgc_comments.html)**) but here is an [image illustrating the layout]({{ site.baseurl }}/images/HtmlStructureComplete.png). It will be helpful to keep one of these open while reading this section.
+
 ### <a id="on-load"></a>On load
 
-When a post page loads, there are HTML container elements without any renderable content. To the reader, there is nothing to see.
+When a ghcomments-ghpages page loads, several `<div>` elements begin hidden:
 
-![HTML structure on load]({{ site.baseurl }}/images/HtmlStructureOnLoad.png)
+* **gpgc\_all\_comments**, which holds all of the comments
+* **gpgc\_no\_comments**, which holds a message saying there are no comments
+* **gpgc\_actions**, which allows the visitor to show comments
+* **gpgc\_reader\_error**, which shows any error or diagnostic messages
+
+At the same time, ghpages-ghcomments searches for the page's associated issue and its comments. Depending on whether there are comments, the layout updates. Regardless, the new comment form is initialized to allow the visitor to draft a comment.
 
 ### <a id="no-comments"></a>When there are no comments
 
-Once ghpages-ghcomments has queried GitHub for the post's comments and determines there are none, it
-
-* places a `<p>` element in the **all-comments** `<div>`
-* keeps the **load-comments-button** `<span>` empty
-* places an `<a>` element in the **leave-comment-link** `<span>`
-
-![HTML structure for no comments]({{ site.baseurl }}/images/HtmlStructureNoComments.png)
+Once ghpages-ghcomments has queried GitHub for the post's comments and determines there are none, it shows the **gpgc\_no\_comments** `<div>`.
 
 ### <a id="comments"></a>When there are comments
 
 Once ghpages-ghcomments has retrieved all of the comments for a post, it
 
-* keeps the **all-comments** `<div>` empty
-* places a `<button>` element in the **load-comments-button** `<span>`
-* places an `<a>` element in the **leave-comment-link** `<span>`
+* formats all the comments via `formatAllComments()` and places them in the still-hidden **gpgc\_all\_comments** `<div>`
+* updates the **show\_comments\_button** `<button>` with a "Show *N* comments" message
 
-![HTML structure with comments]({{ site.baseurl }}/images/HtmlStructureWithComments.png)
+If **data/gpgc.yml** specifies **true** for `use_show_action`, then ghpages-ghcomments shows the **show\_comments\_button** `<button>`; otherwise, it shows the **gpgc\_all\_comments** `<div>`.
 
 ### <a id="presented"></a>When comments are presented
 
-When the user clicks or taps the _"Show N Comments"_ button, it
-
-* formats all the comments and places them in the **all-comments** `<div>`
-* makes the **load-comments-button** `<span>` empty
-* leaves the **leave-comment-link** `<span>` unchanged
-
-![HTML structure showing comments]({{ site.baseurl }}/images/HtmlStructureShowingComments.png)
+When the user clicks or taps the **show\_comments\_button** `<button>`, ghpages-ghcomments hides the button and shows the **gpgc\_all\_comments** `<div>`.
 
 ### <a id="comment-structure"></a>Comment structure
 
-Each comment is placed in its own **gpgc-comment** `<div>` with the following structure:
+Each comment is placed in its own `<div>` with the following structure:
 
 ![HTML structure for a comment]({{ site.baseurl }}/images/HtmlStructureForComment.png)
 
 ## <a id="look-and-feel"></a>Look and Feel with CSS
 
-Class list:
+### <a id="theme"></a>Theme
 
-* **.gpgc-actions**
-  * `<div>` container that holds both the _'Show N Comments'_ and _'Leave a Comment'_ buttons
-* **.gpgc-action**
-  * `<span>` container that holds either the _'Show N Comments'_ or _'Leave a Comment'_ button
-* **.gpgc-show**
-  * `<button>` element for the _'Show N Comments'_ button
-* **.gpgc-leave**
-  * `<a>` element for the _'Leave a Comment'_ button
-* **.gpgc-no-comments**
-  * `<p>` element for _'No comments'_ message
-* **.gpgc-all-comments**
-  * `<div>` container that holds all of the comments
-* **.gpgc-comment**
-  * `<div>` container that holds a single comment's header and contents
-* **.gpgc-avatar**
-  * `<img>` element that presents a user's avatar
-* **.gpgc-comment-contents**
-  * `<div>` element that holds the GitHub comment contents
+The color theme is specified at the top of **public/css/gpgc_styles.css**.
+
+### <a id="class-list"></a>Class list
+
+* Comments
+  * **.gpgc-comment**
+    <br /> `<div>` container that holds a single comment's header and contents
+  * **.gpgc-comment-header**
+    <br /> `<div>` container that holds a single comment's header
+  * **.gpgc-avatar**
+    <br /> `<img>` element that presents a user's avatar
+  * **.gpgc-comment-contents**
+    <br /> `<div>` container that holds the GitHub comment contents
+* New comment
+  * **.gpgc-new-comment**
+    <br /> `<div>` container that holds the comment draft elements
+  * **.gpgc-new-comment-form**
+    <br /> `<div>` container that holds the comment form
+  * **gpgc-new-comment-form-textarea**
+    <br /> `<textarea>` element for entering a new comment
+  * **.gpgc-tabs**
+    <br /> `<div>` container that holds the _Write_ and _Preview_ buttons
+  * **.gpgc-tab**
+    <br /> `<button>` element that behaves like tab
+  * **.gpgc-new-comment-actions**
+    <br /> `<div>` container that holds the _Login_ and _Submit_ buttons
+  * **.gpgc-comment-help**
+    <br /> `<div>` container that holds just-in-time help messages
+* _'Show N Comments'_ button
+  * **.gpgc-actions**
+    <br /> `<div>` container that holds the _'Show N Comments'_ `<span>`
+  * **.gpgc-action**
+    <br /> `<span>` container that holds the _'Show N Comments'_ `<button>`
+* Mixins
+  * **.gpgc-hidden**
+    <br /> Hides an element
+  * **.gpgc-centered-text**
+    <br /> Centers the text in the element
+  * **.gpgc-comments-font**
+    <br /> Sets the font traits for the element
+  * **.gpgc-new-section**
+    <br /> Sets the top margin for the element
+  * **.gpgc-normal-primary-button**
+    <br /> `<button>` element that has an emphasized look and feel
+  * **.gpgc-large-secondary-button**
+    <br /> `<button>` element that has a diminished look and feel
+  * **.gpgc-text-button**
+    <br /> `<button>` element that has a text look and feel
+  * **.gpgc-help-message**
+    <br /> `<div>` container for showing a help message
+  * **.gpgc-help-error**
+    <br /> `<div>` container for showing an error message
+* Misc
+  * **.gpgc\_last\_div**
+    <br /> `<div>` container for the last div, adds a bottom margin
 
 ---
 
