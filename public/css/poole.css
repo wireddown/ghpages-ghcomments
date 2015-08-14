@@ -113,13 +113,16 @@ abbr[title] {
 
 code,
 pre {
-  font-family: Menlo, Monaco, "Courier New", monospace;
+  font-family: Menlo, Monaco, "Andale Mono", "lucida console", "Courier New", monospace;
+  white-space: pre;
+  overflow-x: auto;
+  background-color: #f9f9f9;
 }
 code {
   padding: .25em .5em;
   font-size: 85%;
-  color: #bf616a;
-  background-color: #f9f9f9;
+  color: #555;
+  border: 1px solid #ddd;
   border-radius: 3px;
 }
 pre {
@@ -129,19 +132,25 @@ pre {
   padding: 1rem;
   font-size: .8rem;
   line-height: 1.4;
-  white-space: pre;
-  word-break: break-all;
-  word-wrap: break-word;
-  overflow-x: auto;
-  background-color: #f9f9f9;
 }
 pre code {
   padding: 0;
   font-size: 100%;
+  border: 0px;
   color: inherit;
   background-color: transparent;
 }
 
+td code {
+  border: 0px;
+  background-color: inherit;
+}
+
+blockquote code {
+  color: #555;
+}
+
+/* Pygments via Jekyll */
 .highlight {
   margin-bottom: 1rem;
   border-radius: 4px;
@@ -151,7 +160,7 @@ pre code {
 }
 
 .gist .gist-file {
-  font-family: Menlo, Monaco, "Courier New", monospace !important;
+  font-family: Menlo, Monaco, "Andale Mono", "lucida console", "Courier New", monospace !important;
 }
 .gist .markdown-body {
   padding: 15px;
