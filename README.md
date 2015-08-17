@@ -42,6 +42,7 @@ Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 * 02 Feb 2015: [Issue 6 is fixed](http://downtothewire.io/ghpages-ghcomments/2015/02/02/issue-6-is-fixed/)
 * 07 Feb 2015: [Use Diagnostics to Troubleshoot](http://downtothewire.io/ghpages-ghcomments/2015/02/07/use-diagnostics-to-troubleshoot/)
 * 08 Feb 2015: [Use the Browser Console to Troubleshoot](http://downtothewire.io/ghpages-ghcomments/2015/02/08/use-the-browser-console-to-troubleshoot/)
+* 16 Aug 2015: [Introducing Comment Control](http://downtothewire.io/ghpages-ghcomments/2015/08/16/introducing-comment-control/)
 
 # Change log
 
@@ -49,5 +50,7 @@ Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 * 02 Feb 2015: _Fix issues [#6](https://github.com/wireddown/ghpages-ghcomments/issues/6) and [#7](https://github.com/wireddown/ghpages-ghcomments/issues/7)_
 * 08 Feb 2015: _Add diagnostics (issue [#10](https://github.com/wireddown/ghpages-ghcomments/issues/10))_
 * 15 Mar 2015: _Add on-page comments (issue [#11](https://github.com/wireddown/ghpages-ghcomments/issues/11))_
+* 21 May 2015: _Fix diagnostics; fix hooks for the Mac (issue [#17](https://github.com/wireddown/ghpages-ghcomments/issues/17))_
+* 16 Aug 2015: _Add comment controls_
 
 Full history: [`release` branch commit log](https://github.com/wireddown/ghpages-ghcomments/commits/release)
