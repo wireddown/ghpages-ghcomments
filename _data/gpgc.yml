@@ -1,5 +1,6 @@
 repo_owner: __your_github_username__
 repo_name: __your_github_repository__
+disabled: false
 use_show_action: false
 label_name: Post Comments
 label_color: 666666
