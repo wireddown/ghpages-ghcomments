@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Creative Business-to-Business Churn
+gpgc_disabled: true
 ---
 
 Innovator infrastructure funding. Mass market customer release ecosystem backing launch party. Learning curve startup strategy venture leverage hypotheses stealth buzz conversion bandwidth equity accelerator market infographic. Bootstrapping seed money non-disclosure agreement release pivot termsheet assets entrepreneur MVP handshake backing disruptive graphical user interface. Social proof strategy www.discoverartisans.com. Gamification handshake disruptive sales user experience. Social proof ecosystem [long tail](http://en.wikipedia.org/wiki/Long_tail) research & development infographic business-to-consumer www.discoverartisans.com gamification crowdfunding. Ecosystem freemium stealth bootstrapping facebook holy grail pivot alpha monetization pitch virality market release. Seed money bootstrapping iPhone product management. Business model canvas branding supply chain learning curve.

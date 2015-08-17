@@ -35,6 +35,10 @@
   </div>
 </div>
 
+<div class="gpgc-new-section gpgc-comments-font gpgc-hidden" id="gpgc_disabled">
+  <p class="gpgc-centered-text">Comments are closed</p>
+</div>
+
 <div class="gpgc-new-section gpgc-comments-font gpgc-help-error gpgc-hidden" id="gpgc_reader_error">
 </div>
 
@@ -45,6 +49,7 @@
 
 <script>
   var gpgc = {
+    new_comments_disabled: new Boolean({{ site.data.gpgc.disabled }}).valueOf() || new Boolean({{ page.gpgc_disabled }}).valueOf(),
     site_url: "{{ site.url }}",
     page_path: "{{ page.path }}",
     issue_title: "{{ include.post_title }}",

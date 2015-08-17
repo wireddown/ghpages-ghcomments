@@ -61,6 +61,7 @@ yields this input to **\_includes/gpgc_comments.html**
 {% raw %}
 <pre>
   var gpgc = {
+    new_comments_disabled: new Boolean({{ site.data.gpgc.disabled }}).valueOf() || new Boolean({{ page.gpgc_disabled }}).valueOf(),
     site_url: "{{ site.url }}",
     page_path: "{{ page.path }}",
     issue_title: "{{ include.post_title }}",
@@ -78,6 +79,7 @@ and is rendered to HTML by Jekyll like this:
 
 ``` js
   var gpgc = {
+    new_comments_disabled: new Boolean().valueOf() || new Boolean().valueOf(),
     site_url: "http://downtothewire.io",
     page_path: "_posts/2015-01-18-the-phrenic-shrine-reveals-itself.md",
     issue_title: "The Phrenic Shrine Reveals Itself",

@@ -1,5 +1,6 @@
 repo_owner: wireddown
 repo_name: ghpages-ghcomments
+disabled: false
 use_show_action: true
 label_name: Example GitHub Pages Comments
 label_color: 90a959

@@ -23,6 +23,7 @@ var NoCommentsDiv = document.getElementById("gpgc_no_comments");
 var ActionsDiv = document.getElementById("gpgc_actions");
 var ShowCommentsButton = document.getElementById("show_comments_button");
 
+var DisabledCommentsDiv = document.getElementById("gpgc_disabled");
 var NewCommentDiv = document.getElementById("gpgc_new_comment");
 var WriteButton = document.getElementById("write_button");
 var WriteDiv = document.getElementById("write_div");
@@ -43,9 +44,14 @@ var ErrorDiv = document.getElementById("gpgc_reader_error");
 
 function gpgc_main() {
   if (gpgc.enable_diagnostics) { verifyCss(); }
-  initializeData();
-  initializeEvents();
-  initializeNewCommentForm();
+  if (gpgc.new_comments_disabled) {
+    disableNewCommentForm();  
+  } else {
+    initializeData();
+    initializeEvents();
+    initializeNewCommentForm();
+  }
+
   findAndCollectComments(gpgc.repo_id, gpgc.issue_title);
 }
 
@@ -94,6 +100,11 @@ function onMessage(event) {
 }
 
 /* New comment form */
+
+function disableNewCommentForm() {
+  hideElement(NewCommentDiv);
+  showElement(DisabledCommentsDiv);
+}
 
 function initializeNewCommentForm() {
   authenticateUser();
@@ -274,16 +285,21 @@ function findAndCollectComments(repositoryID, issueTitle) {
 function onSearchComplete(searchRequest) {
   var searchResults = JSON.parse(searchRequest.responseText);
   if (searchResults.total_count === 1) {
-    IssueUrl = searchResults.items[0].html_url;
-    CommentsUrl = searchResults.items[0].comments_url;
-    getGitHubApiRequestWithCompletion(
-      CommentsUrl,
-      /* data: */ null,
-      AccessToken,
-      /* onPreRequest: */ noop,
-      onQueryComments,
-      onQueryCommentsError
-    );
+    var shouldQueryComments = !isIssueMuted(searchResults.items[0].labels);
+    if (shouldQueryComments) {
+      IssueUrl = searchResults.items[0].html_url;
+      CommentsUrl = searchResults.items[0].comments_url;
+      getGitHubApiRequestWithCompletion(
+        CommentsUrl,
+        /* data: */ null,
+        AccessToken,
+        /* onPreRequest: */ noop,
+        onQueryComments,
+        onQueryCommentsError
+      );
+    } else {
+      disableNewCommentForm();
+    }
   } else {
     onSearchError(searchRequest);
   }
@@ -317,6 +333,16 @@ function onSearchError(searchRequest) {
       showFatalError("onSearchError: \n\n" + searchRequest.responseText);
     }
   }
+}
+
+function isIssueMuted(labelsArray) {
+  for (var i = 0; i < labelsArray.length; i++) {
+    if (labelsArray[i].name === "GPGC Muted") {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 /* GitHub: Retrieve comments */

@@ -4,6 +4,14 @@ title: Options
 tags: [sidebar]
 ---
 
+## Control comments by-page or site-wide
+
+Sometimes a thread of comments descends into the worst of the web. If this happens to one of your pages, you can disable new comments on that page (here is an [example]({{ site.baseurl }}/2015/01/09/creative-business-to-business-churn/)). If you need to go further and hide the existing comments, you can do that, too.
+
+Or, if you wish to disable new comments for your whole site, there's a one-line setting for that as well.
+
+Learn more [here]({{ site.baseurl }}/2015/08/16/introducing-comment-control/).
+
 ### Show or cloak comments on page load
 
 When you set up [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release), you can specify when your readers see comments:
