@@ -26,7 +26,11 @@ Setup is fast -- these commits show just how easy it is:
 
 > **_data/gpgc.yml**
 >
-> At a minimum, [specify](https://github.com/wireddown/gpgc-test/commit/f73cc70e931c14f63ea8081ec3c006b67258df4d?diff=split) your GitHub username and Jekyll repo:
+> At a minimum, [specify](https://github.com/wireddown/gpgc-test/commit/f73cc70e931c14f63ea8081ec3c006b67258df4d?diff=split):
+>
+> * your GitHub username for `repo_owner`
+> * your Jekyll repo for `repo_name`
+> * the full URL to gpgc\_redirect.html for `callback_url`
 >
 > ```
 > repo_owner: __YOUR_GITHUB_USERNAME__
@@ -37,7 +41,7 @@ Setup is fast -- these commits show just how easy it is:
 > github_application:
 >   client_id: 0ef5ca17b24db4e46807
 >   code_authenticator: https://ghpages-ghcomments.herokuapp.com/authenticate/
->   callback_url: http://downtothewire.io/ghpages-ghcomments/public/html/gpgc_redirect/index.html
+>   callback_url: http://__URL_OF_GPGC_REDIRECT_PAGE__
 > enable_diagnostics: false
 > ```
 >
