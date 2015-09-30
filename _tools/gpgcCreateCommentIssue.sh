@@ -8,6 +8,7 @@ function PrintUsage
 {
    echo >&2 "Usage:"
    echo >&2 "  gpgcCreateCommentIssue.sh install 'personal_access_token'"
+   echo >&2 "  gpgcCreateCommentIssue.sh bootstrap"
    echo >&2 "  gpgcCreateCommentIssue.sh commit"
    echo >&2 "  gpgcCreateCommentIssue.sh push 'personal_access_token'"
    echo >&2
@@ -96,17 +97,29 @@ function Install
   InstallPrePush
 }
 
+function Bootstrap
+{
+  local allPosts="$(find _posts -type f)"
+  Diagnose "Bootstrap" "allPosts == ${allPosts}"
+  AddPostsToCache ${allPosts}
+}
+
 function Commit
 {
   local changedPosts="$(git diff --name-status --cached | grep "_posts/")"
   local allChangedPosts="$(echo "${changedPosts}" | awk '{print $2}')"
   Diagnose "Commit" "changedPosts == ${changedPosts}"
   Diagnose "Commit" "allChangedPosts == ${allChangedPosts}"
-  if test -n "${allChangedPosts}"; then
-    for changed_post in ${allChangedPosts}; do
-      if ! $(grep -q "${changed_post}" "${GpgcCacheFile}" 2>/dev/null); then
-        Diagnose "Commit" "Adding ${changed_post} to ${GpgcCacheFile}"
-        echo "${changed_post}" >> "${GpgcCacheFile}"
+  AddPostsToCache ${allChangedPosts}
+}
+
+function AddPostsToCache()
+{
+  if test -n "$*"; then
+    for post in $@; do
+      if ! $(grep -q "${post}" "${GpgcCacheFile}" 2>/dev/null); then
+        Diagnose "AddPostsToCache" "Adding ${post} to ${GpgcCacheFile}"
+        echo "${post}" >> "${GpgcCacheFile}"
       fi
     done
   fi
@@ -281,8 +294,9 @@ Diagnose "(global)" "GpgcDataFile == ${GpgcDataFile}"
 
 Diagnose "(global)" "operation == $1"
 case "$1" in
-      install) Install ;;
-      commit)  Commit  ;;
-      push)    Push    ;;
+      install)   Install ;;
+      bootstrap) Bootstrap ;;
+      commit)    Commit  ;;
+      push)      Push    ;;
       *) PrintUsage; echo "Unknown action \"$1\""; exit 1 ;;
 esac
