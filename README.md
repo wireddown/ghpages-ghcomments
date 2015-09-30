@@ -57,5 +57,6 @@ Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 * 15 Mar 2015: _Add on-page comments (issue [#11](https://github.com/wireddown/ghpages-ghcomments/issues/11))_
 * 21 May 2015: _Fix diagnostics; fix hooks for the Mac (issue [#17](https://github.com/wireddown/ghpages-ghcomments/issues/17))_
 * 16 Aug 2015: _Add comment controls_
+* 29 Sep 2015: _Add 'bootstrap' command for creating comment threads for already-published posts_
 
 Full history: [`release` branch commit log](https://github.com/wireddown/ghpages-ghcomments/commits/release)
