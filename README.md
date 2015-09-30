@@ -2,7 +2,7 @@
 
 With **ghpages-ghcomments**, your Jekyll site can use GitHub to provide reader comments. 
 
-Set up is quick, and everything has been automated to hook into your git workflow.
+Set up is straightforward, and everything has been automated to hook into your git workflow.
 
 [Read more](http://wireddown.github.io/ghpages-ghcomments/usage)
 
@@ -33,7 +33,12 @@ The blog posts on this site show how [**ghpages-ghcomments**](https://github.com
 
 # Setup
 
-Setup is fast -- [these commits](https://github.com/wireddown/gpgc-test/compare/2896ce7f85c8f4e07f2afe7700670386f0ec5b95...240420c7dd0f7ef0f2dd39c06897cf0d3e711c24?diff=split) show just how easy it is.
+These commits show just how easy it is:
+
+* [Add new files](https://github.com/pixated/pixated.github.io/commit/09a909b642fcaa3d2fff7b23857b09def64cd339?diff=unified)
+* [Configure](https://github.com/pixated/pixated.github.io/commit/1f4e26e0a9f3ac5fb02c21cc8e2789ec3e1369d0?diff=split)
+* [Link to CSS](https://github.com/pixated/pixated.github.io/commit/1e799e7fd73b87c52d513e0ec63d45f88775b101?diff=split)
+* [Include in posts](https://github.com/pixated/pixated.github.io/commit/1ff031d14b36c93ca3afcdac668a5736ea6bac03?diff=split)
 
 Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 
