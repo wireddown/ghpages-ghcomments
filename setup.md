@@ -114,12 +114,12 @@ These instructions use Heroku, but you can use a different provider (like Azure)
 
 #### <a name="step-6"></a>6. **Move** `_tools/gpgcCreateCommentIssue.sh` to your system *$PATH*.
 
-> ```
-> $ mv _tools/gpgcCreateCommentIssue.sh /usr/local/bin
-> $ sudo chmod +x /usr/local/bin/gpgcCreateCommentIssue.sh
-> $ if test -x "`which gpgcCreateCommentIssue.sh`"; then echo ok; fi
-> ok
-> ```
+```
+$ mv _tools/gpgcCreateCommentIssue.sh /usr/local/bin
+$ sudo chmod +x /usr/local/bin/gpgcCreateCommentIssue.sh
+$ if test -x "`which gpgcCreateCommentIssue.sh`"; then echo ok; fi
+ok
+```
 
 #### 7. **Install** the git hooks. From your repository root:
 
@@ -145,7 +145,14 @@ git push
 
 {% endraw %}
 
-#### 9. New posts now have GitHub comments! See [Usage]({{ site.baseurl }}/usage) for a refresher or [Verbose Usage]({{ site.baseurl }}/advanced/verbose-usage) for more details. If you're having trouble, see [Troubleshooting]({{ site.baseurl }}/advanced/troubleshooting/).
+#### 9. **Enable** comments for posts you have already published:
+
+```
+$ gpgcCreateCommentIssue.sh bootstrap
+$ gpgcCreateCommentIssue.sh push <personal_access_token>
+```
+
+#### 10. New posts now have GitHub comments! See [Usage]({{ site.baseurl }}/usage) for a refresher or [Verbose Usage]({{ site.baseurl }}/advanced/verbose-usage) for more details. If you're having trouble, see [Troubleshooting]({{ site.baseurl }}/advanced/troubleshooting/).
 
 ---
 
