@@ -2,7 +2,7 @@
 
 With [**ghpages-ghcomments**](http://wireddown.github.io/ghpages-ghcomments), your Jekyll site can use GitHub to provide reader comments. 
 
-Set up is quick, and everything has been automated to hook into your git workflow.
+Set up is straightforward, and everything has been automated to hook into your git workflow.
 
 [Read more](http://wireddown.github.io/ghpages-ghcomments/about)
 

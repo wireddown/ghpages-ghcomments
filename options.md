@@ -25,15 +25,6 @@ All of the HTML elements have CSS classes assigned to them, making it easy to co
 
 By default, the elements have been tuned for [poole/lanyon](https://github.com/poole/lanyon). If you chose a different color theme than this one, you can change the color of the comments buttons to match yours by [updating the `.gpgc-color-theme` classes](https://github.com/wireddown/gpgc-test/commit/6c9bb1b880c59211afdeccdab0011be19de4b9f7?diff=split) in the CSS.
 
-### Use your own GitHub API application
-
-[**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release) allows your readers to login and post comments on your post pages because it is small [GitHub API web application](https://developer.github.com/v3/oauth/#web-application-flow). As such, **ghpages-ghcomments** uses its own GitHub client application: [https://ghpages-ghcomments.herokuapp.com/authenticate/:code](https://ghpages-ghcomments.herokuapp.com/authenticate/:code), which has two notable impacts:
-
-1. a 1-2 second delay the *first* time your reader logs in
-1. an intermediate actor in the authentication chain
-
-For more details, see [Custom GitHub Application]({{ site.baseurl }}/advanced/custom-github-app/).
-
 ### Use a custom label name and color
 
 Since GitHub hosts your comment threads in your repository's Issues, you can use a custom label name and color for your site's comments threads.
