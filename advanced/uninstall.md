@@ -5,7 +5,7 @@ title: Uninstall
 
 For each repository with ghpages-ghcomments:
 
- 1. Remove the hooks from:
+ 1. Remove the hooks from these *(often)* hidden files:
   * **.git/hooks/pre-commit**
   * **.git/hooks/pre-push**
  1. Remove the ghpages-ghcomments files:
