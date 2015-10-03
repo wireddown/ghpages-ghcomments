@@ -48,6 +48,7 @@ Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 * 07 Feb 2015: [Use Diagnostics to Troubleshoot](http://downtothewire.io/ghpages-ghcomments/2015/02/07/use-diagnostics-to-troubleshoot/)
 * 08 Feb 2015: [Use the Browser Console to Troubleshoot](http://downtothewire.io/ghpages-ghcomments/2015/02/08/use-the-browser-console-to-troubleshoot/)
 * 16 Aug 2015: [Introducing Comment Control](http://downtothewire.io/ghpages-ghcomments/2015/08/16/introducing-comment-control/)
+* 03 Oct 2015: [Using ghpages-ghcomments with Private GitHub Repositories](http://downtothewire.io/ghpages-ghcomments/2015/10/03/using-ghpages-ghcomments-with-private-github-repositories/)
 
 # Change log
 
