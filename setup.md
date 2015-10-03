@@ -89,6 +89,8 @@ These instructions use Heroku, but you can use a different provider (like Azure)
 >   callback_url: http://__URL_OF_GPGC_REDIRECT_PAGE__
 > enable_diagnostics: false
 > ```
+>
+> {% endraw %} If your site is hosted in a private repository, see you can still use ghpages-ghcomments as long as you use a public repository to store the comments. See [this post]({{ site.baseurl }}/2015/10/03/using-ghpages-ghcomments-with-private-github-repositories) for details. {% raw %}
 
 ##
 
