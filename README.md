@@ -4,7 +4,7 @@ With **ghpages-ghcomments**, your Jekyll site can use GitHub to provide reader c
 
 Set up is straightforward, and everything has been automated to hook into your git workflow ([read more](http://wireddown.github.io/ghpages-ghcomments/usage)).
 
-![Leaving a comment]({{ site.github.repository_url }}/blob/master/demo_comment.gif)
+![Leaving a comment](/demo_comment.gif)
 
 # Examples
 
