@@ -48,6 +48,15 @@
 <script type="text/javascript" src="{{ site.baseurl }}/public/js/gpgc_core.js"></script>
 
 <script>
+  window.addEventListener("error", onError);
+  function onError(error) {
+    var errorMessage = "<h3><strong>gpgc</strong> Error: Global Exception</h3>";
+    errorMessage += "<p><dl><dt>Error</dt><dd>" + error.message + "</dd><dt>URL</dt><dd>" + error.filename + "</dd><dt>Line</dt><dd>" + error.lineno + "</dd><dt>Column</dt><dd>" + error.colno + "</dd></dl></p>"
+    showGeneralHelp(errorMessage);
+  }
+</script>
+
+<script>
   var gpgc = {
     new_comments_disabled: new Boolean({{ site.data.gpgc.disabled }}).valueOf() || new Boolean({{ page.gpgc_disabled }}).valueOf(),
     site_url: "{{ site.url }}",

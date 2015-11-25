@@ -43,7 +43,12 @@ var ErrorDiv = document.getElementById("gpgc_reader_error");
 /* main */
 
 function gpgc_main() {
-  if (gpgc.enable_diagnostics) { verifyCss(); }
+  if (gpgc.enable_diagnostics)
+  {
+    verifyInitialConditions();
+    verifyCss();
+  }
+
   if (gpgc.new_comments_disabled) {
     disableNewCommentForm();  
   } else {
@@ -686,8 +691,48 @@ function verifyCss() {
   }
 
   var allMessagesHtml = missingCssMessage + css404Message;
+  showGeneralHelp(allMessagesHtml);
+}
+
+function verifyInitialConditions() {
+  var missingPropertyMessage = "<h3><strong>gpgc</strong> Error: Incomplete Configuration</h3><p>The following settings are missing:</p>";
+  var stringPropertyNames = ["site_url", "page_path", "issue_title", "repo_id", "github_application_client_id", "github_application_code_authenticator_url", "github_application_login_redirect_url"];
+  var booleanPropertyNames = ["new_comments_disabled", "use_show_action", "enable_diagnostics"];
+  var missingPropertyCounter = 0;
+
+  for (var index in stringPropertyNames) {
+    var stringProperty = stringPropertyNames[index];
+    if (gpgc[stringProperty].length < 1) {
+      if (missingPropertyCounter == 0) {
+        missingPropertyMessage = missingPropertyMessage + "<ol>";
+      }
+
+      missingPropertyMessage = missingPropertyMessage + "<li>" + stringProperty + "</li>";
+      missingPropertyCounter++;
+    }
+  }
+
+  for (var index in booleanPropertyNames) {
+    var booleanProperty = booleanPropertyNames[index];
+    if (typeof(gpgc[booleanProperty]) != "boolean") {
+      if (missingPropertyCounter == 0) {
+        missingPropertyMessage = missingPropertyMessage + "<ol>";
+      }
+
+      missingPropertyMessage = missingPropertyMessage + "<li>" + booleanProperty + "</li>";
+      missingPropertyCounter++;
+    }
+  }
+
+  if (missingPropertyCounter > 0) {
+    missingPropertyMessage = missingPropertyMessage + "</ol>";
+    showGeneralHelp(missingPropertyMessage);
+  }
+}
+
+function showGeneralHelp(allMessagesHtml) {
   if (allMessagesHtml.length > 0) {
-    allMessagesHtml += "<h3>CSS Help</h3><p>Verify your site's configuration with the <a href='http://downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
+    allMessagesHtml += "<h3>Help</h3><p>Verify your site's configuration with the <a href='http://downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
 
     ErrorDiv.innerHTML += allMessagesHtml;
     showElement(ErrorDiv);
