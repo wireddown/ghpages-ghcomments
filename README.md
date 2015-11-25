@@ -2,9 +2,20 @@
 
 With **ghpages-ghcomments**, your Jekyll site can use GitHub to provide reader comments. 
 
-Set up is straightforward, and everything has been automated to hook into your git workflow.
+Set up is straightforward, and everything has been automated to hook into your git workflow ([read more](http://wireddown.github.io/ghpages-ghcomments/usage)).
 
-[Read more](http://wireddown.github.io/ghpages-ghcomments/usage)
+![Leaving a comment]({{ site.baseurl }}/demo_comment.gif)
+
+# Examples
+
+The blog posts on this site show how [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release) works.
+
+* [Comments with markdown](http://downtothewire.io/ghpages-ghcomments/2015/01/18/the-phrenic-shrine-reveals-itself)
+* [Several comments](http://downtothewire.io/ghpages-ghcomments/2015/01/12/not-a-sunrise-but-a-galaxyrise)
+* [One comment](http://downtothewire.io/ghpages-ghcomments/2015/01/09/creative-business-to-business-churn)
+* [No comments](http://downtothewire.io/ghpages-ghcomments/2015/01/08/mumblecore-flexitarian-thundercats)
+
+[Browse](https://github.com/wireddown/ghpages-ghcomments/issues?q=is%3Aopen+is%3Aissue+label%3A%22Example+GitHub+Pages+Comments%22) the GitHub storage for their comments.
 
 # Advantages
 
@@ -19,17 +30,6 @@ Set up is straightforward, and everything has been automated to hook into your g
  1. **Comment threads are automatically created** with every `git push` to your site.
  1. **Set up takes 5 minutes** and the rest is triggered -- set and forget.
  1. **Aggregate *all* of your sites' comments together** in one place -- a GitHub repository.
-
-# Examples
-
-The blog posts on this site show how [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release) works.
-
-* [Comments with markdown](http://downtothewire.io/ghpages-ghcomments/2015/01/18/the-phrenic-shrine-reveals-itself)
-* [Several comments](http://downtothewire.io/ghpages-ghcomments/2015/01/12/not-a-sunrise-but-a-galaxyrise)
-* [One comment](http://downtothewire.io/ghpages-ghcomments/2015/01/09/creative-business-to-business-churn)
-* [No comments](http://downtothewire.io/ghpages-ghcomments/2015/01/08/mumblecore-flexitarian-thundercats)
-
-[Browse](https://github.com/wireddown/ghpages-ghcomments/issues?q=is%3Aopen+is%3Aissue+label%3A%22Example+GitHub+Pages+Comments%22) the GitHub storage for their comments.
 
 # Setup
 
@@ -59,5 +59,6 @@ Follow these [instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
 * 21 May 2015: _Fix diagnostics; fix hooks for the Mac (issue [#17](https://github.com/wireddown/ghpages-ghcomments/issues/17))_
 * 16 Aug 2015: _Add comment controls_
 * 29 Sep 2015: _Add 'bootstrap' command for creating comment threads for already-published posts_
+* 24 Nov 2015: _Add error handling for initial conditions_
 
 Full history: [`release` branch commit log](https://github.com/wireddown/ghpages-ghcomments/commits/release)
