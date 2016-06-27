@@ -46,7 +46,7 @@ function InstallPreCommit()
 
 	${beginInstallTag}
 
-	gpgcCreateCommentIssue="\$(which gpgcCreateCommentIssue.sh)"
+	gpgcCreateCommentIssue="${GitRepoRoot}/_tools/gpgcCreateCommentIssue.sh"
 
 	if test -x "\${gpgcCreateCommentIssue}"; then
 	  "\${gpgcCreateCommentIssue}" commit
@@ -80,7 +80,7 @@ function InstallPrePush()
 
 	${beginInstallTag}
 
-	gpgcCreateCommentIssue="\$(which gpgcCreateCommentIssue.sh)"
+	gpgcCreateCommentIssue="${GitRepoRoot}/_tools/gpgcCreateCommentIssue.sh"
 
 	if test -x "\${gpgcCreateCommentIssue}"; then
 	  "\${gpgcCreateCommentIssue}" push ${PersonalAccessToken}
