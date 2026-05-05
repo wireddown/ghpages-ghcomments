@@ -6,4 +6,4 @@ date: 2015-03-15 12:00:00
 
 Comments have been released!
 
-See the [setup instructions](http://downtothewire.io/ghpages-ghcomments/setup/).
+See the [setup instructions](https://downtothewire.io/ghpages-ghcomments/setup/).

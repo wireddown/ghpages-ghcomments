@@ -86,7 +86,7 @@ These instructions use Heroku, but you can use a different provider (like Azure)
 > github_application:
 >   client_id: __YOUR_GITHUB_APP_CLIENT_ID__
 >   code_authenticator: https://__YOUR_HEROKU_APP__.herokuapp.com/authenticate/
->   callback_url: http://__URL_OF_GPGC_REDIRECT_PAGE__
+>   callback_url: https://__URL_OF_GPGC_REDIRECT_PAGE__
 > enable_diagnostics: false
 > ```
 >
@@ -95,7 +95,7 @@ These instructions use Heroku, but you can use a different provider (like Azure)
 ##
 
 > **_includes/head.html**
-> 
+>
 > [Add a link](https://github.com/pixated/pixated.github.io/commit/1e799e7fd73b87c52d513e0ec63d45f88775b101?diff=split) to the `gpgc_styles.css` to the \<head\> element:
 >
 > ```

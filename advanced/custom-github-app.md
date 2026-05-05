@@ -87,7 +87,7 @@ Now that you have your own Gatekeeper instance, update `_data/gpgc.yml`:
 github_application:
   client_id: __YOUR_CLIENT_ID__
   code_authenticator: https://__YOUR_HEROKU_APP__.herokuapp.com/authenticate/
-  callback_url: http://__YOUR_CLIENT_CALLBACK_URL__
+  callback_url: https://__YOUR_CLIENT_CALLBACK_URL__
 ```
 
 ### Summary
@@ -116,7 +116,7 @@ Now that you have your own server-side authenticator, update `_data/gpgc.yml`:
 github_application:
   client_id: __YOUR_CLIENT_ID__
   code_authenticator: https://__YOUR_DOMAIN__/__YOUR_SERVICE__/
-  callback_url: http://__YOUR_CLIENT_CALLBACK_URL__
+  callback_url: https://__YOUR_CLIENT_CALLBACK_URL__
 ```
 
 ### Summary

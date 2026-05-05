@@ -8,7 +8,7 @@ Using [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/t
 
 If you have a [Jekyll site](https://help.github.com/articles/using-jekyll-with-pages), then you already know how easy it is:
 
- 1. [Create a new file](http://jekyllrb.com/docs/posts/#creating-post-files) in **_posts** with a formatted name:
+ 1. [Create a new file](https://jekyllrb.com/docs/posts/#creating-post-files) in **_posts** with a formatted name:
  <br />`YYYY-MM-DD-post-title.md`
  1. Write your post.
  1. Push it live:

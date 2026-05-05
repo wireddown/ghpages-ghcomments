@@ -46,7 +46,7 @@ There are four files that implement ghpages-ghcomments:
 * Data:
   * **_data/gpgc.yml**
 
-Including gpgc\_comments.html requires one [Jekyll tag parameter](http://jekyllrb.com/docs/templates/#includes): **post_title**.
+Including gpgc\_comments.html requires one [Jekyll tag parameter](https://jekyllrb.com/docs/templates/#includes): **post_title**.
 
 For example, adding this line to **_layouts/post.html**
 
@@ -80,14 +80,14 @@ and is rendered to HTML by Jekyll like this:
 ``` js
   var gpgc = {
     new_comments_disabled: new Boolean().valueOf() || new Boolean().valueOf(),
-    site_url: "http://downtothewire.io",
+    site_url: "https://downtothewire.io",
     page_path: "_posts/2015-01-18-the-phrenic-shrine-reveals-itself.md",
     issue_title: "The Phrenic Shrine Reveals Itself",
     repo_id: "wireddown/ghpages-ghcomments",
     use_show_action: true,
     github_application_client_id: "0ef5ca17b24db4e46807",
     github_application_code_authenticator_url: "https://ghpages-ghcomments.herokuapp.com/authenticate/",
-    github_application_login_redirect_url: "http://downtothewire.io/ghpages-ghcomments/public/html/gpgc_redirect/index.html",
+    github_application_login_redirect_url: "https://downtothewire.io/ghpages-ghcomments/public/html/gpgc_redirect/index.html",
     enable_diagnostics: false,
   };
 ```
@@ -277,7 +277,7 @@ When the **pre-push** hook creates a [label](https://developer.github.com/v3/iss
 ```
 -d "{
   \"title\":\"The Phrenic Shrine Reveals Itself\",
-  \"body\":\"This is the comment thread for [The Phrenic Shrine Reveals Itself](http://downtothewire.io/ghpages-ghcomments/2015/01/18/the-phrenic-shrine-reveals-itself).\",
+  \"body\":\"This is the comment thread for [The Phrenic Shrine Reveals Itself](https://downtothewire.io/ghpages-ghcomments/2015/01/18/the-phrenic-shrine-reveals-itself).\",
   \"assignee\":\"wireddown\",
   \"labels\":[\"Example GitHub Pages Comments\"]
   }"

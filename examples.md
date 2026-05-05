@@ -6,10 +6,10 @@ tags: [sidebar]
 
 The blog posts on this site show how [**ghpages-ghcomments**](https://github.com/wireddown/ghpages-ghcomments/tree/release) works.
 
-* [Comments with markdown](http://downtothewire.io/ghpages-ghcomments/2015/01/18/the-phrenic-shrine-reveals-itself)
-* [Several comments](http://downtothewire.io/ghpages-ghcomments/2015/01/12/not-a-sunrise-but-a-galaxyrise)
-* [One comment](http://downtothewire.io/ghpages-ghcomments/2015/01/09/creative-business-to-business-churn)
-* [No comments](http://downtothewire.io/ghpages-ghcomments/2015/01/08/mumblecore-flexitarian-thundercats)
+* [Comments with markdown](https://downtothewire.io/ghpages-ghcomments/2015/01/18/the-phrenic-shrine-reveals-itself)
+* [Several comments](https://downtothewire.io/ghpages-ghcomments/2015/01/12/not-a-sunrise-but-a-galaxyrise)
+* [One comment](https://downtothewire.io/ghpages-ghcomments/2015/01/09/creative-business-to-business-churn)
+* [No comments](https://downtothewire.io/ghpages-ghcomments/2015/01/08/mumblecore-flexitarian-thundercats)
 
 [Browse](https://github.com/wireddown/ghpages-ghcomments/issues?q=is%3Aopen+is%3Aissue+label%3A%22Example+GitHub+Pages+Comments%22) the GitHub storage for their comments.
 

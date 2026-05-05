@@ -106,7 +106,7 @@ GetValueFromYml: ymlKey == title
 GetValueFromYml: value == Use Diagnostics to Troubleshoot
 GetValueFromYml: ymlFile == c:/repos/ghpages-ghcomments/_config.yml
 GetValueFromYml: ymlKey == url
-GetValueFromYml: value == http://wireddown.github.io/ghpages-ghcomments
+GetValueFromYml: value == https://wireddown.github.io/ghpages-ghcomments
 RawUrlEncode: Encoding "Use Diagnostics to Troubleshoot"
 RawUrlEncode: Result: "Use%20Diagnostics%20to%20Troubleshoot"
 IssueExists: Querying "https://api.github.com/search/issues?q=Use%20Diagnostics%20to%20Troubleshoot+repo:wireddown/ghpages-ghcomments+type:issue+in:title" for "Use Diagnostics to Troubleshoot"
@@ -117,7 +117,7 @@ IssueExists: {
 
   ]
 }
-CreateIssue: Posting to "https://api.github.com/repos/wireddown/ghpages-ghcomments/issues" with '{"title":"Use Diagnostics to Troubleshoot","body":"This is the comment thread for [Use Diagnostics to Troubleshoot](http://wireddown.github.io/ghpages-ghcomments/2015/02/07/use-diagnostics-to-troubleshoot).","assignee":"wireddown","labels":["Example GitHub Pages Comments"]}'
+CreateIssue: Posting to "https://api.github.com/repos/wireddown/ghpages-ghcomments/issues" with '{"title":"Use Diagnostics to Troubleshoot","body":"This is the comment thread for [Use Diagnostics to Troubleshoot](https://wireddown.github.io/ghpages-ghcomments/2015/02/07/use-diagnostics-to-troubleshoot).","assignee":"wireddown","labels":["Example GitHub Pages Comments"]}'
 Created issue "Use Diagnostics to Troubleshoot" for "wireddown/ghpages-ghcomments"
 Push: Resetting c:/repos/ghpages-ghcomments/.git/gpgc_cache
 Counting objects: 8, done.

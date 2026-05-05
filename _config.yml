@@ -6,16 +6,16 @@ exclude:             [README.md, LICENSE]
 title:               'GitHub Comments'
 tagline:             'for your GitHub Pages'
 description:         'Fully integrated comments for your GitHub Pages.'
-url:                 http://downtothewire.io
+url:                 https://downtothewire.io
 baseurl:             /ghpages-ghcomments
 
 # About/contact
 author:
   name:              Joe Friedrichsen
-  uri:               http://downtothewire.io
+  uri:               https://downtothewire.io
   handle:            https://twitter.com/JoeFriedrichsen
 
 # Custom data
 established:         2015
 license:             CC BY 4.0
-license_url:         http://creativecommons.org/licenses/by/4.0/legalcode
+license_url:         https://creativecommons.org/licenses/by/4.0/legalcode
