@@ -139,7 +139,7 @@ When the request returns, `onCommentsUpdated()` parses the JSON sent by GitHub a
 * appends the returned comments in the global variable `CommentsArray`
 * sends a request to retrieve the next page of the issue's comments
 
-If the issue has more than 30 comments, GitHub will [paginate its responses](https://developer.github.com/guides/traversing-with-pagination/). The response's HTTP **Link** header indicates where the next page is:
+If the issue has more than 30 comments, GitHub will [paginate its responses](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api). The response's HTTP **Link** header indicates where the next page is:
 
 ```
 Link:
@@ -164,9 +164,9 @@ All of the web requests for searches and comments are sent using `XMLHttpRequest
 Accept:	application/vnd.github.v3.html+json
 ```
 
-This asks GitHub to return everything in JSON but to [render the markdown content to HTML](https://developer.github.com/v3/media/#comment-body-properties).
+This asks GitHub to return everything in JSON but to [render the markdown content to HTML](https://docs.github.com/en/rest/guides/working-with-comments).
 
-In addition, GitHub has [permissive CORS](https://developer.github.com/v3/#cross-origin-resource-sharing), which allows `XMLHttpRequest` to make GitHub API calls in modern browsers without any additional configuration.
+In addition, GitHub has [permissive CORS](https://docs.github.com/en/rest/using-the-rest-api/using-cors-and-jsonp-to-make-cross-origin-requests), which allows `XMLHttpRequest` to make GitHub API calls in modern browsers without any additional configuration.
 
 #### **Drafting and posting a new comment**
 

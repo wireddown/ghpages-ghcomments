@@ -39,7 +39,7 @@ These instructions use Heroku, but you can use a different provider (like Azure)
 
 1. **Prepare** Heroku
  * [**Create** a Heroku account](https://signup.heroku.com/) if you don't have one already
- * **Install** the [Toolbelt](https://toolbelt.heroku.com/)
+ * **Install** the [CLI](https://devcenter.heroku.com/articles/heroku-cli)
 1. **Clone** Gatekeeper:
  * `git clone https://github.com/prose/gatekeeper.git`
  * `cd gatekeeper`
@@ -129,7 +129,7 @@ ok
 $ gpgcCreateCommentIssue.sh install <personal_access_token>
 ```
 
-Where **\<personal\_access\_token\>** is your [GitHub personal API access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/). Your token must have the `public_repo` [scope](https://developer.github.com/v3/oauth/#scopes) so that the hooks can create labels and issues in your repository.
+Where **\<personal\_access\_token\>** is your [GitHub personal API access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/). Your token must have the `public_repo` [scope](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps) so that the hooks can create labels and issues in your repository.
 
 #### 8. **Push** to your Jekyll site:
 

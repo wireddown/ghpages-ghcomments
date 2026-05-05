@@ -7,7 +7,7 @@ In order for your readers to comment on your pages, they must be logged in to Gi
 
 ## Motivation
 
-**ghpages-ghcomments** uses GitHub issues as the commenting system for gh-pages sites. For a reader to create a comment on an issue, GitHub **requires** that the commenter be logged in with the `public_repo` [scope](https://developer.github.com/v3/oauth/#scopes). GitHub allows third parties, like Jekyll gh-pages sites, to let their end users to securely login to GitHub via [**OAuth**](https://developer.github.com/v3/oauth/).
+**ghpages-ghcomments** uses GitHub issues as the commenting system for gh-pages sites. For a reader to create a comment on an issue, GitHub **requires** that the commenter be logged in with the `public_repo` [scope](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps). GitHub allows third parties, like Jekyll gh-pages sites, to let their end users to securely login to GitHub via [**OAuth**](https://developer.github.com/v3/oauth/).
 
 ## GitHub Applications
 
@@ -55,7 +55,7 @@ Gatekeeper has a Node.js implementation, which Heroku can directly serve in a we
 
 1. **Prepare** Heroku
  * [**Create** a Heroku account](https://signup.heroku.com/) if you don't have one already
- * **Install** the [Toolbelt](https://toolbelt.heroku.com/)
+ * **Install** the [CLI](https://devcenter.heroku.com/articles/heroku-cli)
 1. **Clone** Gatekeeper:
  * `git clone https://github.com/prose/gatekeeper.git`
  * `cd gatekeeper`
@@ -106,7 +106,7 @@ You will still be using the **ghpages-ghcomments** JavaScript, which expects a s
 1. Use the GitHub `https://github.com/login/oauth/access_token` [API to exchange](https://developer.github.com/v3/oauth/#web-application-flow) the `code` for a `token`.
 1. Respond with JSON: `{ "token": token }`
 
-For a reference implementation, see the Gatekeeper [server.js](https://github.com/prose/gatekeeper/blob/master/server.js#L62) method ` app.get('/authenticate/:code', function(req, res))`.
+For a reference implementation, see the Gatekeeper [server.js](https://github.com/prose/gatekeeper/blob/master/server.js#L91) method `app.get('/authenticate/:code', function(req, res))`.
 
 ### ghpages-ghcomments
 
