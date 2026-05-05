@@ -50,7 +50,7 @@ function gpgc_main() {
   }
 
   if (gpgc.new_comments_disabled) {
-    disableNewCommentForm();  
+    disableNewCommentForm();
   } else {
     initializeData();
     initializeEvents();
@@ -325,7 +325,7 @@ function onSearchError(searchRequest) {
 
     var allMessagesHtml = searchErrorMessage + missingIssueMessage;
     if (allMessagesHtml.length > 0) {
-      allMessagesHtml += "<h3>Search Help</h3><p>Verify your site's configuration with the <a href='http://downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
+      allMessagesHtml += "<h3>Search Help</h3><p>Verify your site's configuration with the <a href='https://downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='https://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
 
       ErrorDiv.innerHTML += allMessagesHtml;
       showElement(ErrorDiv);
@@ -732,7 +732,7 @@ function verifyInitialConditions() {
 
 function showGeneralHelp(allMessagesHtml) {
   if (allMessagesHtml.length > 0) {
-    allMessagesHtml += "<h3>Help</h3><p>Verify your site's configuration with the <a href='http://downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='http://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
+    allMessagesHtml += "<h3>Help</h3><p>Verify your site's configuration with the <a href='https://downtothewire.io/ghpages-ghcomments/setup/'>setup instructions</a> and refer to the <a href='https://downtothewire.io/ghpages-ghcomments/advanced/verbose-usage/'>verbose usage</a> for step-by-step details.</p><p>Contact <strong><a href='https://github.com/wireddown/ghpages-ghcomments/issues'>ghpages-ghcomments</a></strong> for more help.</p>";
 
     ErrorDiv.innerHTML += allMessagesHtml;
     showElement(ErrorDiv);

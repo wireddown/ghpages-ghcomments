@@ -7,5 +7,5 @@ label_color: 666666
 github_application:
   client_id: __your_github_app_client_id__
   code_authenticator: __your_github_code_authenticator_url__
-  callback_url: http://__your_host__/public/html/gpgc_redirect/index.html
+  callback_url: https://__your_host__/public/html/gpgc_redirect/index.html
 enable_diagnostics: false
