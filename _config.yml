@@ -19,3 +19,9 @@ author:
 established:         2015
 license:             CC BY 4.0
 license_url:         https://creativecommons.org/licenses/by/4.0/legalcode
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
